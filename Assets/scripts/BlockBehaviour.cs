@@ -1,5 +1,8 @@
-﻿
+﻿/**
+ * Handles edge detection and making the block fall.
+ */
 public class BlockBehaviour : UnityEngine.MonoBehaviour {
+    /** List of collideable edges */
     private enum Direction {
         topBack = 0, /* Y = positive, Z = negative, X = zero     */
         topFront,    /* Y = positive, Z = positive, X = zero     */
@@ -11,6 +14,9 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
         bottomRight, /* Y = negative, Z = zero,     X = positive */
         max
     };
+
+    /** Reference to the object's rigid body */
+    private UnityEngine.Rigidbody rb;
 
     /** Maps a SphereCollider's ID to a Direction */
     private System.Collections.Generic.Dictionary<int, Direction> id2Direction;
@@ -26,7 +32,9 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
     /** The object's dimension */
     public float Scale = 1.0f;
 
-    // Start is called before the first frame update
+    /**
+     * Start is called before the first frame update.
+     */
     void Start() {
         float _scale = this.Scale * 0.5f;
 
@@ -34,6 +42,10 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
         this.bottomColliders = new System.Collections.Generic.List<int>();
         this.topColliders = new System.Collections.Generic.List<int>();
         this.haltMovement = false;
+
+        this.rb = this.gameObject.GetComponent<UnityEngine.Rigidbody>();
+        if (this.rb == null)
+            this.rb = this.gameObject.AddComponent<UnityEngine.Rigidbody>();
 
         /* Create every collider used for edge detection */
         for (Direction d = Direction.topBack; d < Direction.max; d++) {
@@ -97,40 +109,55 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
         }
     }
 
-    // Update is called once per frame
+    /**
+     * Retrieve the next vertical position aligned to the grid.
+     */
+    private float getGridAlignedY() {
+        float tmp = this.gameObject.transform.localPosition.y;
+        return (float)System.Math.Floor(tmp);
+    }
+
+    /**
+     * Update is called once per frame.
+     */
     void Update() {
         /* On the first bottom collision, wait until we aligned with the
          * grid and halt. */
         if (this.haltMovement) {
-            float curVerticalPosition = (float)System.Math.Floor(this.gameObject.transform.localPosition.y);
+            float curVerticalPosition = this.getGridAlignedY();
             if (curVerticalPosition < this.alignedVerticalPosition) {
                 UnityEngine.Vector3 tmp;
                 tmp = this.gameObject.transform.localPosition;
 
                 this.gameObject.transform.localPosition = new UnityEngine.Vector3(tmp.x, this.alignedVerticalPosition, tmp.z);
 
-                UnityEngine.Rigidbody rb;
-                rb = this.gameObject.GetComponent<UnityEngine.Rigidbody>();
-                rb.isKinematic = true;
-                rb.useGravity = false;
+                this.rb.isKinematic = true;
+                this.rb.useGravity = false;
                 this.haltMovement = false;
             }
         }
     }
 
+    /**
+     * Check if a collider is a block and retrieve its colliding edge.
+     */
     private Direction collider2Direction(UnityEngine.Collider c) {
-        /* TODO: Check type to ensure it's a block */
-        BlockBehaviour other = c.gameObject.GetComponent<BlockBehaviour>();
-        if (other == null)
-            /* Meanwhile, use this for the detection */
-            return Direction.max;
-
+        BlockBehaviour other;
         Direction d;
+
+        /* Check the type to ensure it's a block */
+        if (c.tag != this.tag)
+            return Direction.max;
+        other = c.gameObject.GetComponent<BlockBehaviour>();
         if (!other.id2Direction.TryGetValue(c.GetInstanceID(), out d))
             return Direction.max;
         return d;
     }
 
+    /**
+     * Check whether the collider is above or bellow this block and retrieve
+     * the list used to track objects in that position.
+     */
     private System.Collections.Generic.List<int> getColliderList(UnityEngine.Collider c) {
         /* NOTE: When this object collides with another's top, the own
          * object's **bottom** is colliding */
@@ -153,35 +180,28 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
     void OnTriggerEnter(UnityEngine.Collider c) {
         System.Collections.Generic.List<int> boxList;
         boxList = getColliderList(c);
-        if (boxList == null)
-            return;
-        else if (boxList.IndexOf(c.GetInstanceID()) != -1)
+        if (boxList == null || boxList.IndexOf(c.GetInstanceID()) != -1)
             return;
         boxList.Add(c.GetInstanceID());
 
         if (this.bottomColliders.Count == 1) {
             /* Align the box to the grid and halt if there's at least one box bellow */
             this.haltMovement = true;
-            this.alignedVerticalPosition = (float)System.Math.Floor(this.gameObject.transform.localPosition.y);
+            this.alignedVerticalPosition = this.getGridAlignedY();
         }
     }
 
     void OnTriggerExit(UnityEngine.Collider c) {
         System.Collections.Generic.List<int> boxList;
         boxList = getColliderList(c);
-        if (boxList == null)
-            return;
-        else if (boxList.IndexOf(c.GetInstanceID()) == -1)
+        if (boxList == null || boxList.IndexOf(c.GetInstanceID()) == -1)
             return;
         boxList.Remove(c.GetInstanceID());
 
         if (this.bottomColliders.Count == 0) {
-            /* Start physics if there's no box bellow */
-            UnityEngine.Rigidbody rb;
-            rb = this.gameObject.GetComponent<UnityEngine.Rigidbody>();
-            rb.isKinematic = false;
-            rb.useGravity = true;
-
+            /* Start physics if there isn't any box bellow */
+            this.rb.isKinematic = false;
+            this.rb.useGravity = true;
             this.haltMovement = false;
         }
     }
