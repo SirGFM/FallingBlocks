@@ -1,4 +1,4 @@
-﻿public class PlayerController : UnityEngine.MonoBehaviour {
+﻿public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
     /** List of directions the player may face (in camera space) */
     private enum Direction {
         none  = 0x0,
@@ -135,5 +135,13 @@
             }
         else
             this.moveForward();
+    }
+
+    public void OnEnterRelativeCollision(RelativePosition p, UnityEngine.Collider c) {
+        /* TODO: Do something */
+    }
+
+    public void OnExitRelativeCollision(RelativePosition p, UnityEngine.Collider c) {
+        /* TODO: Do something */
     }
 }
