@@ -15,8 +15,10 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
         max
     };
 
-    /** Reference to the object's rigid body */
+    /** Reference to the object's parent rigid body */
     private UnityEngine.Rigidbody rb;
+    /** Reference to the object's parent transform */
+    private UnityEngine.Transform tf;
 
     /** Maps a SphereCollider's ID to a Direction */
     private System.Collections.Generic.Dictionary<int, Direction> id2Direction;
@@ -33,6 +35,19 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
     public float Scale = 1.0f;
 
     /**
+     * Retrieve the first component of type T in this object's ancestors.
+     */
+    private T GetAncestor<T>() where T : UnityEngine.Component {
+        T[] ts = this.gameObject.GetComponentsInParent<T>();
+        foreach (T t in ts) {
+            if (t.gameObject.GetInstanceID() == this.gameObject.GetInstanceID())
+                continue;
+            return t;
+        }
+        return null;
+    }
+
+    /**
      * Start is called before the first frame update.
      */
     void Start() {
@@ -43,9 +58,25 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
         this.topColliders = new System.Collections.Generic.List<int>();
         this.haltMovement = false;
 
-        this.rb = this.gameObject.GetComponent<UnityEngine.Rigidbody>();
+        /* Make sure this object has every required component */
+        if (this.gameObject.GetComponent<UnityEngine.Rigidbody>() == null) {
+            UnityEngine.Rigidbody rb;
+            rb = this.gameObject.AddComponent<UnityEngine.Rigidbody>();
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+        if (this.gameObject.GetComponent<UnityEngine.BoxCollider>() == null) {
+            UnityEngine.BoxCollider bc;
+            bc = this.gameObject.AddComponent<UnityEngine.BoxCollider>();
+            bc.size = new UnityEngine.Vector3(0.9f, 0.9f, 0.9f);
+            bc.isTrigger = true;
+        }
+        this.rb = this.GetAncestor<UnityEngine.Rigidbody>();
         if (this.rb == null)
-            this.rb = this.gameObject.AddComponent<UnityEngine.Rigidbody>();
+            UnityEngine.Debug.LogError("Missing RigidBody in parent object!");
+        this.tf = this.GetAncestor<UnityEngine.Transform>();
+        if (this.tf == null)
+            UnityEngine.Debug.LogError("Somehow, missing transform in parent object!");
 
         /* Create every collider used for edge detection */
         for (Direction d = Direction.topBack; d < Direction.max; d++) {
@@ -113,7 +144,7 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
      * Retrieve the next vertical position aligned to the grid.
      */
     private float getGridAlignedY() {
-        float tmp = this.gameObject.transform.localPosition.y;
+        float tmp = this.tf.localPosition.y;
         return (float)System.Math.Floor(tmp);
     }
 
@@ -127,9 +158,9 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
             float curVerticalPosition = this.getGridAlignedY();
             if (curVerticalPosition < this.alignedVerticalPosition) {
                 UnityEngine.Vector3 tmp;
-                tmp = this.gameObject.transform.localPosition;
+                tmp = this.tf.localPosition;
 
-                this.gameObject.transform.localPosition = new UnityEngine.Vector3(tmp.x, this.alignedVerticalPosition, tmp.z);
+                this.tf.localPosition = new UnityEngine.Vector3(tmp.x, this.alignedVerticalPosition, tmp.z);
 
                 this.rb.isKinematic = true;
                 this.rb.useGravity = false;
@@ -145,9 +176,7 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
         BlockBehaviour other;
         Direction d;
 
-        /* Check the type to ensure it's a block */
-        if (c.tag != this.tag)
-            return Direction.max;
+        /* XXX: Layer should ensure this is a BlockBehaviour */
         other = c.gameObject.GetComponent<BlockBehaviour>();
         if (!other.id2Direction.TryGetValue(c.GetInstanceID(), out d))
             return Direction.max;
@@ -159,7 +188,7 @@ public class BlockBehaviour : UnityEngine.MonoBehaviour {
      * the list used to track objects in that position.
      */
     private System.Collections.Generic.List<int> getColliderList(UnityEngine.Collider c) {
-        /* NOTE: When this object collides with another's top, the own
+        /* XXX: When this object collides with another's top, the own
          * object's **bottom** is colliding */
         switch (collider2Direction(c)) {
         case Direction.topBack:
