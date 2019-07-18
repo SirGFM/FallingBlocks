@@ -10,16 +10,35 @@
 
     /** Currently facing direction */
     private Direction facing = Direction.back;
-    /** Function handling the turn animation (and delay). */
-    private UnityEngine.Coroutine turnDelay = null;
+    /** Tracks whether we are already running a coroutine */
+    private bool isMoving;
+
+    /** Keep track of collisions on the object's surroundings */
+    private int[] collisionTracker;
+    /** Reference to the object's rigid body */
+    private UnityEngine.Rigidbody rb;
 
     /** How long to delay movement after a turn */
     public float TurnDelay = 0.3f;
+    /** How long move a square takes */
+    public float MoveDelay = 0.6f;
 
     // Start is called before the first frame update
     void Start() {
         this.facing = Direction.back;
         this.transform.eulerAngles = new UnityEngine.Vector3(0f, 0f, 0f);
+
+        this.rb = this.GetComponent<UnityEngine.Rigidbody>();
+        if (this.rb == null)
+            this.rb = this.gameObject.AddComponent<UnityEngine.Rigidbody>();
+        this.rb.isKinematic = true;
+        this.rb.useGravity = false;
+        this.rb.constraints = UnityEngine.RigidbodyConstraints.FreezeRotationX | UnityEngine.RigidbodyConstraints.FreezeRotationZ;
+
+        ReportRelativeCollision.RelativePosition p = 0;
+        this.collisionTracker = new int[p.count()];
+
+        this.isMoving = false;
     }
 
     /**
@@ -39,7 +58,65 @@
         return Direction.none;
     }
 
-    private void moveForward() {
+    /**
+     * Move the player to a new position.
+     */
+    private System.Collections.IEnumerator move(UnityEngine.Vector3 tgtPosition) {
+        this.isMoving = true;
+
+        int steps = (int)(this.MoveDelay / UnityEngine.Time.fixedDeltaTime);
+        UnityEngine.Vector3 dtMovement = tgtPosition / (float)steps;
+        UnityEngine.Vector3 finalPosition = this.transform.localPosition + tgtPosition;
+
+        for (int i = 0; i < steps; i++) {
+            this.transform.localPosition = this.transform.localPosition + dtMovement;
+            //this.transform.Rotate(axis, dtAngle * (i / (float)steps) * 2f);
+            yield return new UnityEngine.WaitForFixedUpdate();
+        }
+        this.transform.localPosition = finalPosition;
+
+        this.isMoving = false;
+    }
+
+    private void tryMoveForward() {
+        UnityEngine.Vector3 tgtPosition;
+
+        switch (this.facing) {
+        case Direction.back: /* Camera facing */
+            tgtPosition = new UnityEngine.Vector3(0f, 0f, -1f);
+            break;
+        case Direction.front:
+            tgtPosition = new UnityEngine.Vector3(0f, 0f, 1f);
+            break;
+        case Direction.left:
+            tgtPosition = new UnityEngine.Vector3(-1f, 0f, 0f);
+            break;
+        case Direction.right:
+            tgtPosition = new UnityEngine.Vector3(1f, 0f, 0f);
+            break;
+        default:
+            tgtPosition = new UnityEngine.Vector3(0f, 0f, 0f);
+            break;
+        }
+
+        this.StartCoroutine(this.move(tgtPosition));
+    }
+
+    /**
+     * Animate falling until there's a block bellow
+     */
+    private System.Collections.IEnumerator fall() {
+        this.isMoving = true;
+        this.rb.isKinematic = false;
+        this.rb.useGravity = true;
+
+        while (this.collisionTracker[ReportRelativeCollision.RelativePosition.Bottom.toIdx()] == 0)
+            yield return new UnityEngine.WaitForFixedUpdate();
+        /* TODO Align to the grid */
+
+        this.rb.isKinematic = true;
+        this.rb.useGravity = false;
+        this.isMoving = false;
     }
 
     /**
@@ -48,6 +125,8 @@
     private System.Collections.IEnumerator turn(Direction d) {
         float tgtAngle, dtAngle;
         int steps;
+
+        this.isMoving = true;
 
         switch ((int)this.facing | ((int)d << 4)) {
         case (int)Direction.back | ((int)Direction.front << 4):
@@ -115,33 +194,35 @@
         UnityEngine.Vector3 tmp = this.transform.eulerAngles;
         this.transform.eulerAngles = new UnityEngine.Vector3(tmp.x, tgtAngle, tmp.z);
         this.facing = d;
-        this.turnDelay = null;
         /* If still holding on the same direction, buffer a movement */
         if (d == this.getInputDirection())
-            this.moveForward();
+            this.tryMoveForward();
+        else
+            this.isMoving = false;
     }
 
     // Update is called once per frame
     void Update() {
-        Direction newDir = this.getInputDirection();
-        if (newDir == Direction.none)
+        if (this.isMoving)
+            /* Ignore inputs unless stopped */
             return;
+        else if (this.collisionTracker[ReportRelativeCollision.RelativePosition.Bottom.toIdx()] == 0)
+            /* Start falling if there's nothing bellow */
+            this.StartCoroutine(this.fall());
 
-        if (this.facing != newDir)
-            if (this.turnDelay == null)
-                this.turnDelay = this.StartCoroutine(this.turn(newDir));
-            else {
-                /* Can't do anything D: */
-            }
-        else
-            this.moveForward();
+        Direction newDir = this.getInputDirection();
+        if (newDir != Direction.none)
+            if (this.facing != newDir)
+                this.StartCoroutine(this.turn(newDir));
+            else
+                this.tryMoveForward();
     }
 
-    public void OnEnterRelativeCollision(RelativePosition p, UnityEngine.Collider c) {
-        /* TODO: Do something */
+    public void OnEnterRelativeCollision(ReportRelativeCollision.RelativePosition p, UnityEngine.Collider c) {
+        this.collisionTracker[p.toIdx()]++;
     }
 
-    public void OnExitRelativeCollision(RelativePosition p, UnityEngine.Collider c) {
-        /* TODO: Do something */
+    public void OnExitRelativeCollision(ReportRelativeCollision.RelativePosition p, UnityEngine.Collider c) {
+        this.collisionTracker[p.toIdx()]--;
     }
 }
