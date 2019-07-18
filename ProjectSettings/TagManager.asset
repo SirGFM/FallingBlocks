@@ -17,8 +17,8 @@ TagManager:
   - Game Model
   - Probe Trigger
   - No collision
-  - Block Edge Trigger
-  - 
+  - Block Edge Detector
+  - Block Edge Reporter
   - 
   - 
   - 
