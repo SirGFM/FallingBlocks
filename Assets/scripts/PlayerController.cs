@@ -9,11 +9,18 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         left  = 0x4,
         right = 0x8
     };
+    private enum Animation {
+        None  = 0x0,
+        Stand = 0x1,
+        Turn  = 0x2,
+        Move  = 0x4,
+        Fall  = 0x8,
+    };
 
     /** Currently facing direction */
     private Direction facing = Direction.back;
     /** Tracks whether we are already running a coroutine */
-    private bool isMoving;
+    private Animation anim;
 
     /** Keep track of collisions on the object's surroundings */
     private int[] collisionTracker;
@@ -40,7 +47,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         RelPos p = 0;
         this.collisionTracker = new int[p.count()];
 
-        this.isMoving = false;
+        this.anim = Animation.None;
     }
 
     /**
@@ -64,7 +71,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
      * Move the player to a new position.
      */
     private System.Collections.IEnumerator move(UnityEngine.Vector3 tgtPosition) {
-        this.isMoving = true;
+        this.anim |= Animation.Move;
 
         int steps = (int)(this.MoveDelay / UnityEngine.Time.fixedDeltaTime);
         UnityEngine.Vector3 dtMovement = tgtPosition / (float)steps;
@@ -77,11 +84,15 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         }
         this.transform.localPosition = finalPosition;
 
-        this.isMoving = false;
+        this.anim &= ~Animation.Move;
     }
 
     private void tryMoveForward() {
         UnityEngine.Vector3 tgtPosition;
+
+        /* Avoid corner cases by checking before doing anything */
+        if ((this.anim & Animation.Move) == Animation.Move)
+            return;
 
         switch (this.facing) {
         case Direction.back: /* Camera facing */
@@ -104,7 +115,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         /* Compound the movement by looking at the surroundings */
         if (this.collisionTracker[RelPos.Front.toIdx()] > 0) {
             /* Something ahead; Try to jump up */
-            if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0) {
+            if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0 &&
+                    this.collisionTracker[RelPos.Top.toIdx()] == 0) {
                 /* There's a floor above; Jump toward it */
                 tgtPosition.y = 1f;
                 this.StartCoroutine(this.move(tgtPosition));
@@ -136,7 +148,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         UnityEngine.Vector3 tmp;
         float newY;
 
-        this.isMoving = true;
+        this.anim |= Animation.Fall;
         this.rb.isKinematic = false;
         this.rb.useGravity = true;
 
@@ -153,7 +165,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
         this.rb.isKinematic = true;
         this.rb.useGravity = false;
-        this.isMoving = false;
+        this.anim &= ~Animation.Fall;
     }
 
     /**
@@ -163,7 +175,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         float tgtAngle, dtAngle;
         int steps;
 
-        this.isMoving = true;
+        this.anim |= Animation.Turn;
 
         switch ((int)this.facing | ((int)d << 4)) {
         case (int)Direction.back | ((int)Direction.front << 4):
@@ -234,13 +246,12 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         /* If still holding on the same direction, buffer a movement */
         if (d == this.getInputDirection())
             this.tryMoveForward();
-        else
-            this.isMoving = false;
+        this.anim &= ~Animation.Turn;
     }
 
     // Update is called once per frame
     void Update() {
-        if (this.isMoving)
+        if (this.anim != Animation.None)
             /* Ignore inputs unless stopped */
             return;
         else if (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
