@@ -1,4 +1,6 @@
-﻿public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
+﻿using RelPos = ReportRelativeCollision.RelativePosition;
+
+public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
     /** List of directions the player may face (in camera space) */
     private enum Direction {
         none  = 0x0,
@@ -35,7 +37,7 @@
         this.rb.useGravity = false;
         this.rb.constraints = UnityEngine.RigidbodyConstraints.FreezeRotationX | UnityEngine.RigidbodyConstraints.FreezeRotationZ;
 
-        ReportRelativeCollision.RelativePosition p = 0;
+        RelPos p = 0;
         this.collisionTracker = new int[p.count()];
 
         this.isMoving = false;
@@ -99,20 +101,55 @@
             break;
         }
 
-        this.StartCoroutine(this.move(tgtPosition));
+        /* Compound the movement by looking at the surroundings */
+        if (this.collisionTracker[RelPos.Front.toIdx()] > 0) {
+            /* Something ahead; Try to jump up */
+            if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0) {
+                /* There's a floor above; Jump toward it */
+                tgtPosition.y = 1f;
+                this.StartCoroutine(this.move(tgtPosition));
+            }
+        }
+        else {
+            if (this.collisionTracker[RelPos.BottomFront.toIdx()] > 0)
+                /* Front is clear and there's footing; Just move forward */
+                this.StartCoroutine(this.move(tgtPosition));
+            else if (this.collisionTracker[RelPos.BottomBottomFront.toIdx()] > 0) {
+                /* There's a floor bellow; Jump toward it */
+                tgtPosition.y = -1f;
+                this.StartCoroutine(this.move(tgtPosition));
+            }
+        }
+    }
+
+    /**
+     * Retrieve the next vertical position aligned to the grid.
+     */
+    private float getGridAlignedY() {
+        return (float)System.Math.Floor(this.transform.localPosition.y);
     }
 
     /**
      * Animate falling until there's a block bellow
      */
     private System.Collections.IEnumerator fall() {
+        UnityEngine.Vector3 tmp;
+        float newY;
+
         this.isMoving = true;
         this.rb.isKinematic = false;
         this.rb.useGravity = true;
 
-        while (this.collisionTracker[ReportRelativeCollision.RelativePosition.Bottom.toIdx()] == 0)
+        while (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
             yield return new UnityEngine.WaitForFixedUpdate();
-        /* TODO Align to the grid */
+
+        /* Align to the grid */
+        newY = this.getGridAlignedY();
+        while (this.transform.localPosition.y > newY)
+            yield return new UnityEngine.WaitForFixedUpdate();
+
+        tmp = this.transform.localPosition;
+        this.transform.localPosition = new UnityEngine.Vector3(tmp.x, newY, tmp.z);
 
         this.rb.isKinematic = true;
         this.rb.useGravity = false;
@@ -206,7 +243,7 @@
         if (this.isMoving)
             /* Ignore inputs unless stopped */
             return;
-        else if (this.collisionTracker[ReportRelativeCollision.RelativePosition.Bottom.toIdx()] == 0)
+        else if (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
             /* Start falling if there's nothing bellow */
             this.StartCoroutine(this.fall());
 
@@ -218,11 +255,11 @@
                 this.tryMoveForward();
     }
 
-    public void OnEnterRelativeCollision(ReportRelativeCollision.RelativePosition p, UnityEngine.Collider c) {
+    public void OnEnterRelativeCollision(RelPos p, UnityEngine.Collider c) {
         this.collisionTracker[p.toIdx()]++;
     }
 
-    public void OnExitRelativeCollision(ReportRelativeCollision.RelativePosition p, UnityEngine.Collider c) {
+    public void OnExitRelativeCollision(RelPos p, UnityEngine.Collider c) {
         this.collisionTracker[p.toIdx()]--;
     }
 }

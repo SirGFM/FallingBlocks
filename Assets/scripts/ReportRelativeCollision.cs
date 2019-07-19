@@ -21,7 +21,7 @@
 public static class RelativePositionMethods {
     /** Retrieve how many itens are in this enumeration. */
     public static int count(this ReportRelativeCollision.RelativePosition p) {
-        return 8;
+        return 9;
     }
     /** Convert the enumeration to a sequential integer. */
     public static int toIdx(this ReportRelativeCollision.RelativePosition p) {
@@ -42,6 +42,8 @@ public static class RelativePositionMethods {
             return 6;
         case ReportRelativeCollision.RelativePosition.TopFront:
             return 7;
+        case  ReportRelativeCollision.RelativePosition.BottomBottomFront:
+            return 8;
         default:
             return -1;
         }
@@ -58,6 +60,7 @@ public class ReportRelativeCollision : UnityEngine.MonoBehaviour {
         Left   = 0x20,
         BottomFront = Bottom | Front,
         TopFront = Top | Front,
+        BottomBottomFront = (Bottom << 8) | Bottom | Front,
     }
 
     /** Relative position of this game object in reference to its parent. */
