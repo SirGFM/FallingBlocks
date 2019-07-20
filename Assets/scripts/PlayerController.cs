@@ -21,6 +21,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     private Direction facing = Direction.back;
     /** Tracks whether we are already running a coroutine */
     private Animation anim;
+    /** Whether we are currently holding onto an ledge */
+    private bool onLedge;
 
     /** Keep track of collisions on the object's surroundings */
     private int[] collisionTracker;
@@ -48,6 +50,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         this.collisionTracker = new int[p.count()];
 
         this.anim = Animation.None;
+        this.onLedge = false;
     }
 
     /**
@@ -87,30 +90,47 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         this.anim &= ~Animation.Move;
     }
 
-    private void tryMoveForward() {
-        UnityEngine.Vector3 tgtPosition;
+    private UnityEngine.Vector3 getForwardVector(Direction dir) {
+        switch (dir) {
+        case Direction.back: /* Camera facing */
+            return new UnityEngine.Vector3(0f, 0f, -1f);
+        case Direction.front:
+            return new UnityEngine.Vector3(0f, 0f, 1f);
+        case Direction.left:
+            return new UnityEngine.Vector3(-1f, 0f, 0f);
+        case Direction.right:
+            return new UnityEngine.Vector3(1f, 0f, 0f);
+        default:
+            return new UnityEngine.Vector3(0f, 0f, 0f);
+        }
+    }
 
+    private void tryMoveLedge(Direction moveDir) {
+        switch (moveDir) {
+        case Direction.front:
+            /* Move up, if there's enough room */
+            if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0) {
+                UnityEngine.Vector3 tgtPosition;
+                tgtPosition = this.getForwardVector(this.facing);
+                tgtPosition.y = 1f;
+                this.StartCoroutine(this.move(tgtPosition));
+                this.onLedge = false;
+            }
+            break;
+        case Direction.back:
+            /* Simply start to fall */
+            this.onLedge = false;
+            break;
+        /* TODO: Direction.left and Direction.right */
+        }
+    }
+
+    private void tryMoveForward() {
         /* Avoid corner cases by checking before doing anything */
         if ((this.anim & Animation.Move) == Animation.Move)
             return;
 
-        switch (this.facing) {
-        case Direction.back: /* Camera facing */
-            tgtPosition = new UnityEngine.Vector3(0f, 0f, -1f);
-            break;
-        case Direction.front:
-            tgtPosition = new UnityEngine.Vector3(0f, 0f, 1f);
-            break;
-        case Direction.left:
-            tgtPosition = new UnityEngine.Vector3(-1f, 0f, 0f);
-            break;
-        case Direction.right:
-            tgtPosition = new UnityEngine.Vector3(1f, 0f, 0f);
-            break;
-        default:
-            tgtPosition = new UnityEngine.Vector3(0f, 0f, 0f);
-            break;
-        }
+        UnityEngine.Vector3 tgtPosition = this.getForwardVector(this.facing);
 
         /* Compound the movement by looking at the surroundings */
         if (this.collisionTracker[RelPos.Front.toIdx()] > 0) {
@@ -130,6 +150,32 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                 /* There's a floor bellow; Jump toward it */
                 tgtPosition.y = -1f;
                 this.StartCoroutine(this.move(tgtPosition));
+            }
+            else {
+                Direction newDir;
+
+                /* Fall to the ledge! */
+                tgtPosition.y = -1f;
+                switch (this.facing) {
+                case Direction.back:
+                    newDir = Direction.front;
+                    break;
+                case Direction.front:
+                    newDir = Direction.back;
+                    break;
+                case Direction.left:
+                    newDir = Direction.right;
+                    break;
+                case Direction.right:
+                    newDir = Direction.left;
+                    break;
+                default:
+                    newDir = Direction.none;
+                    break;
+                }
+                this.StartCoroutine(this.turn(newDir));
+                this.StartCoroutine(this.move(tgtPosition));
+                this.onLedge = true;
             }
         }
     }
@@ -254,12 +300,14 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         if (this.anim != Animation.None)
             /* Ignore inputs unless stopped */
             return;
+
+        Direction newDir = this.getInputDirection();
+        if (this.onLedge)
+            this.tryMoveLedge(newDir);
         else if (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
             /* Start falling if there's nothing bellow */
             this.StartCoroutine(this.fall());
-
-        Direction newDir = this.getInputDirection();
-        if (newDir != Direction.none)
+        else if (newDir != Direction.none)
             if (this.facing != newDir)
                 this.StartCoroutine(this.turn(newDir));
             else
