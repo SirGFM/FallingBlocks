@@ -1,12 +1,13 @@
 ﻿using RelPos = ReportRelativeCollision.RelativePosition;
 
 public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
-    /** List of directions the player may face (in camera space) */
+    /** List of directions the player may face (in camera space),
+     * sorted clock-wise. */
     private enum Direction {
         none  = 0x0,
         back  = 0x1, /* Camera facing */
-        front = 0x2,
-        left  = 0x4,
+        left  = 0x2,
+        front = 0x4,
         right = 0x8
     };
     private enum Animation {
@@ -105,12 +106,49 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         }
     }
 
+    private Direction localDirToGlobal(Direction dir) {
+        switch (this.facing) {
+        case Direction.front:
+            return dir;
+        case Direction.back:
+            return rotateCwDirection(rotateCwDirection(dir));
+        case Direction.left:
+            return rotateCcwDirection(dir);
+        case Direction.right:
+            return rotateCwDirection(dir);
+        }
+        return dir;
+    }
+
+    private Direction rotateCwDirection(Direction dir) {
+        int idir = (int)dir;
+        if ((idir << 1) > 0xf)
+            return (Direction)0x1;
+        return (Direction)(idir << 1);
+    }
+
+    private Direction getCwDirection() {
+        return rotateCwDirection(this.facing);
+    }
+
+    private Direction rotateCcwDirection(Direction dir) {
+        int idir = (int)dir;
+        if ((idir >> 1) == 0x0)
+            return (Direction)0x8;
+        return (Direction)(idir >> 1);
+    }
+
+    private Direction getCcwDirection() {
+        return rotateCcwDirection(this.facing);
+    }
+
     private void tryMoveLedge(Direction moveDir) {
+        UnityEngine.Vector3 tgtPosition;
+
         switch (moveDir) {
         case Direction.front:
             /* Move up, if there's enough room */
             if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0) {
-                UnityEngine.Vector3 tgtPosition;
                 tgtPosition = this.getForwardVector(this.facing);
                 tgtPosition.y = 1f;
                 this.StartCoroutine(this.move(tgtPosition));
@@ -121,7 +159,48 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             /* Simply start to fall */
             this.onLedge = false;
             break;
-        /* TODO: Direction.left and Direction.right */
+        case Direction.right:
+        case Direction.left: {
+            RelPos dir;
+            Direction innerTurn, outerTurn;
+            bool isWall, isOuter, isInner;
+
+            /* XXX: C# doesn't allow fallthrough if there's code between the
+             * two case (unless you use a goto)... */
+            if (moveDir == Direction.right) {
+                dir = RelPos.Right;
+                innerTurn = this.getCwDirection();
+                outerTurn = this.getCcwDirection();
+            }
+            else {
+                dir = RelPos.Left;
+                innerTurn = this.getCcwDirection();
+                outerTurn = this.getCwDirection();
+            }
+
+            isWall = (this.collisionTracker[dir.toIdx()] == 0) &&
+                    (this.collisionTracker[(RelPos.Front | dir).toIdx()] > 0);
+            isOuter = (this.collisionTracker[dir.toIdx()] == 0) &&
+                    (this.collisionTracker[(RelPos.Front | dir).toIdx()] == 0);
+            isInner = (this.collisionTracker[dir.toIdx()] > 0);
+
+            if (isWall &&
+                    this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
+                tgtPosition = this.getForwardVector(localDirToGlobal(moveDir));
+                this.StartCoroutine(this.move(tgtPosition));
+            }
+            else if (isOuter &&
+                    this.collisionTracker[(RelPos.FrontTopSomething | dir).toIdx()] == 0 &&
+                    this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
+                tgtPosition = this.getForwardVector(localDirToGlobal(moveDir));
+                tgtPosition += this.getForwardVector(localDirToGlobal(Direction.front));
+                this.StartCoroutine(this.move(tgtPosition));
+                this.StartCoroutine(this.turn(outerTurn));
+            }
+            else if (isInner) {
+                this.StartCoroutine(this.turn(innerTurn));
+            }
+        } break;
         }
     }
 
@@ -289,9 +368,9 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         UnityEngine.Vector3 tmp = this.transform.eulerAngles;
         this.transform.eulerAngles = new UnityEngine.Vector3(tmp.x, tgtAngle, tmp.z);
         this.facing = d;
-        /* If still holding on the same direction, buffer a movement */
-        if (d == this.getInputDirection())
-            this.tryMoveForward();
+        /* XXX: Wait some extra time to update the collision, otherwise next
+         * frame's movement may break */
+        yield return new UnityEngine.WaitForFixedUpdate();
         this.anim &= ~Animation.Turn;
     }
 
