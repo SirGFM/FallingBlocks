@@ -35,6 +35,9 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
     /** Reference to the object's rigid body */
     private UnityEngine.Rigidbody rb;
 
+    /** Maximum allowed fall speed */
+    public float MaxFallSpeed = -4.5f;
+
     void Start() {
         this.rb = this.GetComponent<UnityEngine.Rigidbody>();
         if (this.rb == null)
@@ -78,6 +81,12 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
         EvSys.ExecuteEvents.ExecuteHierarchy<iDetectFall>(
                 this.gameObject, null, (x,y)=>x.OnFinishFalling());
         this.isFalling = false;
+    }
+
+    void FixedUpdate() {
+        Vec3 v = this.rb.velocity;
+        if (v.y < this.MaxFallSpeed)
+            this.rb.velocity = new Vec3(v.x, this.MaxFallSpeed, v.z);
     }
 
     public void Fall() {
