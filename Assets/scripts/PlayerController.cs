@@ -2,7 +2,7 @@
 using EvSys = UnityEngine.EventSystems;
 using RelPos = ReportRelativeCollision.RelativePosition;
 
-public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTiledMoved {
+public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTiledMoved, iTurned {
     private enum Animation {
         None  = 0x0,
         Stand = 0x1,
@@ -22,11 +22,6 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     private int[] collisionTracker;
     /** Reference to the object's rigid body */
     private UnityEngine.Rigidbody rb;
-
-    /** How long to delay movement after a turn */
-    public float TurnDelay = 0.3f;
-    /** How long move a square takes */
-    public float MoveDelay = 0.6f;
 
     // Start is called before the first frame update
     void Start() {
@@ -117,11 +112,12 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         this.gameObject, null, (x,y)=>x.Move(d));
 
-                this.StartCoroutine(this.turn(outerTurn));
+                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, outerTurn));
             }
-            else if (isInner) {
-                this.StartCoroutine(this.turn(innerTurn));
-            }
+            else if (isInner)
+                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, innerTurn));
         } break;
         }
     }
@@ -178,7 +174,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                 Dir d = this.facing | Dir.bottom;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         this.gameObject, null, (x,y)=>x.Move(d));
-                this.StartCoroutine(this.turn(newDir));
+                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir));
                 this.onLedge = true;
             }
         }
@@ -218,87 +215,6 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         this.anim &= ~Animation.Fall;
     }
 
-    /**
-     * Animate the rotation from the current orientation to 'd'.
-     */
-    private System.Collections.IEnumerator turn(Dir d) {
-        float tgtAngle, dtAngle;
-        int steps;
-
-        this.anim |= Animation.Turn;
-
-        switch ((int)this.facing | ((int)d << 4)) {
-        case (int)Dir.back | ((int)Dir.front << 4):
-            tgtAngle = 180f;
-            dtAngle = 180f;
-            break;
-        case (int)Dir.back | ((int)Dir.left << 4):
-            tgtAngle = 90f;
-            dtAngle = 90f;
-            break;
-        case (int)Dir.back | ((int)Dir.right << 4):
-            tgtAngle = -90f;
-            dtAngle = -90f;
-            break;
-        case (int)Dir.front | ((int)Dir.back << 4):
-            tgtAngle = 0f;
-            dtAngle = 180f;
-            break;
-        case (int)Dir.front | ((int)Dir.left << 4):
-            tgtAngle = 90f;
-            dtAngle = -90f;
-            break;
-        case (int)Dir.front | ((int)Dir.right << 4):
-            tgtAngle = -90f;
-            dtAngle = 90f;
-            break;
-        case (int)Dir.left | ((int)Dir.front << 4):
-            tgtAngle = 180f;
-            dtAngle = 90f;
-            break;
-        case (int)Dir.left | ((int)Dir.back << 4):
-            tgtAngle = 0f;
-            dtAngle = -90f;
-            break;
-        case (int)Dir.left | ((int)Dir.right << 4):
-            tgtAngle = -90f;
-            dtAngle = 180f;
-            break;
-        case (int)Dir.right | ((int)Dir.front << 4):
-            tgtAngle = 180f;
-            dtAngle = -90f;
-            break;
-        case (int)Dir.right | ((int)Dir.back << 4):
-            tgtAngle = 0f;
-            dtAngle = 90f;
-            break;
-        case (int)Dir.right | ((int)Dir.left << 4):
-            tgtAngle = 90f;
-            dtAngle = 180f;
-            break;
-        default:
-            tgtAngle = this.transform.eulerAngles.y;
-            dtAngle = 0f;
-            break;
-        }
-        steps = (int)(this.TurnDelay / UnityEngine.Time.fixedDeltaTime);
-        dtAngle /= (float)steps;
-
-        UnityEngine.Vector3 axis = new UnityEngine.Vector3(0, 1, 0);
-        for (int i = 0; i < steps; i++) {
-            this.transform.Rotate(axis, dtAngle * (i / (float)steps) * 2f);
-            yield return new UnityEngine.WaitForFixedUpdate();
-        }
-
-        UnityEngine.Vector3 tmp = this.transform.eulerAngles;
-        this.transform.eulerAngles = new UnityEngine.Vector3(tmp.x, tgtAngle, tmp.z);
-        this.facing = d;
-        /* XXX: Wait some extra time to update the collision, otherwise next
-         * frame's movement may break */
-        yield return new UnityEngine.WaitForFixedUpdate();
-        this.anim &= ~Animation.Turn;
-    }
-
     // Update is called once per frame
     void Update() {
         if (this.anim != Animation.None)
@@ -313,7 +229,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             this.StartCoroutine(this.fall());
         else if (newDir != Dir.none)
             if (this.facing != newDir)
-                this.StartCoroutine(this.turn(newDir));
+                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir));
             else
                 this.tryMoveForward();
     }
@@ -332,5 +249,14 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
     public void OnFinishMovement(Dir d) {
         this.anim &= ~Animation.Move;
+    }
+
+    public void OnStartTurning(Dir d) {
+        this.anim |= Animation.Turn;
+    }
+
+    public void OnFinishTurning(Dir d) {
+        this.anim &= ~Animation.Turn;
+        this.facing = d;
     }
 }
