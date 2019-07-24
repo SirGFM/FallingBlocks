@@ -2,7 +2,7 @@
 using EvSys = UnityEngine.EventSystems;
 using RelPos = ReportRelativeCollision.RelativePosition;
 
-public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTiledMoved, iTurned {
+public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTiledMoved, iTurned, iDetectFall {
     private enum Animation {
         None  = 0x0,
         Stand = 0x1,
@@ -20,20 +20,11 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
     /** Keep track of collisions on the object's surroundings */
     private int[] collisionTracker;
-    /** Reference to the object's rigid body */
-    private UnityEngine.Rigidbody rb;
 
     // Start is called before the first frame update
     void Start() {
         this.facing = Dir.back;
         this.transform.eulerAngles = new UnityEngine.Vector3(0f, 0f, 0f);
-
-        this.rb = this.GetComponent<UnityEngine.Rigidbody>();
-        if (this.rb == null)
-            this.rb = this.gameObject.AddComponent<UnityEngine.Rigidbody>();
-        this.rb.isKinematic = true;
-        this.rb.useGravity = false;
-        this.rb.constraints = UnityEngine.RigidbodyConstraints.FreezeRotationX | UnityEngine.RigidbodyConstraints.FreezeRotationZ;
 
         RelPos p = 0;
         this.collisionTracker = new int[p.count()];
@@ -181,40 +172,6 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         }
     }
 
-    /**
-     * Retrieve the next vertical position aligned to the grid.
-     */
-    private float getGridAlignedY() {
-        return (float)System.Math.Floor(this.transform.localPosition.y);
-    }
-
-    /**
-     * Animate falling until there's a block bellow
-     */
-    private System.Collections.IEnumerator fall() {
-        UnityEngine.Vector3 tmp;
-        float newY;
-
-        this.anim |= Animation.Fall;
-        this.rb.isKinematic = false;
-        this.rb.useGravity = true;
-
-        while (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
-            yield return new UnityEngine.WaitForFixedUpdate();
-
-        /* Align to the grid */
-        newY = this.getGridAlignedY();
-        while (this.transform.localPosition.y > newY)
-            yield return new UnityEngine.WaitForFixedUpdate();
-
-        tmp = this.transform.localPosition;
-        this.transform.localPosition = new UnityEngine.Vector3(tmp.x, newY, tmp.z);
-
-        this.rb.isKinematic = true;
-        this.rb.useGravity = false;
-        this.anim &= ~Animation.Fall;
-    }
-
     // Update is called once per frame
     void Update() {
         if (this.anim != Animation.None)
@@ -226,7 +183,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             this.tryMoveLedge(newDir);
         else if (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
             /* Start falling if there's nothing bellow */
-            this.StartCoroutine(this.fall());
+            EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                    this.gameObject, null, (x,y)=>x.Fall());
         else if (newDir != Dir.none)
             if (this.facing != newDir)
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
@@ -236,7 +194,12 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     }
 
     public void OnEnterRelativeCollision(RelPos p, UnityEngine.Collider c) {
-        this.collisionTracker[p.toIdx()]++;
+        int idx = p.toIdx();
+        this.collisionTracker[idx]++;
+        if (p == RelPos.Bottom && this.collisionTracker[idx] == 1 &&
+                (this.anim & Animation.Fall) == Animation.Fall)
+            EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                    this.gameObject, null, (x,y)=>x.Halt());
     }
 
     public void OnExitRelativeCollision(RelPos p, UnityEngine.Collider c) {
@@ -258,5 +221,13 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     public void OnFinishTurning(Dir d) {
         this.anim &= ~Animation.Turn;
         this.facing = d;
+    }
+
+    public void OnStartFalling() {
+        this.anim |= Animation.Fall;
+    }
+
+    public void OnFinishFalling() {
+        this.anim &= ~Animation.Fall;
     }
 }

@@ -12,13 +12,13 @@ public interface iTurning : EvSys.IEventSystemHandler {
 
 public interface iTurned : EvSys.IEventSystemHandler {
     /**
-     * Signal the the entity started to rotate toward the given direction
+     * Signal that the entity started to rotate toward the given direction
      * (in world-space).
      */
     void OnStartTurning(Dir d);
 
     /**
-     * Signal the the entity finished rotating toward the given direction
+     * Signal that the entity finished rotating toward the given direction
      * (in world-space).
      */
     void OnFinishTurning(Dir d);
