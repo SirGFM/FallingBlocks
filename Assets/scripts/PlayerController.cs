@@ -1,14 +1,16 @@
 ﻿using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using RelPos = ReportRelativeCollision.RelativePosition;
+using Vec3 = UnityEngine.Vector3;
 
 public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTiledMoved, iTurned, iDetectFall {
     private enum Animation {
-        None  = 0x0,
-        Stand = 0x1,
-        Turn  = 0x2,
-        Move  = 0x4,
-        Fall  = 0x8,
+        None  = 0x00,
+        Stand = 0x01,
+        Turn  = 0x02,
+        Move  = 0x04,
+        Fall  = 0x08,
+        Push  = 0x10,
     };
 
     /** Currently facing direction */
@@ -17,9 +19,10 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     private Animation anim;
     /** Whether we are currently holding onto an ledge */
     private bool onLedge;
-
     /** Keep track of collisions on the object's surroundings */
     private int[] collisionTracker;
+    /** Block right in front of the player (in local space), that may be moved */
+    private UnityEngine.GameObject frontBlock;
 
     // Start is called before the first frame update
     void Start() {
@@ -31,6 +34,71 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
         this.anim = Animation.None;
         this.onLedge = false;
+    }
+
+    private bool shouldHoldBlock() {
+        return UnityEngine.Input.GetAxisRaw("Action") > 0.5;
+    }
+
+    private void tryPushBlock(Dir movingDir) {
+        /* Check get the block in front of the player, or any adjacent */
+        if (this.frontBlock == null) {
+            /* If there's no block adjacent to the player, try to rotate to the
+             * closest one and stop */
+            Dir turnDir = Dir.none;
+            if (this.collisionTracker[RelPos.Front.toIdx()] > 0)
+                turnDir = Dir.front.toLocal(this.facing);
+            else if (this.collisionTracker[RelPos.Right.toIdx()] > 0)
+                turnDir = Dir.right.toLocal(this.facing);
+            else if (this.collisionTracker[RelPos.Left.toIdx()] > 0)
+                turnDir = Dir.left.toLocal(this.facing);
+            else if (this.collisionTracker[RelPos.Back.toIdx()] > 0)
+                turnDir = Dir.back.toLocal(this.facing);
+
+            if (turnDir != Dir.none) {
+                float newAngle = 0.0f;
+                switch (turnDir) {
+                case Dir.front:
+                    newAngle = 180.0f;
+                    break;
+                case Dir.right:
+                    newAngle = -90.0f;
+                    break;
+                case Dir.left:
+                    newAngle = 90.0f;
+                    break;
+                case Dir.back:
+                    newAngle = 0.0f;
+                    break;
+                }
+                Vec3 tmp = this.transform.eulerAngles;
+                this.transform.eulerAngles = new Vec3(tmp.x, newAngle, tmp.z);
+                this.facing = turnDir;
+            }
+
+            return;
+        }
+
+        Dir back = this.facing.rotateClockWise().rotateClockWise();
+        if (movingDir == this.facing) {
+            /* Push the block */
+            EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
+                    this.frontBlock, null, (x,y)=>x.Move(this.facing));
+            /* TODO: Push other blocks */
+        }
+        else if (this.collisionTracker[RelPos.Back.toIdx()] == 0 &&
+                movingDir == back) {
+            /* Pull the block */
+            EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
+                    this.gameObject, null, (x,y)=>x.Move(back));
+            EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
+                    this.frontBlock, null, (x,y)=>x.Move(back));
+            /* Check if should ledge */
+            if (this.collisionTracker[RelPos.BottomBack.toIdx()] == 0) {
+                this.anim |= Animation.Push;
+                this.onLedge = true;
+            }
+        }
     }
 
     /**
@@ -185,6 +253,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             /* Start falling if there's nothing bellow */
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
                     this.gameObject, null, (x,y)=>x.Fall());
+        else if (this.shouldHoldBlock())
+            this.tryPushBlock(newDir);
         else if (newDir != Dir.none)
             if (this.facing != newDir)
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
@@ -200,10 +270,14 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                 (this.anim & Animation.Fall) == Animation.Fall)
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
                     this.gameObject, null, (x,y)=>x.Halt());
+        else if (p == RelPos.Front)
+            frontBlock = c.gameObject;
     }
 
     public void OnExitRelativeCollision(RelPos p, UnityEngine.Collider c) {
         this.collisionTracker[p.toIdx()]--;
+        if (p == RelPos.Front && this.collisionTracker[p.toIdx()] == 0)
+            frontBlock = null;
     }
 
     public void OnStartMovement(Dir d) {
@@ -212,6 +286,12 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
     public void OnFinishMovement(Dir d) {
         this.anim &= ~Animation.Move;
+        /* TODO: Detect animation from block */
+        if (this.onLedge && (this.anim & Animation.Push) == Animation.Push) {
+            this.anim &= ~Animation.Push;
+            EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
+                    this.gameObject, null, (x,y)=>x.Move(Dir.bottom));
+        }
     }
 
     public void OnStartTurning(Dir d) {
