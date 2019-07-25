@@ -50,9 +50,9 @@ public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
         }
         this.transform.localPosition = finalPosition;
 
+        this.isMoving = false;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMoved>(
                 this.gameObject, null, (x,y)=>x.OnFinishMovement(d));
-        this.isMoving = false;
     }
 
     public void Move(Dir d) {

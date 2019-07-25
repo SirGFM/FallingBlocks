@@ -57,9 +57,9 @@ public class Turning : UnityEngine.MonoBehaviour, iTurning {
          * break */
         yield return new UnityEngine.WaitForFixedUpdate();
 
+        this.isTurning = false;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTurned>(
                 this.gameObject, null, (x,y)=>x.OnFinishTurning(to));
-        this.isTurning = false;
     }
 
     public void Turn(Dir from, Dir to) {

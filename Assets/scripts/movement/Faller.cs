@@ -78,9 +78,9 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
         this.rb.isKinematic = true;
         this.rb.useGravity = false;
 
+        this.isFalling = false;
         EvSys.ExecuteEvents.ExecuteHierarchy<iDetectFall>(
                 this.gameObject, null, (x,y)=>x.OnFinishFalling());
-        this.isFalling = false;
     }
 
     void FixedUpdate() {
