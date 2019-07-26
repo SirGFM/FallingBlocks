@@ -72,11 +72,11 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
         while (this.transform.localPosition.y > this.newAlignedY)
             yield return new UnityEngine.WaitForFixedUpdate();
 
-        Vec3 tmp = this.transform.localPosition;
-        this.transform.localPosition = new Vec3(tmp.x, this.newAlignedY, tmp.z);
-
         this.rb.isKinematic = true;
         this.rb.useGravity = false;
+
+        Vec3 tmp = this.transform.localPosition;
+        this.transform.localPosition = new Vec3(tmp.x, this.newAlignedY, tmp.z);
 
         this.isFalling = false;
         EvSys.ExecuteEvents.ExecuteHierarchy<iDetectFall>(
