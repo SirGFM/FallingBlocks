@@ -1,5 +1,6 @@
 ﻿using EvSys = UnityEngine.EventSystems;
 using Dir = Movement.Direction;
+using GO = UnityEngine.GameObject;
 using Vec3 = UnityEngine.Vector3;
 using Time = UnityEngine.Time;
 
@@ -7,7 +8,7 @@ public interface iTiledMovement : EvSys.IEventSystemHandler {
     /**
      * Move the entity in a given direction, in world-space.
      */
-    void Move(Dir d);
+    void Move(Dir d, GO caller);
 }
 
 public interface iTiledMoved : EvSys.IEventSystemHandler {
@@ -15,18 +16,20 @@ public interface iTiledMoved : EvSys.IEventSystemHandler {
      * Signal the the entity started to move in the given direction
      * (in world-space).
      */
-    void OnStartMovement(Dir d);
+    void OnStartMovement(Dir d, GO callee);
 
     /**
      * Signal the the entity finished moving in the given direction
      * (in world-space).
      */
-    void OnFinishMovement(Dir d);
+    void OnFinishMovement(Dir d, GO callee);
 }
 
 public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
     /** Whether the object is currently moving. */
     private bool isMoving = false;
+    /** Object that actually issued the event */
+    private GO caller = null;
 
     /** How long moving a tile takes */
     public float MoveDelay = 0.6f;
@@ -37,7 +40,7 @@ public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
     private System.Collections.IEnumerator move(Vec3 tgtPosition, Dir d) {
         this.isMoving = true;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMoved>(
-                this.gameObject, null, (x,y)=>x.OnStartMovement(d));
+                this.caller, null, (x,y)=>x.OnStartMovement(d, this.gameObject));
 
         int steps = (int)(this.MoveDelay / Time.fixedDeltaTime);
         Vec3 dtMovement = tgtPosition / (float)steps;
@@ -52,10 +55,10 @@ public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
 
         this.isMoving = false;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMoved>(
-                this.gameObject, null, (x,y)=>x.OnFinishMovement(d));
+                this.caller, null, (x,y)=>x.OnFinishMovement(d, this.gameObject));
     }
 
-    public void Move(Dir d) {
+    public void Move(Dir d, GO caller) {
         if (this.isMoving)
             return;
 
@@ -85,6 +88,8 @@ public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
             } /* switch */
             tmp = (Dir)(((int)tmp) & ~i);
         } /* for */
+
+        this.caller = caller;
         this.StartCoroutine(this.move(tgtPosition, d));
     }
 }

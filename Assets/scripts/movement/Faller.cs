@@ -1,28 +1,29 @@
 ﻿using EvSys = UnityEngine.EventSystems;
+using GO = UnityEngine.GameObject;
 using Vec3 = UnityEngine.Vector3;
 
 public interface iSignalFall : EvSys.IEventSystemHandler {
     /**
      * Start falling.
      */
-    void Fall();
+    void Fall(GO caller);
 
     /**
      * Signal the entity to stop falling, aligned to the grid.
      */
-    void Halt();
+    void Halt(GO caller);
 }
 
 public interface iDetectFall : EvSys.IEventSystemHandler {
     /**
      * Signal that the entity started falling.
      */
-    void OnStartFalling();
+    void OnStartFalling(GO callee);
 
     /**
      * Signal that the entity has finished falling.
      */
-    void OnFinishFalling();
+    void OnFinishFalling(GO callee);
 }
 
 public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
@@ -34,6 +35,8 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
     private float newAlignedY;
     /** Reference to the object's rigid body */
     private UnityEngine.Rigidbody rb;
+    /** Object that actually issued the event */
+    private GO caller = null;
 
     /** Maximum allowed fall speed */
     public float MaxFallSpeed = -4.5f;
@@ -60,7 +63,7 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
     private System.Collections.IEnumerator fall() {
         this.isFalling = true;
         EvSys.ExecuteEvents.ExecuteHierarchy<iDetectFall>(
-                this.gameObject, null, (x,y)=>x.OnStartFalling());
+                this.caller, null, (x,y)=>x.OnStartFalling(this.gameObject));
 
         this.rb.isKinematic = false;
         this.rb.useGravity = true;
@@ -80,7 +83,7 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
 
         this.isFalling = false;
         EvSys.ExecuteEvents.ExecuteHierarchy<iDetectFall>(
-                this.gameObject, null, (x,y)=>x.OnFinishFalling());
+                this.caller, null, (x,y)=>x.OnFinishFalling(this.gameObject));
     }
 
     void FixedUpdate() {
@@ -89,15 +92,16 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
             this.rb.velocity = new Vec3(v.x, this.MaxFallSpeed, v.z);
     }
 
-    public void Fall() {
+    public void Fall(GO caller) {
         if (this.isFalling)
             return;
 
         this.startAligning = false;
+        this.caller = caller;
         this.StartCoroutine(this.fall());
     }
 
-    public void Halt() {
+    public void Halt(GO caller) {
         if (!this.isFalling)
             return;
 

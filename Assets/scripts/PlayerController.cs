@@ -1,5 +1,6 @@
 ﻿using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
+using GO = UnityEngine.GameObject;
 using RelPos = ReportRelativeCollision.RelativePosition;
 using Vec3 = UnityEngine.Vector3;
 
@@ -23,6 +24,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     private int[] collisionTracker;
     /** Block right in front of the player (in local space), that may be moved */
     private UnityEngine.GameObject frontBlock;
+    /** Number of blocks currently being pushed */
+    private int pushing;
 
     // Start is called before the first frame update
     void Start() {
@@ -34,6 +37,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
         this.anim = Animation.None;
         this.onLedge = false;
+        this.pushing = 0;
     }
 
     private bool shouldHoldBlock() {
@@ -82,22 +86,22 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         Dir back = this.facing.rotateClockWise().rotateClockWise();
         if (movingDir == this.facing) {
             /* Push the block */
+            this.anim |= Animation.Push;
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                    this.frontBlock, null, (x,y)=>x.Move(this.facing));
+                    this.frontBlock, null, (x,y)=>x.Move(this.facing, this.gameObject));
             /* TODO: Push other blocks */
         }
         else if (this.collisionTracker[RelPos.Back.toIdx()] == 0 &&
                 movingDir == back) {
             /* Pull the block */
+            this.anim |= Animation.Push;
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                    this.gameObject, null, (x,y)=>x.Move(back));
+                    this.gameObject, null, (x,y)=>x.Move(back, this.gameObject));
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                    this.frontBlock, null, (x,y)=>x.Move(back));
+                    this.frontBlock, null, (x,y)=>x.Move(back, this.gameObject));
             /* Check if should ledge */
-            if (this.collisionTracker[RelPos.BottomBack.toIdx()] == 0) {
-                this.anim |= Animation.Push;
+            if (this.collisionTracker[RelPos.BottomBack.toIdx()] == 0)
                 this.onLedge = true;
-            }
         }
     }
 
@@ -125,7 +129,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0) {
                 Dir d = this.facing | Dir.top;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
                 this.onLedge = false;
             }
             break;
@@ -162,21 +166,21 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                     this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
                 Dir d = moveDir.toLocal(this.facing);
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
             }
             else if (isOuter &&
                     this.collisionTracker[(RelPos.FrontTopSomething | dir).toIdx()] == 0 &&
                     this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
                 Dir d = moveDir.toLocal(this.facing) | Dir.front.toLocal(this.facing);
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
 
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, outerTurn));
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, outerTurn, this.gameObject));
             }
             else if (isInner)
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, innerTurn));
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, innerTurn, this.gameObject));
         } break;
         }
     }
@@ -194,19 +198,19 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                 /* There's a floor above; Jump toward it */
                 Dir d = this.facing | Dir.top;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
             }
         }
         else {
             if (this.collisionTracker[RelPos.BottomFront.toIdx()] > 0)
                 /* Front is clear and there's footing; Just move forward */
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(this.facing));
+                        this.gameObject, null, (x,y)=>x.Move(this.facing, this.gameObject));
             else if (this.collisionTracker[RelPos.BottomBottomFront.toIdx()] > 0) {
                 /* There's a floor bellow; Jump toward it */
                 Dir d = this.facing | Dir.bottom;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
             }
             else {
                 Dir newDir;
@@ -232,9 +236,9 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
                 Dir d = this.facing | Dir.bottom;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir));
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir, this.gameObject));
                 this.onLedge = true;
             }
         }
@@ -252,13 +256,13 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         else if (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
             /* Start falling if there's nothing bellow */
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                    this.gameObject, null, (x,y)=>x.Fall());
+                    this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
         else if (this.shouldHoldBlock())
             this.tryPushBlock(newDir);
         else if (newDir != Dir.none)
             if (this.facing != newDir)
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir));
+                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir, this.gameObject));
             else
                 this.tryMoveForward();
     }
@@ -269,7 +273,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         if (p == RelPos.Bottom && this.collisionTracker[idx] == 1 &&
                 (this.anim & Animation.Fall) == Animation.Fall)
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                    this.gameObject, null, (x,y)=>x.Halt());
+                    this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
         else if (p == RelPos.Front)
             frontBlock = c.gameObject;
     }
@@ -280,34 +284,41 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             frontBlock = null;
     }
 
-    public void OnStartMovement(Dir d) {
-        this.anim |= Animation.Move;
+    public void OnStartMovement(Dir d, GO callee) {
+        if (callee == this.gameObject)
+            this.anim |= Animation.Move;
+        else
+            this.pushing++;
     }
 
-    public void OnFinishMovement(Dir d) {
-        this.anim &= ~Animation.Move;
-        /* TODO: Detect animation from block */
-        if (this.onLedge && (this.anim & Animation.Push) == Animation.Push) {
-            this.anim &= ~Animation.Push;
-            EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                    this.gameObject, null, (x,y)=>x.Move(Dir.bottom));
+    public void OnFinishMovement(Dir d, GO callee) {
+        if (callee == this.gameObject) {
+            this.anim &= ~Animation.Move;
+            if (this.onLedge && (this.anim & Animation.Push) == Animation.Push)
+                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
+                        this.gameObject, null, (x,y)=>x.Move(Dir.bottom, this.gameObject));
+        }
+        else {
+            this.pushing--;
+            if (this.pushing == 0)
+                this.anim &= ~Animation.Push;
         }
     }
 
-    public void OnStartTurning(Dir d) {
+    public void OnStartTurning(Dir d, GO callee) {
         this.anim |= Animation.Turn;
     }
 
-    public void OnFinishTurning(Dir d) {
+    public void OnFinishTurning(Dir d, GO callee) {
         this.anim &= ~Animation.Turn;
         this.facing = d;
     }
 
-    public void OnStartFalling() {
+    public void OnStartFalling(GO callee) {
         this.anim |= Animation.Fall;
     }
 
-    public void OnFinishFalling() {
+    public void OnFinishFalling(GO callee) {
         this.anim &= ~Animation.Fall;
     }
 }

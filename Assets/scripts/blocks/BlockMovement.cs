@@ -1,4 +1,5 @@
 ﻿using EvSys = UnityEngine.EventSystems;
+using GO = UnityEngine.GameObject;
 
 public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iDetectFall {
     /** Last touched edge (used for effects) */
@@ -20,7 +21,7 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iDetectFall
         bc.size = new UnityEngine.Vector3(0.9f, 0.9f, 0.9f);
 
         EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                this.gameObject, null, (x,y)=>x.Fall());
+                this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
     }
 
     public void OnTouchEdge(EdgeBase.Direction d) {
@@ -29,7 +30,7 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iDetectFall
         if (this.numEdges == 1)
             /* Align the box to the grid and halt if there's at least one box bellow */
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                    this.gameObject, null, (x,y)=>x.Halt());
+                    this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
     }
 
     public void OnReleaseEdge(EdgeBase.Direction d) {
@@ -37,12 +38,12 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iDetectFall
         if (this.numEdges == 0)
             /* Start physics if there isn't any box bellow */
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                    this.gameObject, null, (x,y)=>x.Fall());
+                    this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
     }
 
-    public void OnStartFalling() {
+    public void OnStartFalling(GO callee) {
     }
 
-    public void OnFinishFalling() {
+    public void OnFinishFalling(GO callee) {
     }
 }
