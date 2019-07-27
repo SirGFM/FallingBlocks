@@ -25,11 +25,9 @@ public interface iTiledMoved : EvSys.IEventSystemHandler {
     void OnFinishMovement(Dir d, GO callee);
 }
 
-public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
+public class TiledMovement : BaseRemoteAction, iTiledMovement {
     /** Whether the object is currently moving. */
     private bool isMoving = false;
-    /** Object that actually issued the event */
-    private GO caller = null;
 
     /** How long moving a tile takes */
     public float MoveDelay = 0.6f;
@@ -39,8 +37,7 @@ public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
      */
     private System.Collections.IEnumerator move(Vec3 tgtPosition, Dir d) {
         this.isMoving = true;
-        EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMoved>(
-                this.caller, null, (x,y)=>x.OnStartMovement(d, this.gameObject));
+        this.issueEvent<iTiledMoved>((x,y)=>x.OnStartMovement(d, this.gameObject));
 
         int steps = (int)(this.MoveDelay / Time.fixedDeltaTime);
         Vec3 dtMovement = tgtPosition / (float)steps;
@@ -54,8 +51,7 @@ public class TiledMovement : UnityEngine.MonoBehaviour, iTiledMovement {
         this.transform.localPosition = finalPosition;
 
         this.isMoving = false;
-        EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMoved>(
-                this.caller, null, (x,y)=>x.OnFinishMovement(d, this.gameObject));
+        this.issueEvent<iTiledMoved>((x,y)=>x.OnFinishMovement(d, this.gameObject));
     }
 
     public void Move(Dir d, GO caller) {

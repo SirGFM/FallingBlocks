@@ -25,11 +25,9 @@ public interface iTurned : EvSys.IEventSystemHandler {
     void OnFinishTurning(Dir d, GO callee);
 }
 
-public class Turning : UnityEngine.MonoBehaviour, iTurning {
+public class Turning : BaseRemoteAction, iTurning {
     /** Whether the object is currently turning. */
     private bool isTurning = false;
-    /** Object that actually issued the event */
-    private GO caller = null;
 
     /** How long to delay movement after a turn */
     public float TurnDelay = 0.3f;
@@ -40,8 +38,7 @@ public class Turning : UnityEngine.MonoBehaviour, iTurning {
      */
     private System.Collections.IEnumerator turn(float tgt, float dt, Dir to) {
         this.isTurning = true;
-        EvSys.ExecuteEvents.ExecuteHierarchy<iTurned>(
-                this.caller, null, (x,y)=>x.OnStartTurning(to, this.gameObject));
+        this.issueEvent<iTurned>((x,y)=>x.OnStartTurning(to, this.gameObject));
 
         int steps = (int)(this.TurnDelay / Time.fixedDeltaTime);
         dt /= (float)steps;
@@ -61,8 +58,7 @@ public class Turning : UnityEngine.MonoBehaviour, iTurning {
         yield return new UnityEngine.WaitForFixedUpdate();
 
         this.isTurning = false;
-        EvSys.ExecuteEvents.ExecuteHierarchy<iTurned>(
-                this.caller, null, (x,y)=>x.OnFinishTurning(to, this.gameObject));
+        this.issueEvent<iTurned>((x,y)=>x.OnFinishTurning(to, this.gameObject));
     }
 
     public void Turn(Dir from, Dir to, GO caller) {

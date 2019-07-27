@@ -26,7 +26,7 @@ public interface iDetectFall : EvSys.IEventSystemHandler {
     void OnFinishFalling(GO callee);
 }
 
-public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
+public class Faller : BaseRemoteAction, iSignalFall {
     /** Whether the object is currently falling. */
     private bool isFalling = false;
     /** Whether the object should start aligning itself. */
@@ -35,8 +35,6 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
     private float newAlignedY;
     /** Reference to the object's rigid body */
     private UnityEngine.Rigidbody rb;
-    /** Object that actually issued the event */
-    private GO caller = null;
 
     /** Maximum allowed fall speed */
     public float MaxFallSpeed = -4.5f;
@@ -62,8 +60,7 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
      */
     private System.Collections.IEnumerator fall() {
         this.isFalling = true;
-        EvSys.ExecuteEvents.ExecuteHierarchy<iDetectFall>(
-                this.caller, null, (x,y)=>x.OnStartFalling(this.gameObject));
+        this.issueEvent<iDetectFall>((x,y)=>x.OnStartFalling(this.gameObject));
 
         this.rb.isKinematic = false;
         this.rb.useGravity = true;
@@ -82,8 +79,7 @@ public class Faller : UnityEngine.MonoBehaviour, iSignalFall {
         this.transform.localPosition = new Vec3(tmp.x, this.newAlignedY, tmp.z);
 
         this.isFalling = false;
-        EvSys.ExecuteEvents.ExecuteHierarchy<iDetectFall>(
-                this.caller, null, (x,y)=>x.OnFinishFalling(this.gameObject));
+        this.issueEvent<iDetectFall>((x,y)=>x.OnFinishFalling(this.gameObject));
     }
 
     void FixedUpdate() {
