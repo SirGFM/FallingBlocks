@@ -1,11 +1,14 @@
-﻿using EvSys = UnityEngine.EventSystems;
+﻿using Dir = Movement.Direction;
+using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 
-public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iDetectFall {
+public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved, iDetectFall {
     /** Last touched edge (used for effects) */
     private EdgeBase.Direction lastEdge;
     /** How many edges are currently touching this block */
     private int numEdges = 0;
+    /** Reference to the object's faller */
+    private Faller fall;
 
     /**
      * Start is called before the first frame update.
@@ -19,6 +22,10 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iDetectFall
         if (bc == null)
             bc = this.gameObject.AddComponent<UnityEngine.BoxCollider>();
         bc.size = new UnityEngine.Vector3(0.9f, 0.9f, 0.9f);
+
+        this.fall = this.gameObject.GetComponent<Faller>();
+        if (this.fall == null)
+            throw new System.Exception("Faller not found in BlockMovement");
 
         EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
                 this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
@@ -39,6 +46,14 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iDetectFall
             /* Start physics if there isn't any box bellow */
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
                     this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+    }
+
+    public void OnStartMovement(Dir d, GO callee) {
+        this.fall.block();
+    }
+
+    public void OnFinishMovement(Dir d, GO callee) {
+        this.fall.unblock();
     }
 
     public void OnStartFalling(GO callee) {

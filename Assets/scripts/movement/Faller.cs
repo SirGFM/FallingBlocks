@@ -35,6 +35,10 @@ public class Faller : BaseRemoteAction, iSignalFall {
     private float newAlignedY;
     /** Reference to the object's rigid body */
     private UnityEngine.Rigidbody rb;
+    /** Whether falling is currently blocked */
+    private bool blocked;
+    /** Previously started coroutine */
+    private UnityEngine.Coroutine bgFunc;
 
     /** Maximum allowed fall speed */
     public float MaxFallSpeed = -4.5f;
@@ -46,6 +50,9 @@ public class Faller : BaseRemoteAction, iSignalFall {
         this.rb.isKinematic = true;
         this.rb.useGravity = false;
         this.rb.constraints = UnityEngine.RigidbodyConstraints.FreezeRotationX | UnityEngine.RigidbodyConstraints.FreezeRotationZ;
+
+        this.blocked = false;
+        this.bgFunc = null;
     }
 
     /**
@@ -59,6 +66,9 @@ public class Faller : BaseRemoteAction, iSignalFall {
      * Fall until signaled, and then until the object becomes aligned.
      */
     private System.Collections.IEnumerator fall() {
+        while (this.blocked)
+            yield return new UnityEngine.WaitForFixedUpdate();
+
         this.isFalling = true;
         this.issueEvent<iDetectFall>((x,y)=>x.OnStartFalling(this.gameObject));
 
@@ -78,6 +88,7 @@ public class Faller : BaseRemoteAction, iSignalFall {
         Vec3 tmp = this.transform.localPosition;
         this.transform.localPosition = new Vec3(tmp.x, this.newAlignedY, tmp.z);
 
+        this.bgFunc = null;
         this.isFalling = false;
         this.issueEvent<iDetectFall>((x,y)=>x.OnFinishFalling(this.gameObject));
     }
@@ -94,14 +105,28 @@ public class Faller : BaseRemoteAction, iSignalFall {
 
         this.startAligning = false;
         this.caller = caller;
-        this.StartCoroutine(this.fall());
+        this.bgFunc = this.StartCoroutine(this.fall());
     }
 
     public void Halt(GO caller) {
-        if (!this.isFalling)
+        if (this.bgFunc != null && !this.isFalling) {
+            /* If this object was blocked long enough that it didn't even start
+             * falling, simply cancel the action */
+            this.StopCoroutine(this.bgFunc);
+            this.bgFunc = null;
+        }
+        else if (!this.isFalling)
             return;
 
         this.startAligning = true;
         this.newAlignedY = this.getGridAlignedY();
+    }
+
+    public void block() {
+        this.blocked = true;
+    }
+
+    public void unblock() {
+        this.blocked = false;
     }
 }
