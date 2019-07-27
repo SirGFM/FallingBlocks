@@ -1,13 +1,15 @@
-﻿public class DetectEdge : EdgeBase {
+﻿using Container = System.Collections.Generic.HashSet<int>;
+
+public class DetectEdge : EdgeBase {
 
     /** List of colliders directly above this one */
-    private System.Collections.Generic.List<int> colliders;
+    private Container colliders;
 
     /**
      * Start is called before the first frame update.
      */
     void Start() {
-        this.colliders = new System.Collections.Generic.List<int>();
+        this.colliders = new Container();
 
         this.setupRigidbody();
 
@@ -24,7 +26,7 @@
         /* XXX: Layer should ensure c is a ReportTopEdge */
 
         /* Ignore if already in the list */
-        if (colliders.IndexOf(c.GetInstanceID()) != -1)
+        if (colliders.Contains(c.GetInstanceID()))
             return;
         colliders.Add(c.GetInstanceID());
 
@@ -40,7 +42,7 @@
         /* XXX: Layer should ensure c is a ReportTopEdge */
 
         /* Ignore if already removed from the list */
-        if (colliders.IndexOf(c.GetInstanceID()) == -1)
+        if (!colliders.Contains(c.GetInstanceID()))
             return;
         colliders.Remove(c.GetInstanceID());
 
