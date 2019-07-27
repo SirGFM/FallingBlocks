@@ -50,6 +50,11 @@ public class TiledMovement : BaseRemoteAction, iTiledMovement {
         }
         this.transform.localPosition = finalPosition;
 
+        /* XXX: Wait some extra time (so the collision updates) to signal that
+         * this entity finished turning. Otherwise, next frame's movement may
+         * break */
+        yield return new UnityEngine.WaitForFixedUpdate();
+
         this.isMoving = false;
         this.issueEvent<iTiledMoved>((x,y)=>x.OnFinishMovement(d, this.gameObject));
     }

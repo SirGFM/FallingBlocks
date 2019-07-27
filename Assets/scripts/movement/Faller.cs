@@ -88,6 +88,11 @@ public class Faller : BaseRemoteAction, iSignalFall {
         Vec3 tmp = this.transform.localPosition;
         this.transform.localPosition = new Vec3(tmp.x, this.newAlignedY, tmp.z);
 
+        /* XXX: Wait some extra time (so the collision updates) to signal that
+         * this entity finished turning. Otherwise, next frame's movement may
+         * break */
+        yield return new UnityEngine.WaitForFixedUpdate();
+
         this.bgFunc = null;
         this.isFalling = false;
         this.issueEvent<iDetectFall>((x,y)=>x.OnFinishFalling(this.gameObject));

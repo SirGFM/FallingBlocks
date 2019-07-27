@@ -185,10 +185,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                     this.gameObject, null, (x,y)=>x.Move(back, this.gameObject));
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                     this.frontBlock, null, (x,y)=>x.Move(back, this.gameObject));
-            /* Check if should ledge */
-            if (this.collisionTracker[RelPos.BottomBack.toIdx()] == 0)
-                this.onLedge = true;
         }
+        this.onLedge = false;
     }
 
     /**
@@ -338,7 +336,11 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
         Dir newDir = this.getInputDirection();
         if (this.onLedge)
-            this.tryMoveLedge(newDir);
+            if (this.collisionTracker[RelPos.Bottom.toIdx()] != 0 &&
+                    this.shouldHoldBlock())
+                this.tryPushBlock(newDir);
+            else
+                this.tryMoveLedge(newDir);
         else if (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
             /* Start falling if there's nothing bellow */
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
@@ -361,7 +363,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
                     this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
         else if (p == RelPos.Front)
-            frontBlock = c.gameObject;
+            this.frontBlock = c.gameObject;
     }
 
     public void OnExitRelativeCollision(RelPos p, UnityEngine.Collider c) {
@@ -377,12 +379,21 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             this.pushing++;
     }
 
+    public void checkLedgeOnBack() {
+        if ((this.anim & Animation.Move) != 0 || this.onLedge ||
+                this.collisionTracker[RelPos.Bottom.toIdx()] > 0)
+            return;
+
+        GO self = this.gameObject;
+        this.onLedge = true;
+        EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
+                self, null, (x,y)=>x.Move(Dir.bottom, self));
+    }
+
     public void OnFinishMovement(Dir d, GO callee) {
         if (callee == this.gameObject) {
             this.anim &= ~Animation.Move;
-            if (this.onLedge && (this.anim & Animation.Push) == Animation.Push)
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(Dir.bottom, this.gameObject));
+            this.checkLedgeOnBack();
         }
         else {
             this.pushing--;
