@@ -1,6 +1,10 @@
-﻿using Dir = Movement.Direction;
+﻿using Coll = System.Collections.Generic;
+using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
+using Layer = UnityEngine.LayerMask;
+using Math = UnityEngine.Mathf;
+using Phy = UnityEngine.Physics;
 using RelPos = ReportRelativeCollision.RelativePosition;
 using Vec3 = UnityEngine.Vector3;
 
@@ -26,6 +30,10 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     private UnityEngine.GameObject frontBlock;
     /** Number of blocks currently being pushed */
     private int pushing;
+    /** Layer hit by raycasting, used while detecting all adjacent blocks */
+    private int rayLayer;
+    /** Maximum distance for raycasting for adjacent blocks */
+    private const float maxPushDistance = Math.Infinity;
 
     // Start is called before the first frame update
     void Start() {
@@ -38,10 +46,85 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         this.anim = Animation.None;
         this.onLedge = false;
         this.pushing = 0;
+
+        this.rayLayer = Layer.GetMask("Game Model");
     }
 
     private bool shouldHoldBlock() {
         return UnityEngine.Input.GetAxisRaw("Action") > 0.5;
+    }
+
+    private GO[] getSortedBlocksInFront() {
+        UnityEngine.RaycastHit[] objs;
+        Coll.SortedList<float, GO> list;
+        Vec3 origin, direction;
+        GO[] ret;
+        /** Access a Vec3 x, y, z component using 0, 1, 2 respectively */
+        int vec;
+        /** Offset when iterating through the list */
+        int off;
+        /** Number of sequential items in the list */
+        int len;
+
+        list = new Coll.SortedList<float, GO>();
+        origin = this.transform.position;
+        direction = new Vec3();
+
+        switch (this.facing) {
+        case Dir.back:
+            vec = 2;
+            direction.z = -1.0f;
+            break;
+        case Dir.left:
+            vec = 0;
+            direction.x = -1.0f;
+            break;
+        case Dir.front:
+            vec = 2;
+            direction.z = 1.0f;
+            break;
+        case Dir.right:
+            vec = 0;
+            direction.x = 1.0f;
+            break;
+        default:
+            throw new System.Exception("Not facing any direction: *PANIC*");
+        }
+
+        /* At the very least, there must be one object in front of the player.
+         * Retrieve and sort every object found. */
+        objs = Phy.RaycastAll(origin, direction,
+                PlayerController.maxPushDistance, this.rayLayer);
+        foreach (UnityEngine.RaycastHit obj in objs)
+            list.Add(obj.transform.position[vec], obj.transform.gameObject);
+
+        /* Count how many objects are linned sequentially (from either side of
+         * the list) */
+        len = 1;
+        if (this.frontBlock == list.Values[0])
+            off = 0;
+        else
+            off = list.Count;
+
+        for (int i = 1; i < list.Count; i++) {
+            int idx = Math.Abs(off - i);
+            float v1 = list.Values[idx].transform.position[vec];
+            float v2 = list.Values[idx - 1].transform.position[vec];
+            if (1.0f != Math.Abs(v1 - v2))
+                break;
+            len++;
+        }
+
+
+        /* Retrieve every object (in sequence) */
+        if (this.frontBlock != list.Values[0])
+            off = list.Count - 1;
+
+        ret = new GO[len];
+        for (int i = 0; i < len; i++)
+            ret[i] = list.Values[Math.Abs(off - i)];
+
+        return ret;
     }
 
     private void tryPushBlock(Dir movingDir) {
@@ -87,9 +170,12 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         if (movingDir == this.facing) {
             /* Push the block */
             this.anim |= Animation.Push;
-            EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                    this.frontBlock, null, (x,y)=>x.Move(this.facing, this.gameObject));
-            /* TODO: Push other blocks */
+            /* TODO: Get max speed from list */
+            GO[] list = getSortedBlocksInFront();
+            foreach (GO go in list) {
+                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
+                        go, null, (x,y)=>x.Move(this.facing, this.gameObject));
+            }
         }
         else if (this.collisionTracker[RelPos.Back.toIdx()] == 0 &&
                 movingDir == back) {
