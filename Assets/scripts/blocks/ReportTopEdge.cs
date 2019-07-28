@@ -30,7 +30,7 @@
     /**
      * Check if a collider is a block and retrieve its colliding edge.
      */
-    public EdgeBase.Direction getDirection(UnityEngine.Collider c) {
+    virtual public EdgeBase.Direction getDirection(UnityEngine.Collider c) {
         Direction d;
 
         if (!this.id2Direction.TryGetValue(c.GetInstanceID(), out d))
