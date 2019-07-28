@@ -35,6 +35,8 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     /** Maximum distance for raycasting for adjacent blocks */
     private const float maxPushDistance = Math.Infinity;
 
+    public float MoveDelay = 0.4f;
+
     // Start is called before the first frame update
     void Start() {
         this.facing = Dir.back;
@@ -168,23 +170,29 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
         Dir back = this.facing.rotateClockWise().rotateClockWise();
         if (movingDir == this.facing) {
-            /* Push the block */
+            /* Push the block, using the slowest speed */
             this.anim |= Animation.Push;
-            /* TODO: Get max speed from list */
             GO[] list = getSortedBlocksInFront();
+            float speed = 0.0f;
+            foreach (GO go in list) {
+                BlockMovement bm = go.GetComponent<BlockMovement>();
+                speed = Math.Max(speed, bm.MoveDelay);
+            }
+
             foreach (GO go in list) {
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        go, null, (x,y)=>x.Move(this.facing, this.gameObject));
+                        go, null, (x,y)=>x.Move(this.facing, this.gameObject, speed));
             }
         }
         else if (this.collisionTracker[RelPos.Back.toIdx()] == 0 &&
                 movingDir == back) {
             /* Pull the block */
             this.anim |= Animation.Push;
+            BlockMovement bm = this.frontBlock.GetComponent<BlockMovement>();
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                    this.gameObject, null, (x,y)=>x.Move(back, this.gameObject));
+                    this.gameObject, null, (x,y)=>x.Move(back, this.gameObject, bm.MoveDelay));
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                    this.frontBlock, null, (x,y)=>x.Move(back, this.gameObject));
+                    this.frontBlock, null, (x,y)=>x.Move(back, this.gameObject, bm.MoveDelay));
         }
         this.onLedge = false;
     }
@@ -213,7 +221,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
             if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0) {
                 Dir d = this.facing | Dir.top;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
                 this.onLedge = false;
             }
             break;
@@ -250,14 +258,14 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                     this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
                 Dir d = moveDir.toLocal(this.facing);
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
             }
             else if (isOuter &&
                     this.collisionTracker[(RelPos.FrontTopSomething | dir).toIdx()] == 0 &&
                     this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
                 Dir d = moveDir.toLocal(this.facing) | Dir.front.toLocal(this.facing);
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
 
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
                         this.gameObject, null, (x,y)=>x.Turn(this.facing, outerTurn, this.gameObject));
@@ -282,19 +290,19 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                 /* There's a floor above; Jump toward it */
                 Dir d = this.facing | Dir.top;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
             }
         }
         else {
             if (this.collisionTracker[RelPos.BottomFront.toIdx()] > 0)
                 /* Front is clear and there's footing; Just move forward */
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(this.facing, this.gameObject));
+                        this.gameObject, null, (x,y)=>x.Move(this.facing, this.gameObject, this.MoveDelay));
             else if (this.collisionTracker[RelPos.BottomBottomFront.toIdx()] > 0) {
                 /* There's a floor bellow; Jump toward it */
                 Dir d = this.facing | Dir.bottom;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
             }
             else {
                 Dir newDir;
@@ -320,7 +328,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
 
                 Dir d = this.facing | Dir.bottom;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject));
+                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
                         this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir, this.gameObject));
                 this.onLedge = true;
@@ -395,7 +403,7 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         GO self = this.gameObject;
         this.onLedge = true;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                self, null, (x,y)=>x.Move(Dir.bottom, self));
+                self, null, (x,y)=>x.Move(Dir.bottom, self, this.MoveDelay));
     }
 
     public void OnFinishMovement(Dir d, GO callee) {

@@ -8,7 +8,7 @@ public interface iTiledMovement : EvSys.IEventSystemHandler {
     /**
      * Move the entity in a given direction, in world-space.
      */
-    void Move(Dir d, GO caller);
+    void Move(Dir d, GO caller, float moveDelay);
 }
 
 public interface iTiledMoved : EvSys.IEventSystemHandler {
@@ -29,17 +29,14 @@ public class TiledMovement : BaseRemoteAction, iTiledMovement {
     /** Whether the object is currently moving. */
     private bool isMoving = false;
 
-    /** How long moving a tile takes */
-    public float MoveDelay = 0.6f;
-
     /**
      * Move the object to a new position.
      */
-    private System.Collections.IEnumerator move(Vec3 tgtPosition, Dir d) {
+    private System.Collections.IEnumerator move(Vec3 tgtPosition, Dir d, float moveDelay) {
         this.isMoving = true;
         this.issueEvent<iTiledMoved>((x,y)=>x.OnStartMovement(d, this.gameObject));
 
-        int steps = (int)(this.MoveDelay / Time.fixedDeltaTime);
+        int steps = (int)(moveDelay / Time.fixedDeltaTime);
         Vec3 dtMovement = tgtPosition / (float)steps;
         Vec3 finalPosition = this.transform.localPosition + tgtPosition;
 
@@ -59,7 +56,7 @@ public class TiledMovement : BaseRemoteAction, iTiledMovement {
         this.issueEvent<iTiledMoved>((x,y)=>x.OnFinishMovement(d, this.gameObject));
     }
 
-    public void Move(Dir d, GO caller) {
+    public void Move(Dir d, GO caller, float moveDelay) {
         if (this.isMoving)
             return;
 
@@ -91,6 +88,6 @@ public class TiledMovement : BaseRemoteAction, iTiledMovement {
         } /* for */
 
         this.caller = caller;
-        this.StartCoroutine(this.move(tgtPosition, d));
+        this.StartCoroutine(this.move(tgtPosition, d, moveDelay));
     }
 }

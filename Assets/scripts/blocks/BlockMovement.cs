@@ -10,6 +10,9 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
     /** Reference to the object's faller */
     private Faller fall;
 
+    /** How long moving a tile takes */
+    public float MoveDelay = 0.6f;
+
     /**
      * Start is called before the first frame update.
      */

@@ -30,7 +30,7 @@ public class Turning : BaseRemoteAction, iTurning {
     private bool isTurning = false;
 
     /** How long to delay movement after a turn */
-    public float TurnDelay = 0.3f;
+    public float TurnDelay = 0.2f;
 
     /**
      * Rotate toward direction 'to' (i.e., to 'tgt' degrees), rotating 'dt'

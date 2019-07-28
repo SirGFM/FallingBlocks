@@ -311,6 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e88fde9cd8e9b1e87ad58694e340780c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveDelay: 0.4
 --- !u!114 &3832127238801929951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,7 +324,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2093e962f26efbe0fa3bb52d82fb4b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveDelay: 0.6
 --- !u!114 &3425996673016785118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9967d4065879bb9aaf7b449c67be775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TurnDelay: 0.3
+  TurnDelay: 0.2
 --- !u!114 &5919208512463743087
 MonoBehaviour:
   m_ObjectHideFlags: 0
