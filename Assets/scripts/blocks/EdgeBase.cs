@@ -18,6 +18,20 @@
     void OnReleaseEdge(EdgeBase.Direction d);
 }
 
+public interface ActivateOnTop : UnityEngine.EventSystems.IEventSystemHandler {
+    /**
+     * Signals that something got on top of this object. Should really only be
+     * used by the player and by minions, to break cracked blocks.
+     */
+    void OnEnterTop(UnityEngine.GameObject other);
+
+    /**
+     * Signals that something just got off the top of this object. Should really
+     * only be used by the player and by minions, to break cracked blocks.
+     */
+    void OnLeaveTop(UnityEngine.GameObject other);
+}
+
 public class EdgeBase : UnityEngine.MonoBehaviour {
     /** List of collideable edges */
     public enum Direction {

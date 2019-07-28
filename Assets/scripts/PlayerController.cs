@@ -358,10 +358,15 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     public void OnEnterRelativeCollision(RelPos p, UnityEngine.Collider c) {
         int idx = p.toIdx();
         this.collisionTracker[idx]++;
-        if (p == RelPos.Bottom && this.collisionTracker[idx] == 1 &&
-                (this.anim & Animation.Fall) == Animation.Fall)
-            EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                    this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
+        if (p == RelPos.Bottom) {
+            EvSys.ExecuteEvents.ExecuteHierarchy<ActivateOnTop>(
+                    c.gameObject, null, (x,y)=>x.OnEnterTop(this.gameObject));
+            /* Stops falling if there's anything bellow the player */
+            if (this.collisionTracker[idx] == 1 &&
+                    (this.anim & Animation.Fall) == Animation.Fall)
+                EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                        this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
+        }
         else if (p == RelPos.Front)
             this.frontBlock = c.gameObject;
     }
@@ -370,6 +375,9 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         this.collisionTracker[p.toIdx()]--;
         if (p == RelPos.Front && this.collisionTracker[p.toIdx()] == 0)
             frontBlock = null;
+        else if (p == RelPos.Bottom)
+            EvSys.ExecuteEvents.ExecuteHierarchy<ActivateOnTop>(
+                    c.gameObject, null, (x,y)=>x.OnLeaveTop(this.gameObject));
     }
 
     public void OnStartMovement(Dir d, GO callee) {
