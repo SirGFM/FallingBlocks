@@ -32,6 +32,10 @@
         /* TODO Play the breaking animation */
         yield return new UnityEngine.WaitForFixedUpdate();
 
+        /* XXX: Forcefully move the entity away from any close entity before
+         * destroying it, to avoid glitching the physics. */
+        this.transform.position = new UnityEngine.Vector3(0.0f, -10.0f, 0.0f);
+        yield return new UnityEngine.WaitForFixedUpdate();
         UnityEngine.GameObject.Destroy(this.gameObject);
     }
 
