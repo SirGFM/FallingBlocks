@@ -18,8 +18,6 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
         Push  = 0x10,
     };
 
-    /** Currently facing direction */
-    private Dir facing = Dir.back;
     /** Tracks whether we are already running a coroutine */
     private Animation anim;
     /** Whether we are currently holding onto an ledge */
@@ -33,8 +31,6 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
     /** Maximum distance for raycasting for adjacent blocks */
     private const float maxPushDistance = Math.Infinity;
 
-    public float MoveDelay = 0.4f;
-
     // Start is called before the first frame update
     void Start() {
         this.facing = Dir.back;
@@ -43,6 +39,7 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
         this.anim = Animation.None;
         this.onLedge = false;
         this.pushing = 0;
+        this.allowLedgeMovement = true;
 
         this.rayLayer = Layer.GetMask("Game Model");
 
@@ -277,63 +274,12 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
         }
     }
 
-    private void tryMoveForward() {
-        /* Avoid corner cases by checking before doing anything */
-        if ((this.anim & Animation.Move) == Animation.Move)
-            return;
+    override protected bool isMoving() {
+        return (this.anim & Animation.Move) == Animation.Move;
+    }
 
-        /* Compound the movement by looking at the surroundings */
-        if (this.collisionTracker[RelPos.Front.toIdx()] > 0) {
-            /* Something ahead; Try to jump up */
-            if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0 &&
-                    this.collisionTracker[RelPos.Top.toIdx()] == 0) {
-                /* There's a floor above; Jump toward it */
-                Dir d = this.facing | Dir.top;
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
-            }
-        }
-        else {
-            if (this.collisionTracker[RelPos.BottomFront.toIdx()] > 0)
-                /* Front is clear and there's footing; Just move forward */
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(this.facing, this.gameObject, this.MoveDelay));
-            else if (this.collisionTracker[RelPos.BottomBottomFront.toIdx()] > 0) {
-                /* There's a floor bellow; Jump toward it */
-                Dir d = this.facing | Dir.bottom;
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
-            }
-            else {
-                Dir newDir;
-
-                /* Fall to the ledge! */
-                switch (this.facing) {
-                case Dir.back:
-                    newDir = Dir.front;
-                    break;
-                case Dir.front:
-                    newDir = Dir.back;
-                    break;
-                case Dir.left:
-                    newDir = Dir.right;
-                    break;
-                case Dir.right:
-                    newDir = Dir.left;
-                    break;
-                default:
-                    newDir = Dir.none;
-                    break;
-                }
-
-                Dir d = this.facing | Dir.bottom;
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir, this.gameObject));
-                this.onLedge = true;
-            }
-        }
+    override protected void setOnLedge() {
+        this.onLedge = true;
     }
 
     // Update is called once per frame
