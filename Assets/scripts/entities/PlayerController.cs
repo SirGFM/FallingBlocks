@@ -8,7 +8,7 @@ using Phy = UnityEngine.Physics;
 using RelPos = ReportRelativeCollision.RelativePosition;
 using Vec3 = UnityEngine.Vector3;
 
-public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTiledMoved, iTurned, iDetectFall {
+public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFall {
     private enum Animation {
         None  = 0x00,
         Stand = 0x01,
@@ -24,8 +24,6 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
     private Animation anim;
     /** Whether we are currently holding onto an ledge */
     private bool onLedge;
-    /** Keep track of collisions on the object's surroundings */
-    private int[] collisionTracker;
     /** Block right in front of the player (in local space), that may be moved */
     private UnityEngine.GameObject frontBlock;
     /** Number of blocks currently being pushed */
@@ -42,14 +40,13 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
         this.facing = Dir.back;
         this.transform.eulerAngles = new UnityEngine.Vector3(0f, 0f, 0f);
 
-        RelPos p = 0;
-        this.collisionTracker = new int[p.count()];
-
         this.anim = Animation.None;
         this.onLedge = false;
         this.pushing = 0;
 
         this.rayLayer = Layer.GetMask("Game Model");
+
+        this.commonInit();
     }
 
     private bool shouldHoldBlock() {
@@ -363,29 +360,20 @@ public class PlayerController : UnityEngine.MonoBehaviour, OnRelativeCollisionEv
                 this.tryMoveForward();
     }
 
-    public void OnEnterRelativeCollision(RelPos p, UnityEngine.Collider c) {
-        int idx = p.toIdx();
-        this.collisionTracker[idx]++;
-        if (p == RelPos.Bottom) {
-            EvSys.ExecuteEvents.ExecuteHierarchy<ActivateOnTop>(
-                    c.gameObject, null, (x,y)=>x.OnEnterTop(this.gameObject));
-            /* Stops falling if there's anything bellow the player */
-            if (this.collisionTracker[idx] == 1 &&
-                    (this.anim & Animation.Fall) == Animation.Fall)
-                EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                        this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
-        }
-        else if (p == RelPos.Front)
+    override protected bool isFalling() {
+        return (this.anim & Animation.Fall) == Animation.Fall;
+    }
+
+    override protected void _onEnterRelativeCollision(RelPos p,
+            UnityEngine.Collider c) {
+        if (p == RelPos.Front)
             this.frontBlock = c.gameObject;
     }
 
-    public void OnExitRelativeCollision(RelPos p, UnityEngine.Collider c) {
-        this.collisionTracker[p.toIdx()]--;
+    override protected void _onExitRelativeCollision(RelPos p,
+            UnityEngine.Collider c) {
         if (p == RelPos.Front && this.collisionTracker[p.toIdx()] == 0)
             frontBlock = null;
-        else if (p == RelPos.Bottom)
-            EvSys.ExecuteEvents.ExecuteHierarchy<ActivateOnTop>(
-                    c.gameObject, null, (x,y)=>x.OnLeaveTop(this.gameObject));
     }
 
     public void OnStartMovement(Dir d, GO callee) {
