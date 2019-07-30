@@ -47,6 +47,9 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
         this.rayLayer = Layer.GetMask("Game Model");
 
         this.commonInit();
+
+        EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
     }
 
     private bool shouldHoldBlock() {
@@ -346,10 +349,6 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
                 this.tryPushBlock(newDir);
             else
                 this.tryMoveLedge(newDir);
-        else if (this.collisionTracker[RelPos.Bottom.toIdx()] == 0)
-            /* Start falling if there's nothing bellow */
-            EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                    this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
         else if (this.shouldHoldBlock())
             this.tryPushBlock(newDir);
         else if (newDir != Dir.none)
@@ -362,6 +361,10 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
 
     override protected bool isFalling() {
         return (this.anim & Animation.Fall) == Animation.Fall;
+    }
+
+    override protected bool canFall() {
+        return this.anim == Animation.None && !this.onLedge;
     }
 
     override protected void _onEnterRelativeCollision(RelPos p,

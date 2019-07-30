@@ -2,6 +2,8 @@
 using RelPos = ReportRelativeCollision.RelativePosition;
 
 public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
+    /** Previously started coroutine */
+    private UnityEngine.Coroutine bgFunc;
     /** Keep track of collisions on the object's surroundings */
     protected int[] collisionTracker;
 
@@ -12,6 +14,10 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
 
     virtual protected bool isFalling() {
         return false;
+    }
+
+    virtual protected bool canFall() {
+        return true;
     }
 
     virtual protected void _onEnterRelativeCollision(RelPos p,
@@ -33,11 +39,28 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         this._onEnterRelativeCollision(p, c);
     }
 
+    private System.Collections.IEnumerator tryFall() {
+        while (!this.canFall()) {
+            if (this.collisionTracker[RelPos.Bottom.toIdx()] > 0 ||
+                    this.isFalling()) {
+                this.bgFunc = null;
+                yield break;
+            }
+            yield return new UnityEngine.WaitForFixedUpdate();
+        }
+        EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+        this.bgFunc = null;
+    }
+
     public void OnExitRelativeCollision(RelPos p, UnityEngine.Collider c) {
         this.collisionTracker[p.toIdx()]--;
-        if (p == RelPos.Bottom)
+        if (p == RelPos.Bottom) {
             EvSys.ExecuteEvents.ExecuteHierarchy<ActivateOnTop>(
                     c.gameObject, null, (x,y)=>x.OnLeaveTop(this.gameObject));
+            if (this.collisionTracker[p.toIdx()] == 0 && this.bgFunc == null)
+                this.bgFunc = this.StartCoroutine(this.tryFall());
+        }
         this._onExitRelativeCollision(p, c);
     }
 }
