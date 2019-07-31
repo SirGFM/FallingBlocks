@@ -49,7 +49,7 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         /* Compound the movement by looking at the surroundings */
         if (this.collisionTracker[RelPos.Front.toIdx()] > 0) {
             /* Something ahead; Try to jump up */
-            if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0 &&
+            if (this.collisionTracker[RelPos.FrontTop.toIdx()] == 0 &&
                     this.collisionTracker[RelPos.Top.toIdx()] == 0) {
                 /* There's a floor above; Jump toward it */
                 Dir d = this.facing | Dir.top;
@@ -58,7 +58,7 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
             }
         }
         else {
-            if (this.collisionTracker[RelPos.BottomFront.toIdx()] > 0)
+            if (this.collisionTracker[RelPos.FrontBottom.toIdx()] > 0)
                 /* Front is clear and there's footing; Just move forward */
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         this.gameObject, null, (x,y)=>x.Move(this.facing, this.gameObject, this.MoveDelay));

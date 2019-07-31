@@ -215,7 +215,7 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
         switch (moveDir) {
         case Dir.front:
             /* Move up, if there's enough room */
-            if (this.collisionTracker[RelPos.TopFront.toIdx()] == 0) {
+            if (this.collisionTracker[RelPos.FrontTop.toIdx()] == 0) {
                 Dir d = this.facing | Dir.top;
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
@@ -246,20 +246,20 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
             }
 
             isWall = (this.collisionTracker[dir.toIdx()] == 0) &&
-                    (this.collisionTracker[(RelPos.Front | dir).toIdx()] > 0);
+                    (this.collisionTracker[(RelPos.FrontSomething | dir).toIdx()] > 0);
             isOuter = (this.collisionTracker[dir.toIdx()] == 0) &&
-                    (this.collisionTracker[(RelPos.Front | dir).toIdx()] == 0);
+                    (this.collisionTracker[(RelPos.FrontSomething | dir).toIdx()] == 0);
             isInner = (this.collisionTracker[dir.toIdx()] > 0);
 
             if (isWall &&
-                    this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
+                    this.collisionTracker[(RelPos.TopSomething | dir).toIdx()] == 0) {
                 Dir d = moveDir.toLocal(this.facing);
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
             }
             else if (isOuter &&
                     this.collisionTracker[(RelPos.FrontTopSomething | dir).toIdx()] == 0 &&
-                    this.collisionTracker[(RelPos.Top | dir).toIdx()] == 0) {
+                    this.collisionTracker[(RelPos.TopSomething | dir).toIdx()] == 0) {
                 Dir d = moveDir.toLocal(this.facing) | Dir.front.toLocal(this.facing);
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
