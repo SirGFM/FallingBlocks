@@ -107,6 +107,14 @@ public static class RelativePositionMethods {
             return new UnityEngine.Vector3(0.0f, 0.0f, 0.0f);
         }
     }
+
+    public static RelPos shift(this RelPos p) {
+        return (RelPos)(((int)p) >> 8);
+    }
+
+    public static RelPos masked(this RelPos p) {
+        return (RelPos)(((int)p) & 0xff);
+    }
 }
 
 public class ReportRelativeCollision : UnityEngine.MonoBehaviour {
