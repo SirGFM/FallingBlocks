@@ -290,7 +290,10 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
 
         Dir newDir = this.getInputDirection();
         if (this.onLedge)
-            if (this.collisionTracker[RelPos.Bottom.toIdx()] != 0 &&
+            if (this.collisionTracker[RelPos.Front.toIdx()] == 0)
+                /* The block in front of the player just disappeared! */
+                this.onLedge = false;
+            else if (this.collisionTracker[RelPos.Bottom.toIdx()] != 0 &&
                     this.shouldHoldBlock())
                 this.tryPushBlock(newDir);
             else
