@@ -66,6 +66,10 @@ public class Faller : BaseRemoteAction, iSignalFall {
      * Fall until signaled, and then until the object becomes aligned.
      */
     private System.Collections.IEnumerator fall() {
+        /* XXX: Avoids a silly bug when objects are instantiated mid-game */
+        while (this.rb == null)
+            yield return null;
+
         while (this.blocked)
             yield return new UnityEngine.WaitForFixedUpdate();
 
