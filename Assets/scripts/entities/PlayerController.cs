@@ -8,18 +8,7 @@ using Phy = UnityEngine.Physics;
 using RelPos = ReportRelativeCollision.RelativePosition;
 using Vec3 = UnityEngine.Vector3;
 
-public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFall {
-    private enum Animation {
-        None  = 0x00,
-        Stand = 0x01,
-        Turn  = 0x02,
-        Move  = 0x04,
-        Fall  = 0x08,
-        Push  = 0x10,
-    };
-
-    /** Tracks whether we are already running a coroutine */
-    private Animation anim;
+public class PlayerController : BaseController, iTiledMoved {
     /** Whether we are currently holding onto an ledge */
     private bool onLedge;
     /** Block right in front of the player (in local space), that may be moved */
@@ -36,7 +25,6 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
         this.facing = Dir.back;
         this.transform.eulerAngles = new UnityEngine.Vector3(0f, 0f, 0f);
 
-        this.anim = Animation.None;
         this.onLedge = false;
         this.pushing = 0;
         this.allowLedgeMovement = true;
@@ -264,18 +252,12 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
 
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, outerTurn, this.gameObject));
+                this.turn(outerTurn);
             }
             else if (isInner)
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, innerTurn, this.gameObject));
+                this.turn(innerTurn);
         } break;
         }
-    }
-
-    override protected bool isMoving() {
-        return (this.anim & Animation.Move) == Animation.Move;
     }
 
     override protected void setOnLedge() {
@@ -302,14 +284,9 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
             this.tryPushBlock(newDir);
         else if (newDir != Dir.none)
             if (this.facing != newDir)
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir, this.gameObject));
+                this.turn(newDir);
             else
                 this.tryMoveForward();
-    }
-
-    override protected bool isFalling() {
-        return (this.anim & Animation.Fall) == Animation.Fall;
     }
 
     override protected bool canFall() {
@@ -356,22 +333,5 @@ public class PlayerController : BaseController, iTiledMoved, iTurned, iDetectFal
             if (this.pushing == 0)
                 this.anim &= ~Animation.Push;
         }
-    }
-
-    public void OnStartTurning(Dir d, GO callee) {
-        this.anim |= Animation.Turn;
-    }
-
-    public void OnFinishTurning(Dir d, GO callee) {
-        this.anim &= ~Animation.Turn;
-        this.facing = d;
-    }
-
-    public void OnStartFalling(GO callee) {
-        this.anim |= Animation.Fall;
-    }
-
-    public void OnFinishFalling(GO callee) {
-        this.anim &= ~Animation.Fall;
     }
 }

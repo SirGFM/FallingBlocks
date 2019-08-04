@@ -1,9 +1,20 @@
 ﻿using UEColl = UnityEngine.Collider;
 using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
+using GO = UnityEngine.GameObject;
 using RelPos = ReportRelativeCollision.RelativePosition;
 
-public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
+public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTurned, iDetectFall {
+    protected enum Animation {
+        None   = 0x00,
+        Stand  = 0x01,
+        Turn   = 0x02,
+        Move   = 0x04,
+        Fall   = 0x08,
+        Push   = 0x10, /* Player only */
+        Shiver = 0x20, /* Minion only */
+    };
+
     /** Previously started coroutine */
     private UnityEngine.Coroutine bgFunc;
     /** Keep track of collisions on the object's surroundings */
@@ -12,6 +23,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
     protected bool allowLedgeMovement;
     /** Currently facing direction */
     protected Dir facing = Dir.back;
+    /** Tracks whether we are already running a coroutine */
+    protected Animation anim;
 
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
@@ -23,13 +36,14 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
     protected void commonInit() {
         RelPos p = 0;
         this.collisionTracker = new int[p.count()];
+        this.anim = Animation.None;
     }
 
     /**
      * Whether the entity can move right now.
      */
     virtual protected bool isMoving() {
-        return true;
+        return (this.anim & Animation.Move) == Animation.Move;
     }
 
     /**
@@ -104,14 +118,14 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
      * Whether the entity is currently falling.
      */
     virtual protected bool isFalling() {
-        return false;
+        return (this.anim & Animation.Fall) == Animation.Fall;
     }
 
     /**
      * Whether the entity can fall right now.
      */
     virtual protected bool canFall() {
-        return true;
+        return this.anim == Animation.None;
     }
 
     /**
@@ -161,5 +175,28 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
                 this.bgFunc = this.StartCoroutine(this.tryFall());
         }
         this._onExitRelativeCollision(p, c);
+    }
+
+    protected void turn(Dir d) {
+        GO self = this.gameObject;
+        EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
+                self, null, (x,y)=>x.Turn(this.facing, d, self));
+    }
+
+    public void OnStartTurning(Dir d, GO callee) {
+        this.anim |= Animation.Turn;
+    }
+
+    public void OnFinishTurning(Dir d, GO callee) {
+        this.anim &= ~Animation.Turn;
+        this.facing = d;
+    }
+
+    public void OnStartFalling(GO callee) {
+        this.anim |= Animation.Fall;
+    }
+
+    public void OnFinishFalling(GO callee) {
+        this.anim &= ~Animation.Fall;
     }
 }
