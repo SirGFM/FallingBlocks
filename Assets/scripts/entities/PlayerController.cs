@@ -19,6 +19,7 @@ public class PlayerController : BaseController, iTiledMoved {
     private int rayLayer;
     /** Maximum distance for raycasting for adjacent blocks */
     private const float maxPushDistance = Math.Infinity;
+    private const string blockTag = "Block";
 
     // Start is called before the first frame update
     void Start() {
@@ -88,15 +89,24 @@ public class PlayerController : BaseController, iTiledMoved {
         /* Count how many objects are linned sequentially (from either side of
          * the list) */
         len = 1;
-        if (this.frontBlock == list.Values[0])
+        if (this.frontBlock == list.Values[0]) {
             off = 0;
-        else
+            if (list.Values[0].tag != PlayerController.blockTag)
+                return new GO[0];
+        }
+        else {
             off = list.Count;
+            if (list.Values[off - 1].tag != PlayerController.blockTag)
+                return new GO[0];
+        }
 
         for (int i = 1; i < list.Count; i++) {
             int idx = Math.Abs(off - i);
             float v1 = list.Values[idx].transform.position[vec];
             float v2 = list.Values[idx - 1].transform.position[vec];
+            if (list.Values[idx].tag != PlayerController.blockTag ||
+                    list.Values[idx - 1].tag != PlayerController.blockTag)
+                return new GO[0];
             if (1.0f != Math.Abs(v1 - v2))
                 break;
             len++;
@@ -156,8 +166,10 @@ public class PlayerController : BaseController, iTiledMoved {
         Dir back = this.facing.rotateClockWise().rotateClockWise();
         if (movingDir == this.facing) {
             /* Push the block, using the slowest speed */
-            this.anim |= Animation.Push;
             GO[] list = getSortedBlocksInFront();
+            if (list.Length == 0)
+                return;
+            this.anim |= Animation.Push;
             float speed = 0.0f;
             foreach (GO go in list) {
                 BlockMovement bm = go.GetComponent<BlockMovement>();
@@ -172,8 +184,10 @@ public class PlayerController : BaseController, iTiledMoved {
         else if (this.collisionTracker[RelPos.Back.toIdx()] == 0 &&
                 movingDir == back) {
             /* Pull the block */
-            this.anim |= Animation.Push;
             BlockMovement bm = this.frontBlock.GetComponent<BlockMovement>();
+            if (bm == null)
+                return;
+            this.anim |= Animation.Push;
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                     this.gameObject, null, (x,y)=>x.Move(back, this.gameObject, bm.MoveDelay));
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(

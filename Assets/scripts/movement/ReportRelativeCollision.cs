@@ -24,7 +24,7 @@ public interface OnRelativeCollisionEvent : EvSys.IEventSystemHandler {
 public static class RelativePositionMethods {
     /** Retrieve how many itens are in this enumeration. */
     public static int count(this RelPos p) {
-        return 32;
+        return 35;
     }
 
     /** Convert the enumeration to a sequential integer. */
@@ -94,6 +94,12 @@ public static class RelativePositionMethods {
             return 30;
         case RelPos.FrontTopFrontTop:
             return 31;
+        case RelPos.FrontFrontTop:
+            return 32;
+        case RelPos.FrontFrontBottom:
+            return 33;
+        case RelPos.FrontBottomFrontBottom:
+            return 34;
         default:
             return -1;
         }
@@ -130,49 +136,52 @@ public static class RelativePositionMethods {
 public class ReportRelativeCollision : UnityEngine.MonoBehaviour {
     public enum RelativePosition {
         /* Helpers */
-        Mask              = 0x3f,
-        Shift             = 6,
+        Mask                   = 0x3f,
+        Shift                  = 6,
         /* Middle slice */
-        Top               = 0x01,
-        Left              = 0x02,
-        Right             = 0x04,
-        Bottom            = 0x08,
-        TopSomething      = (Top << Shift),
-        BottomSomething   = (Bottom << Shift),
-        TopLeft           = TopSomething | Left,
-        TopRight          = TopSomething | Right,
-        BottomLeft        = BottomSomething | Left,
-        BottomRight       = BottomSomething | Right,
+        Top                    = 0x01,
+        Left                   = 0x02,
+        Right                  = 0x04,
+        Bottom                 = 0x08,
+        TopSomething           = (Top << Shift),
+        BottomSomething        = (Bottom << Shift),
+        TopLeft                = TopSomething | Left,
+        TopRight               = TopSomething | Right,
+        BottomLeft             = BottomSomething | Left,
+        BottomRight            = BottomSomething | Right,
         /* Back slice */
-        Back              = 0x10,
-        BackSomething     = (Back << (Shift * 2)),
-        BackTop           = BackSomething | Top,
-        BackLeft          = BackSomething | Left,
-        BackRight         = BackSomething | Right,
-        BackBottom        = BackSomething | Bottom,
-        BackTopLeft       = BackSomething | TopSomething | Left,
-        BackTopRight      = BackSomething | TopSomething | Right,
-        BackBottomLeft    = BackSomething | BottomSomething | Left,
-        BackBottomRight   = BackSomething | BottomSomething | Right,
+        Back                   = 0x10,
+        BackSomething          = (Back << (Shift * 2)),
+        BackTop                = BackSomething | Top,
+        BackLeft               = BackSomething | Left,
+        BackRight              = BackSomething | Right,
+        BackBottom             = BackSomething | Bottom,
+        BackTopLeft            = BackSomething | TopSomething | Left,
+        BackTopRight           = BackSomething | TopSomething | Right,
+        BackBottomLeft         = BackSomething | BottomSomething | Left,
+        BackBottomRight        = BackSomething | BottomSomething | Right,
         /* Front slice */
-        Front             = 0x20,
-        FrontSomething    = (Front << (Shift * 2)),
-        FrontTop          = FrontSomething | Top,
-        FrontLeft         = FrontSomething | Left,
-        FrontRight        = FrontSomething | Right,
-        FrontBottom       = FrontSomething | Bottom,
-        FrontTopLeft      = FrontSomething | (Top << Shift) | Left,
-        FrontTopRight     = FrontSomething | (Top << Shift) | Right,
-        FrontBottomLeft   = FrontSomething | (Bottom << Shift) | Left,
-        FrontBottomRight  = FrontSomething | (Bottom << Shift) | Right,
+        Front                  = 0x20,
+        FrontSomething         = (Front << (Shift * 2)),
+        FrontTop               = FrontSomething | Top,
+        FrontLeft              = FrontSomething | Left,
+        FrontRight             = FrontSomething | Right,
+        FrontBottom            = FrontSomething | Bottom,
+        FrontTopLeft           = FrontSomething | (Top << Shift) | Left,
+        FrontTopRight          = FrontSomething | (Top << Shift) | Right,
+        FrontBottomLeft        = FrontSomething | (Bottom << Shift) | Left,
+        FrontBottomRight       = FrontSomething | (Bottom << Shift) | Right,
         /* Extra directions */
-        BottomBottomFront = (Bottom << (Shift * 2)) | BottomSomething | Front,
-        FrontTopSomething = FrontSomething | TopSomething,
-        FrontFront        = (Front << (Shift * 2)) | Front,
-        BackBack          = (Back << (Shift * 2)) | Back,
-        LeftLeft          = (Left << (Shift * 2)) | Left,
-        RightRight        = (Right << (Shift * 2)) | Right,
-        FrontTopFrontTop  = (Front << (Shift * 4)) | (Top << (Shift * 3)) | (Front << (Shift * 2)) | Top,
+        BottomBottomFront      = (Bottom << (Shift * 2)) | BottomSomething | Front,
+        FrontTopSomething      = FrontSomething | TopSomething,
+        FrontFront             = (Front << (Shift * 2)) | Front,
+        BackBack               = (Back << (Shift * 2)) | Back,
+        LeftLeft               = (Left << (Shift * 2)) | Left,
+        RightRight             = (Right << (Shift * 2)) | Right,
+        FrontTopFrontTop       = (Front << (Shift * 4)) | (Top << (Shift * 3)) | (Front << (Shift * 2)) | Top,
+        FrontFrontTop          = (Front << (Shift * 3)) | (Front << (Shift * 2)) | Top,
+        FrontFrontBottom       = (Front << (Shift * 3)) | (Front << (Shift * 2)) | Bottom,
+        FrontBottomFrontBottom = (Front << (Shift * 4)) | (Bottom << (Shift * 3)) | (Front << (Shift * 2)) | Bottom,
     }
 
     /** Relative position of this game object in reference to its parent. */

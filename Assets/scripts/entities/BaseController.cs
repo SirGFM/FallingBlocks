@@ -114,6 +114,29 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         }
     }
 
+    protected Dir getRelativeDirection(GO target) {
+        Dir d = Dir.none;
+        UnityEngine.Vector3 self, other;
+
+        self = this.transform.position;
+        other = target.transform.position;
+
+        if (other.x > self.x)
+            d = Dir.right;
+        else if (other.x < self.x)
+            d = Dir.left;
+        else if (other.z > self.z)
+            d = Dir.front;
+        else if (other.z < self.z)
+            d = Dir.back;
+        else if (other.y > self.y)
+            d = Dir.top;
+        else if (other.y < self.y)
+            d = Dir.bottom;
+
+        return d;
+    }
+
     /**
      * Whether the entity is currently falling.
      */
@@ -178,6 +201,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
     }
 
     protected void turn(Dir d) {
+        if (d == Dir.top || d == Dir.bottom)
+            return;
         GO self = this.gameObject;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
                 self, null, (x,y)=>x.Turn(this.facing, d, self));

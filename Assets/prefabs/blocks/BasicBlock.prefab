@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 3437321869980187035}
   m_Layer: 8
   m_Name: BasicBlock
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -211,6 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc048cdc46bade38d80cf9a4c83d7162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveDelay: 0.6
 --- !u!114 &1225483043521338933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,4 +237,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2093e962f26efbe0fa3bb52d82fb4b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveDelay: 0.6
