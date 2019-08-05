@@ -25,6 +25,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
     protected Dir facing = Dir.back;
     /** Tracks whether we are already running a coroutine */
     protected Animation anim;
+    /** Whether the entity is on a block (and may ledge it) */
+    private bool isOnBlock;
 
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
@@ -116,7 +118,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
                 Dir d = this.facing | Dir.bottom;
                 this.move(d, this.MoveDelay);
                 this.turn(newDir);
-                this.setOnLedge();
+                if (this.isOnBlock)
+                    this.setOnLedge();
             }
         }
     }
@@ -178,6 +181,7 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
             if (this.collisionTracker[idx] == 1 && this.isFalling())
                 EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
                         this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
+            this.isOnBlock = (c.gameObject.tag == "Block");
         }
         this._onEnterRelativeCollision(p, c);
     }
@@ -201,8 +205,11 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         if (p == RelPos.Bottom) {
             EvSys.ExecuteEvents.ExecuteHierarchy<ActivateOnTop>(
                     c.gameObject, null, (x,y)=>x.OnLeaveTop(this.gameObject));
-            if (this.collisionTracker[p.toIdx()] == 0 && this.bgFunc == null)
-                this.bgFunc = this.StartCoroutine(this.tryFall());
+            if (this.collisionTracker[p.toIdx()] == 0) {
+                if (this.bgFunc == null)
+                    this.bgFunc = this.StartCoroutine(this.tryFall());
+                this.isOnBlock = false;
+            }
         }
         this._onExitRelativeCollision(p, c);
     }
