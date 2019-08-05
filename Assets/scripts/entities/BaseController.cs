@@ -51,36 +51,45 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
      */
     virtual protected void setOnLedge() { }
 
+    protected void move(Dir d, float speed) {
+        GO self = this.gameObject;
+        EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(self, null,
+                (x,y)=>x.Move(d, self, speed));
+    }
+
     /**
      * Try to move the entity one block forward, depending on the colliders
      * around it.
      */
-    protected void tryMoveForward() {
+    protected void tryMoveForward(bool avoidJumping = false) {
         /* Avoid corner cases by checking before doing anything */
         if (this.isMoving())
             return;
 
         /* Compound the movement by looking at the surroundings */
-        if (this.collisionTracker[RelPos.Front.toIdx()] > 0) {
+        bool frontWall = this.collisionTracker[RelPos.Front.toIdx()] > 0;
+        if (!avoidJumping && frontWall) {
             /* Something ahead; Try to jump up */
             if (this.collisionTracker[RelPos.FrontTop.toIdx()] == 0 &&
                     this.collisionTracker[RelPos.Top.toIdx()] == 0) {
                 /* There's a floor above; Jump toward it */
                 Dir d = this.facing | Dir.top;
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
+                this.move(d, this.MoveDelay);
             }
         }
         else {
-            if (this.collisionTracker[RelPos.FrontBottom.toIdx()] > 0)
-                /* Front is clear and there's footing; Just move forward */
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(this.facing, this.gameObject, this.MoveDelay));
+            if (this.collisionTracker[RelPos.FrontBottom.toIdx()] > 0) {
+                /* Front is clear and there's footing; Just move forward.
+                 *
+                 * XXX: This may not be the case for the AI movement, so it must
+                 * be checked again. */
+                if (!frontWall)
+                    this.move(this.facing, this.MoveDelay);
+            }
             else if (this.collisionTracker[RelPos.BottomBottomFront.toIdx()] > 0) {
                 /* There's a floor bellow; Jump toward it */
                 Dir d = this.facing | Dir.bottom;
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
+                this.move(d, this.MoveDelay);
             }
             else if (this.allowLedgeMovement) {
                 Dir newDir;
@@ -105,10 +114,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
                 }
 
                 Dir d = this.facing | Dir.bottom;
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
-                        this.gameObject, null, (x,y)=>x.Move(d, this.gameObject, this.MoveDelay));
-                EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                        this.gameObject, null, (x,y)=>x.Turn(this.facing, newDir, this.gameObject));
+                this.move(d, this.MoveDelay);
+                this.turn(newDir);
                 this.setOnLedge();
             }
         }

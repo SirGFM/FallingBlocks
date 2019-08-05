@@ -4,6 +4,7 @@ using GO = UnityEngine.GameObject;
 using Math = UnityEngine.Mathf;
 using RelPos = ReportRelativeCollision.RelativePosition;
 using UEColl = UnityEngine.Collider;
+using Vec3 = UnityEngine.Vector3;
 
 public static class StateMethods {
     /** Whether this state makes the entity a leader. */
@@ -66,16 +67,38 @@ public class MinionController : BaseController, iDetectFall {
     private State nextState;
     private State state;
     private int closeMinion;
-    private bool reachedDeadend;
 
     // Start is called before the first frame update
     void Start() {
-        this.reachedDeadend = false;
-
         this.commonInit();
 
         EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
                 this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+    }
+
+    static private float v3dist(Vec3 a, Vec3 b, int idx) {
+        return Math.Abs(a[idx] - b[idx]);
+    }
+
+    private void followEntity(State st) {
+        Vec3 self, other;
+        float dist, yDist;
+
+        /* Calculate the Manhattan distance in the XZ axis of the
+         * entities to decide how to move */
+        self = this.transform.position;
+        other = this.target.transform.position;
+        dist = v3dist(self, other, 0/*x*/);
+        dist += v3dist(self, other, 2/*z*/);
+        yDist = v3dist(self, other, 1/*y*/);
+
+        Dir d = this.getRelativeDirection(this.target);
+        if (d != this.facing)
+            this.turn(d);
+        else {
+            if (st == State.EnterChest || dist > 1.5f)
+                this.tryMoveForward(yDist < 1.0f);
+        }
     }
 
     private void doState(State st) {
@@ -85,41 +108,16 @@ public class MinionController : BaseController, iDetectFall {
         case State.Follow:
         case State.Leader:
         case State.EnterChest:
-            /* In these three states, the minion is actually following
-             * another entity */
-            Dir d = this.getRelativeDirection(this.target);
-            if (d != this.facing)
-                this.turn(d);
-            else {
-                float dist = 0.0f;
-                int idx = 0;
-                switch (this.facing) {
-                case Dir.left:
-                case Dir.right:
-                    idx = 0;
-                    break;
-                case Dir.front:
-                case Dir.back:
-                    idx = 2;
-                    break;
-                }
-                dist = this.transform.position[idx];
-                dist = Math.Abs(dist - this.target.transform.position[idx]);
-                if (st == State.EnterChest || dist > 1.0f)
-                    this.tryMoveForward();
-            }
+            this.followEntity(st);
             break;
         case State.PseudoLeader:
             /* Just try moving to a "random" direction */
             if (this.collisionTracker[RelPos.Front.toIdx()] == 0 &&
                     this.collisionTracker[RelPos.FrontBottom.toIdx()] != 0) {
-                this.reachedDeadend = false;
                 this.tryMoveForward();
             }
-            else {
-                this.reachedDeadend = true;
+            else
                 this.turn(Dir.left.toLocal(this.facing));
-            }
             break;
         }
         this.state = st;
