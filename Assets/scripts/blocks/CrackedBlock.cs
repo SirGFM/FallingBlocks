@@ -1,4 +1,6 @@
-﻿public class CrackedBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
+﻿using Model = UnityEngine.MeshFilter;
+
+public class CrackedBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
     private enum State{
         untouched = 0,
         touched,
@@ -6,14 +8,31 @@
         brokenAnim,
         maxState
     }
+
     private State state;
     private UnityEngine.Coroutine bgFunc;
+    private Model curModel;
+
+    public UnityEngine.Mesh defaultModel;
+    public UnityEngine.Mesh breakingModel;
 
     private void updateAsset() {
         /* TODO: Update the asset based on the state */
+        switch (this.state) {
+        case State.untouched:
+            this.curModel.mesh = this.defaultModel;
+            break;
+        case State.touched:
+            this.curModel.mesh = this.breakingModel;
+            break;
+        case State.broken:
+        case State.brokenAnim:
+            break;
+        }
     }
 
     void Start() {
+        this.curModel = this.gameObject.GetComponentInChildren<Model>();
         this.state = State.untouched;
         this.updateAsset();
     }
