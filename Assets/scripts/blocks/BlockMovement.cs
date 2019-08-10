@@ -29,9 +29,6 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
         this.fall = this.gameObject.GetComponent<Faller>();
         if (this.fall == null)
             throw new System.Exception("Faller not found in BlockMovement");
-
-        EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
     }
 
     public void OnTouchEdge(EdgeBase.Direction d) {
