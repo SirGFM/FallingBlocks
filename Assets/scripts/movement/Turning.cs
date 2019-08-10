@@ -38,7 +38,7 @@ public class Turning : BaseRemoteAction, iTurning {
      */
     private System.Collections.IEnumerator turn(float tgt, float dt, Dir to) {
         this.isTurning = true;
-        this.issueEvent<iTurned>((x,y)=>x.OnStartTurning(to, this.gameObject));
+        this.issueEvent<iTurned>((x,y)=>x.OnStartTurning(to, this.caller));
 
         int steps = (int)(this.TurnDelay / Time.fixedDeltaTime);
         dt /= (float)steps;
@@ -58,7 +58,7 @@ public class Turning : BaseRemoteAction, iTurning {
         yield return new UnityEngine.WaitForFixedUpdate();
 
         this.isTurning = false;
-        this.issueEvent<iTurned>((x,y)=>x.OnFinishTurning(to, this.gameObject));
+        this.issueEvent<iTurned>((x,y)=>x.OnFinishTurning(to, this.caller));
     }
 
     public void Turn(Dir from, Dir to, GO caller) {

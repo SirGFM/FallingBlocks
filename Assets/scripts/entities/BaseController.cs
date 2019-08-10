@@ -218,8 +218,10 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         if (d == Dir.top || d == Dir.bottom)
             return;
         GO self = this.gameObject;
+        /* TODO: Find a way to send messages downward and clean this mess */
+        GO other = this.GetComponentInChildren<Turning>().gameObject;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTurning>(
-                self, null, (x,y)=>x.Turn(this.facing, d, self));
+                other, null, (x,y)=>x.Turn(this.facing, d, other));
     }
 
     public void OnStartTurning(Dir d, GO callee) {

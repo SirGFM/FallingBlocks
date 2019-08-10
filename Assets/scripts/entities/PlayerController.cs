@@ -139,27 +139,8 @@ public class PlayerController : BaseController, iTiledMoved {
             else if (this.collisionTracker[RelPos.Back.toIdx()] > 0)
                 turnDir = Dir.back.toLocal(this.facing);
 
-            if (turnDir != Dir.none) {
-                float newAngle = 0.0f;
-                switch (turnDir) {
-                case Dir.front:
-                    newAngle = 180.0f;
-                    break;
-                case Dir.right:
-                    newAngle = -90.0f;
-                    break;
-                case Dir.left:
-                    newAngle = 90.0f;
-                    break;
-                case Dir.back:
-                    newAngle = 0.0f;
-                    break;
-                }
-                Vec3 tmp = this.transform.eulerAngles;
-                this.transform.eulerAngles = new Vec3(tmp.x, newAngle, tmp.z);
-                this.facing = turnDir;
-            }
-
+            if (turnDir != Dir.none)
+                this.turn(turnDir);
             return;
         }
 
