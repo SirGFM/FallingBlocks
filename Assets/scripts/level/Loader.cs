@@ -27,6 +27,11 @@ public interface OnSceneEvent : EvSys.IEventSystemHandler {
      * @param pos Initial position of the player within this sub-scene
      */
     void OnSceneReady(Vec3 pos);
+
+    /**
+     * Report that the scene is ready to be played.
+     */
+    void OnSceneDone();
 }
 
 public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
@@ -39,6 +44,13 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     private bool done;
     /** Whether the player has already been spawned in this scene */
     private bool didSpawnPlayer;
+
+    /** Name of the sub-scene used to display the loading progress */
+    private const string uiScene = "LoadingUI";
+    /** Scene with components related to displaying the loading progress */
+    private Scene loadingUi;
+    /** UI progress bar */
+    private ProgressBar pb;
 
     void Start() {
         this.StartCoroutine(this.load());
@@ -55,31 +67,57 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
         /* TODO: Use this to load from the checkpoint */
         int first = 0;
 
+        /* Retrieve all components from the loading scene */
+        do {
+            AsyncOp op;
+
+            this.pb = null;
+            op = SceneMng.LoadSceneAsync(Loader.uiScene, SceneMode.Additive);
+            yield return op;
+        } while (false);
+
         for (int i = first; i < this.subSceneList.Length; i++) {
             string s = this.subSceneList[i];
 
             this.done = false;
             /* XXX: When done, this dispatches an OnSceneLoaded */
             AsyncOp op = SceneMng.LoadSceneAsync(s, SceneMode.Additive);
-            /* TODO: Update a progress bar */
-            yield return op;
+            while (op.progress < 1.0f) {
+                /* Update a progress bar */
+                this.pb.progress = op.progress * 0.5f;
+                yield return new UnityEngine.WaitForFixedUpdate();
+            }
 
             /* XXX: The progress should be updated from OnUpdateProgress */
             while (!this.done)
                 yield return null;
 
-            /* TODO: Remove progress bar (if active) */
+            /* Remove progress bar (if active) */
+            this.pb = null;
+            SceneMng.UnloadSceneAsync(this.loadingUi);
         }
         SceneMng.sceneLoaded -= OnSceneLoaded;
     }
 
     void OnSceneLoaded(Scene scene, SceneMode mode) {
+        if (scene.name == Loader.uiScene) {
+            /* Retrieve all components from the loading scene */
+            this.loadingUi = scene;
+            foreach (GO go in scene.GetRootGameObjects()) {
+                if (this.pb == null)
+                    this.pb = go.GetComponentInChildren<ProgressBar>();
+                /* TODO: Get flavor text */
+            }
+            return;
+        }
+
         foreach (GO go in scene.GetRootGameObjects()) {
             SpawnController sc = go.GetComponent<SpawnController>();
             if (sc == null)
                 continue;
-            /* XXX: When done, this dispatches an OnSceneReady. It also
-             * dispatches OnUpdateProgress every now and then. */
+            /* XXX: When done, this dispatches an OnSceneReady and later an
+             * OnSceneDone.
+             * It also dispatches OnUpdateProgress every now and then. */
             sc.fixPosition(scene, this.gameObject);
         }
     }
@@ -88,9 +126,14 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
         if (!this.didSpawnPlayer)
             Obj.Instantiate(this.player, pos, Quat.identity);
         this.didSpawnPlayer = true;
-        this.done = true;
     }
 
     public void OnUpdateProgress(int cur, int max) {
+        if (this.pb != null)
+            this.pb.progress = 0.5f + 0.5f * (cur / (float)max);
+    }
+
+    public void OnSceneDone() {
+        this.done = true;
     }
 }

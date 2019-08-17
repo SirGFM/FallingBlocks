@@ -45,12 +45,26 @@ public class SpawnController : UnityEngine.MonoBehaviour {
         }
 
         /** Wait some time so most blocks fall nicely in place */
-        yield return new UnityEngine.WaitForSeconds(1.5f);
+        int i;
+        for (i = 0; i < 12; i++) {
+            EvSys.ExecuteEvents.ExecuteHierarchy<OnSceneEvent>(
+                    caller, null, (x,y)=>x.OnUpdateProgress(i, 15));
+            yield return new UnityEngine.WaitForSeconds(0.15f);
+        }
 
         if (caller != null) {
             Vec3 pos = this.startPosition.position;
             EvSys.ExecuteEvents.ExecuteHierarchy<OnSceneEvent>(
                     caller, null, (x,y)=>x.OnSceneReady(pos));
         }
+
+        for (; i < 16; i++) {
+            EvSys.ExecuteEvents.ExecuteHierarchy<OnSceneEvent>(
+                    caller, null, (x,y)=>x.OnUpdateProgress(i, 15));
+            yield return new UnityEngine.WaitForSeconds(0.15f);
+        }
+
+        EvSys.ExecuteEvents.ExecuteHierarchy<OnSceneEvent>(
+                caller, null, (x,y)=>x.OnSceneDone());
     }
 }
