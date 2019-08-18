@@ -13,9 +13,9 @@
      * position.
      *
      * @param d The direction of the edge **on the object that's leaving**.
-     * @param c The collision that triggered this
+     * @param isOtherMoving Whether the releasing object it currently moving.
      */
-    void OnReleaseEdge(EdgeBase.Direction d);
+    void OnReleaseEdge(EdgeBase.Direction d, bool isOtherMoving);
 }
 
 public interface ActivateOnTop : UnityEngine.EventSystems.IEventSystemHandler {

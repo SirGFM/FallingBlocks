@@ -3,12 +3,19 @@ using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 
 public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved, iDetectFall {
+    /** How long to wait until falling, if the block bellow was pushed */
+    private const float fallWait = 2.0f;
+
     /** Last touched edge (used for effects) */
     private EdgeBase.Direction lastEdge;
     /** How many edges are currently touching this block */
     private int numEdges = 0;
     /** Reference to the object's faller */
     private Faller fall;
+    /** Whether the block is currently moving */
+    private bool _isMoving;
+    /** Whether the block is already trying to fall (see haltedStartFalling) */
+    private bool isTryingToFall;
 
     /** How long moving a tile takes */
     public float MoveDelay = 0.6f;
@@ -29,6 +36,8 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
         this.fall = this.gameObject.GetComponent<Faller>();
         if (this.fall == null)
             throw new System.Exception("Faller not found in BlockMovement");
+
+        this._isMoving = false;
     }
 
     public void OnTouchEdge(EdgeBase.Direction d) {
@@ -40,19 +49,41 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
                     this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
     }
 
-    public void OnReleaseEdge(EdgeBase.Direction d) {
+    private System.Collections.IEnumerator haltedStartFalling() {
+        if (!this.isTryingToFall) {
+            this.isTryingToFall = true;
+
+            /* TODO: Play crumbling animation */
+            yield return new UnityEngine.WaitForSeconds(BlockMovement.fallWait);
+
+            /* Start physics if there *still* isn't any box bellow */
+            if (this.numEdges == 0)
+                EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                        this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+
+            this.isTryingToFall = false;
+        }
+    }
+
+    public void OnReleaseEdge(EdgeBase.Direction d, bool isOtherMoving) {
         numEdges--;
-        if (this.numEdges == 0)
-            /* Start physics if there isn't any box bellow */
-            EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                    this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+        if (this.numEdges == 0) {
+            if (isOtherMoving)
+                this.StartCoroutine(this.haltedStartFalling());
+            else
+                /* Start physics if there isn't any box bellow */
+                EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                        this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+        }
     }
 
     public void OnStartMovement(Dir d, GO callee) {
         this.fall.block();
+        this._isMoving = true;
     }
 
     public void OnFinishMovement(Dir d, GO callee) {
+        this._isMoving = false;
         this.fall.unblock();
     }
 
@@ -60,5 +91,9 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
     }
 
     public void OnFinishFalling(GO callee) {
+    }
+
+    public bool isMoving() {
+        return this._isMoving;
     }
 }

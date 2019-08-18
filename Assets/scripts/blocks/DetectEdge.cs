@@ -49,8 +49,16 @@ public class DetectEdge : EdgeBase {
         ReportTopEdge rte = c.gameObject.GetComponent<ReportTopEdge>();
         EdgeBase.Direction d = rte.getDirection(c);
 
+        /* XXX: I don't know how this could be done any differently... D: */
+        bool isMoving = false;
+        UnityEngine.Transform parent = c.gameObject.transform.parent;
+        if (parent != null) {
+            BlockMovement bm = parent.GetComponent<BlockMovement>();
+            isMoving = bm.isMoving();
+        }
+
         /** Send a message upward */
         UnityEngine.EventSystems.ExecuteEvents.ExecuteHierarchy<OnBlockEdge>(
-                this.gameObject, null, (x,y)=>x.OnReleaseEdge(d));
+                this.gameObject, null, (x,y)=>x.OnReleaseEdge(d, isMoving));
     }
 }
