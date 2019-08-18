@@ -7,7 +7,6 @@ public class RandomModel : UnityEngine.MonoBehaviour {
     void Start() {
         Model curModel = this.gameObject.GetComponentInChildren<Model>();
 
-        Global.setup();
         int idx = Global.PRNG.fastRange(0, Models.Length - 1);
 
         curModel.mesh = Models[idx];

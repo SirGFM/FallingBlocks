@@ -53,6 +53,7 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     private ProgressBar pb;
 
     void Start() {
+        Global.setup();
         this.StartCoroutine(this.load());
     }
 
