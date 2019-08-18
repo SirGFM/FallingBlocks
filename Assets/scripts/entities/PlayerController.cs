@@ -8,7 +8,7 @@ using Phy = UnityEngine.Physics;
 using RelPos = ReportRelativeCollision.RelativePosition;
 using Vec3 = UnityEngine.Vector3;
 
-public class PlayerController : BaseController, iTiledMoved {
+public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
     /** Whether we are currently holding onto an ledge */
     private bool onLedge;
     /** Block right in front of the player (in local space), that may be moved */
@@ -328,5 +328,9 @@ public class PlayerController : BaseController, iTiledMoved {
             if (this.pushing == 0)
                 this.anim &= ~Animation.Push;
         }
+    }
+
+    public void OnGoal() {
+        this.anim |= Animation.Goal;
     }
 }

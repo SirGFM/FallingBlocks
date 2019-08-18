@@ -1,4 +1,8 @@
 ﻿using Animator = UnityEngine.Animator;
+using EvSys = UnityEngine.EventSystems;
+using GO = UnityEngine.GameObject;
+using SceneMng = UnityEngine.SceneManagement.SceneManager;
+using SceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 
 public class GoalBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
     /** The animation handler */
@@ -7,6 +11,9 @@ public class GoalBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
     private const string trigger = "StartGoalAnim";
     /** Tag used to identify a player */
     private const string playerTag = "Player";
+
+    /** Scene to be played after this one (either a level or the credits) */
+    public string NextScene;
 
     private void getAnimator() {
         if (this.anim == null)
@@ -17,19 +24,26 @@ public class GoalBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
         this.getAnimator();
     }
 
-    public void OnEnterTop(UnityEngine.GameObject other) {
+    public void OnEnterTop(GO other) {
         if (other.tag != GoalBlock.playerTag)
             return;
         this.getAnimator();
         this.anim.SetTrigger(GoalBlock.trigger);
+
+        /* Halt player movement */
+        EvSys.ExecuteEvents.ExecuteHierarchy<OnEntityDone>(
+                other, null, (x,y)=>x.OnGoal());
         /* TODO:
-         *   - Halt player movement
          *   - Play 'you win' fanfare or whatever
-         *   - Transition to the next level
          */
     }
 
     public void OnLeaveTop(UnityEngine.GameObject other) {
         /* Do nothing! */
+    }
+
+    public void OnAnimationFinished() {
+        /* Transition to the next level */
+        SceneMng.LoadSceneAsync(this.NextScene, SceneMode.Single);
     }
 }

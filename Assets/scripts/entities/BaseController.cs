@@ -4,6 +4,11 @@ using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = ReportRelativeCollision.RelativePosition;
 
+public interface OnEntityDone : EvSys.IEventSystemHandler {
+    /** Event dispatched when the entity reaches its goal */
+    void OnGoal();
+}
+
 public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent, iTurned, iDetectFall {
     protected enum Animation {
         None   = 0x00,
@@ -13,6 +18,7 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         Fall   = 0x08,
         Push   = 0x10, /* Player only */
         Shiver = 0x20, /* Minion only */
+        Goal   = 0x40,
     };
 
     /** Previously started coroutine */
