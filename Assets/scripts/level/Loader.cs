@@ -1,6 +1,7 @@
 ﻿using AsyncOp = UnityEngine.AsyncOperation;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
+using Input = UnityEngine.Input;
 using Obj = UnityEngine.Object;
 using Quat = UnityEngine.Quaternion;
 using Scene = UnityEngine.SceneManagement.Scene;
@@ -44,6 +45,10 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     private bool done;
     /** Whether the player has already been spawned in this scene */
     private bool didSpawnPlayer;
+    /** Name of the level's main scene (that loads everything) */
+    private int mainScene;
+    /** Whether the level is already resetting */
+    private bool resetting;
 
     /** Name of the sub-scene used to display the loading progress */
     private const string uiScene = "LoadingUI";
@@ -54,6 +59,8 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
 
     void Start() {
         Global.setup();
+        this.mainScene = SceneMng.GetActiveScene().buildIndex;
+        this.resetting = false;
         this.StartCoroutine(this.load());
     }
 
@@ -136,5 +143,12 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
 
     public void OnSceneDone() {
         this.done = true;
+    }
+
+    void Update() {
+        if (this.done && !this.resetting && Input.GetAxisRaw("Reset") > 0.5f) {
+            SceneMng.LoadSceneAsync(this.mainScene, SceneMode.Single);
+            this.resetting = true;
+        }
     }
 }
