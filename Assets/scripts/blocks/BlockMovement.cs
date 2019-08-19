@@ -53,8 +53,13 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
         if (!this.isTryingToFall) {
             this.isTryingToFall = true;
 
-            /* TODO: Play crumbling animation */
+            /* TODO: Find a way to send messages downward and clean this mess */
+            GO other = this.GetComponentInChildren<RumbleAnim>().gameObject;
+            EvSys.ExecuteEvents.ExecuteHierarchy<Rumbler>(
+                    other, null, (x,y)=>x.StartRumbling());
             yield return new UnityEngine.WaitForSeconds(BlockMovement.fallWait);
+            EvSys.ExecuteEvents.ExecuteHierarchy<Rumbler>(
+                    other, null, (x,y)=>x.StopRumbling());
 
             /* Start physics if there *still* isn't any box bellow */
             if (this.numEdges == 0)
