@@ -6,6 +6,8 @@ using Layer = UnityEngine.LayerMask;
 using Math = UnityEngine.Mathf;
 using Phy = UnityEngine.Physics;
 using RelPos = ReportRelativeCollision.RelativePosition;
+using SceneMng = UnityEngine.SceneManagement.SceneManager;
+using SceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 using Vec3 = UnityEngine.Vector3;
 
 public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
@@ -332,5 +334,11 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
 
     public void OnGoal() {
         this.anim |= Animation.Goal;
+    }
+
+    override public void onDeath() {
+        /* XXX: Ugly way of reloading the current level... urk */
+        int scene = SceneMng.GetActiveScene().buildIndex;
+        SceneMng.LoadSceneAsync(scene, SceneMode.Single);
     }
 }

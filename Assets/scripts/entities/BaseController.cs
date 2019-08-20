@@ -19,6 +19,7 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         Push   = 0x10, /* Player only */
         Shiver = 0x20, /* Minion only */
         Goal   = 0x40,
+        Death  = 0x80,
     };
 
     /** Previously started coroutine */
@@ -177,6 +178,23 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
      */
     virtual protected void _onExitRelativeCollision(RelPos p, UEColl c) { }
 
+    /**
+     * Called after the death animation finishes playing.
+     */
+    virtual public void onDeath() { }
+
+    private System.Collections.IEnumerator die() {
+        this.anim |= Animation.Death;
+
+        /* Wait until the only pending action is dying */
+        while (this.anim != Animation.Death)
+            yield return null;
+
+        /* TODO: Play death animation */
+        /* XXX: Death animation should send this event! */
+        this.onDeath();
+    }
+
     public void OnEnterRelativeCollision(RelPos p, UEColl c) {
         int idx = p.toIdx();
         this.collisionTracker[idx]++;
@@ -189,6 +207,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
                         this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
             this.isOnBlock = (c.gameObject.tag == "Block");
         }
+        else if (p == RelPos.Center && c.gameObject != this.gameObject)
+            this.StartCoroutine(this.die());
         this._onEnterRelativeCollision(p, c);
     }
 
