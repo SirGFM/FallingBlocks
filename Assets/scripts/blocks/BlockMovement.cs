@@ -4,7 +4,7 @@ using GO = UnityEngine.GameObject;
 
 public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved, iDetectFall {
     /** How long to wait until falling, if the block bellow was pushed */
-    private const float fallWait = 2.0f;
+    private const float fallWait = 1.0f;
 
     /** Last touched edge (used for effects) */
     private EdgeBase.Direction lastEdge;
@@ -49,6 +49,24 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
                     this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
     }
 
+    private System.Collections.IEnumerator startFalling(GO rumbler, float delay) {
+        if (!this.isTryingToFall) {
+            this.isTryingToFall = true;
+
+            yield return new UnityEngine.WaitForSeconds(delay);
+            if (rumbler != null) {
+                EvSys.ExecuteEvents.ExecuteHierarchy<Rumbler>(
+                        rumbler, null, (x,y)=>x.StopRumbling());
+            }
+
+            /* Start physics if there *still* isn't any box bellow */
+            if (this.numEdges == 0)
+                EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
+                        this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+            this.isTryingToFall = false;
+        }
+    }
+
     private System.Collections.IEnumerator haltedStartFalling() {
         if (!this.isTryingToFall) {
             this.isTryingToFall = true;
@@ -57,16 +75,9 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
             GO other = this.GetComponentInChildren<RumbleAnim>().gameObject;
             EvSys.ExecuteEvents.ExecuteHierarchy<Rumbler>(
                     other, null, (x,y)=>x.StartRumbling());
-            yield return new UnityEngine.WaitForSeconds(BlockMovement.fallWait);
-            EvSys.ExecuteEvents.ExecuteHierarchy<Rumbler>(
-                    other, null, (x,y)=>x.StopRumbling());
-
-            /* Start physics if there *still* isn't any box bellow */
-            if (this.numEdges == 0)
-                EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                        this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
-
             this.isTryingToFall = false;
+            yield return this.StartCoroutine(
+                    this.startFalling(other, BlockMovement.fallWait));
         }
     }
 
@@ -77,8 +88,8 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
                 this.StartCoroutine(this.haltedStartFalling());
             else
                 /* Start physics if there isn't any box bellow */
-                EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
-                        this.gameObject, null, (x,y)=>x.Fall(this.gameObject));
+                this.StartCoroutine(this.startFalling(
+                        null, BlockMovement.fallWait * 0.25f));
         }
     }
 
