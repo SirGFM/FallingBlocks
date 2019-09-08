@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Block
   - Minion
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - No collision
   - Block Edge Detector
   - Block Edge Reporter
-  - 
+  - Checkpoint
   - 
   - 
   - 
