@@ -10,6 +10,8 @@ public class SpawnController : UnityEngine.MonoBehaviour {
 
     /** The player starting position on the sub-scene */
     public UnityEngine.Transform startPosition;
+    /** The starting position of the next sub-scene */
+    public UnityEngine.Transform topRow;
 
     void Start() {
     }
@@ -26,15 +28,15 @@ public class SpawnController : UnityEngine.MonoBehaviour {
         yield return null;
 
         GO[] objs = scene.GetRootGameObjects();
-        float baseY = transform.position.y;
+        Vec3 bPos = transform.position;
 
         foreach (GO b in objs) {
             if (b.tag != blockTag)
                 continue;
             UnityEngine.Transform t = b.transform;
             Vec3 p = t.position;
-            float newY = baseY + p.y * 1.3f;
-            t.position = new Vec3(p.x, newY, p.z);
+            float newY = bPos.y + p.y * 1.3f;
+            t.position = new Vec3(bPos.x + p.x, newY, bPos.z + p.z);
         }
 
         foreach (GO b in objs) {

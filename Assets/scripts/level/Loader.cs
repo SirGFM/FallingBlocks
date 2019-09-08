@@ -56,12 +56,15 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     private Scene loadingUi;
     /** UI progress bar */
     private ProgressBar pb;
+    /** Start position of the next sub-scene */
+    private Vec3 nextBaseY;
 
     void Start() {
         Global.setup();
         this.mainScene = SceneMng.GetActiveScene().buildIndex;
         this.resetting = false;
         this.StartCoroutine(this.load());
+        this.nextBaseY = new Vec3(0.0f, 1.0f, 0.0f);
     }
 
     /**
@@ -126,7 +129,11 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
             /* XXX: When done, this dispatches an OnSceneReady and later an
              * OnSceneDone.
              * It also dispatches OnUpdateProgress every now and then. */
+            sc.transform.position = this.nextBaseY;
             sc.fixPosition(scene, this.gameObject);
+            if (sc.topRow != null)
+                this.nextBaseY += sc.topRow.position;
+            break;
         }
     }
 
