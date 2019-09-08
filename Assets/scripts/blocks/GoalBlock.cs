@@ -12,7 +12,8 @@ public class GoalBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
     /** Tag used to identify a player */
     private const string playerTag = "Player";
 
-    /** Scene to be played after this one (either a level or the credits) */
+    /** Scene to be played after this one (either a level or the credits).
+     * Default to the next index in Unity's build settings. */
     public string NextScene;
 
     private void getAnimator() {
@@ -45,6 +46,11 @@ public class GoalBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
     public void OnAnimationFinished() {
         /* Transition to the next level */
         Global.curCheckpoint = 0;
-        SceneMng.LoadSceneAsync(this.NextScene, SceneMode.Single);
+        if (this.NextScene != "")
+            SceneMng.LoadSceneAsync(this.NextScene, SceneMode.Single);
+        else {
+            int idx = SceneMng.GetActiveScene().buildIndex + 1;
+            SceneMng.LoadSceneAsync(idx, SceneMode.Single);
+        }
     }
 }
