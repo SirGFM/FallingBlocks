@@ -234,6 +234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   subSceneList:
   - scenes/Level007/Main
+  - scenes/Level007/Part2
   player: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425, type: 3}
 --- !u!4 &837862357
 Transform:

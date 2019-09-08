@@ -50,4 +50,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/Level007/Main.unity
     guid: 0809735348b8317f7ada568069f961da
+  - enabled: 1
+    path: Assets/scenes/Level007/Part2.unity
+    guid: a16b5485ee20c42f38dce4da16c379be
   m_configObjects: {}
