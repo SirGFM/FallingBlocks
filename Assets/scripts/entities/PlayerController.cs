@@ -91,7 +91,9 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
         /* Count how many objects are linned sequentially (from either side of
          * the list) */
         len = 1;
-        if (this.frontBlock == list.Values[0]) {
+        if (list.Count == 0)
+            return new GO[0];
+        else if (this.frontBlock == list.Values[0]) {
             off = 0;
             if (list.Values[0].tag != PlayerController.blockTag)
                 return new GO[0];
