@@ -94,7 +94,8 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
             AsyncOp op = SceneMng.LoadSceneAsync(s, SceneMode.Additive);
             while (op.progress < 1.0f) {
                 /* Update a progress bar */
-                this.pb.progress = op.progress * 0.5f;
+                if (this.pb != null)
+                    this.pb.progress = op.progress * 0.5f;
                 yield return new UnityEngine.WaitForFixedUpdate();
             }
 
@@ -103,8 +104,10 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
                 yield return null;
 
             /* Remove progress bar (if active) */
-            this.pb = null;
-            SceneMng.UnloadSceneAsync(this.loadingUi);
+            if (this.pb != null) {
+                this.pb = null;
+                SceneMng.UnloadSceneAsync(this.loadingUi);
+            }
         }
         SceneMng.sceneLoaded -= OnSceneLoaded;
     }
