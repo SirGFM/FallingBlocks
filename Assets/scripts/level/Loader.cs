@@ -75,8 +75,7 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
         SceneMng.sceneLoaded += OnSceneLoaded;
         this.didSpawnPlayer = false;
 
-        /* TODO: Use this to load from the checkpoint */
-        int first = 0;
+        int first = Global.curCheckpoint;
 
         /* Retrieve all components from the loading scene */
         do {

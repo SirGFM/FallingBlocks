@@ -44,6 +44,7 @@ public class GoalBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
 
     public void OnAnimationFinished() {
         /* Transition to the next level */
+        Global.curCheckpoint = 0;
         SceneMng.LoadSceneAsync(this.NextScene, SceneMode.Single);
     }
 }

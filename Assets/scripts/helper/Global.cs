@@ -1,12 +1,15 @@
 ﻿static public class Global {
     static public bool isReady = false;
 
+    static public int curCheckpoint = 0;
+
     static public void setup() {
         if (Global.isReady)
             return;
 
         PRNG.setup();
         Global.isReady = true;
+        Global.curCheckpoint = 0;
     }
 
     /** Implements a simple (Box-Muller?) PRNG */
