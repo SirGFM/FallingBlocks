@@ -7,6 +7,7 @@ using Quat = UnityEngine.Quaternion;
 using Scene = UnityEngine.SceneManagement.Scene;
 using SceneMng = UnityEngine.SceneManagement.SceneManager;
 using SceneMode = UnityEngine.SceneManagement.LoadSceneMode;
+using UiText = UnityEngine.UI.Text;
 using Vec3 = UnityEngine.Vector3;
 
 /**
@@ -40,6 +41,8 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     public string[] subSceneList;
     /** The player prefab */
     public GO player;
+    /** The name of the level */
+    public string title;
 
     /** Whether the current sub-scene has finished loading */
     private bool done;
@@ -50,6 +53,8 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     /** Whether the level is already resetting */
     private bool resetting;
 
+    /** Tag of UI elements for displaying a level's name */
+    private const string titleTag = "Title";
     /** Name of the sub-scene used to display the loading progress */
     private const string uiScene = "LoadingUI";
     /** Scene with components related to displaying the loading progress */
@@ -114,12 +119,18 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
 
     void OnSceneLoaded(Scene scene, SceneMode mode) {
         if (scene.name == Loader.uiScene) {
+            int idx = SceneMng.GetActiveScene().buildIndex;
+            string levelName = $"Level {idx}\n{this.title}";
+
             /* Retrieve all components from the loading scene */
             this.loadingUi = scene;
             foreach (GO go in scene.GetRootGameObjects()) {
                 if (this.pb == null)
                     this.pb = go.GetComponentInChildren<ProgressBar>();
-                /* TODO: Get flavor text */
+                /* Set flavor text */
+                foreach (UiText txt in go.GetComponentsInChildren<UiText>())
+                    if (txt.tag == Loader.titleTag)
+                        txt.text = levelName;
             }
             return;
         }
