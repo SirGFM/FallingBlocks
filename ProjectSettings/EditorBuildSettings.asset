@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/scenes/003_TakingItDown/Loader.unity
     guid: 2d7216d3d4cba1e97a5f6eaecb2a0d7f
   - enabled: 1
+    path: Assets/scenes/004_CrossingOver/Loader.unity
+    guid: 30ca53c93283d73989e38d088dfc5ad9
+  - enabled: 1
     path: Assets/scenes/Level001/Level001.unity
     guid: bca1a6d86dc493bdda08a4c70baf61b6
   - enabled: 1
@@ -65,4 +68,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/003_TakingItDown/001.unity
     guid: cc27a034eea20b3c1a71a7c72a830cb6
+  - enabled: 1
+    path: Assets/scenes/004_CrossingOver/001.unity
+    guid: 5d57ed7f2bdd182da87f846f2a9b1c69
   m_configObjects: {}
