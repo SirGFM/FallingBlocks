@@ -24,7 +24,7 @@ public interface OnRelativeCollisionEvent : EvSys.IEventSystemHandler {
 public static class RelativePositionMethods {
     /** Retrieve how many itens are in this enumeration. */
     public static int count(this RelPos p) {
-        return 36;
+        return 37;
     }
 
     /** Convert the enumeration to a sequential integer. */
@@ -102,6 +102,8 @@ public static class RelativePositionMethods {
             return 34;
         case RelPos.Center:
             return 35;
+        case RelPos.Nearby:
+            return 36;
         default:
             return -1;
         }
@@ -185,6 +187,7 @@ public class ReportRelativeCollision : UnityEngine.MonoBehaviour {
         FrontFrontBottom       = (Front << (Shift * 3)) | (Front << (Shift * 2)) | Bottom,
         FrontBottomFrontBottom = (Front << (Shift * 4)) | (Bottom << (Shift * 3)) | (Front << (Shift * 2)) | Bottom,
         Center                 = Top | Left | Right | Bottom | Front | Back,
+        Nearby                 = 0,
     }
 
     /** Relative position of this game object in reference to its parent. */

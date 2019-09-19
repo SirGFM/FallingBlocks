@@ -1,4 +1,5 @@
 ﻿using Dir = Movement.Direction;
+using Vec3 = UnityEngine.Vector3;
 
 namespace Movement {
     /** List of directions an object may face (in camera space),
@@ -52,6 +53,30 @@ public static class MovementMethods {
             return d.rotateClockWise();
         default:
             throw new System.Exception("Invalid forward orientation");
+        }
+    }
+
+    /**
+     * Rotates a given to local orientation.
+     */
+    public static Vec3 toVec3(this Dir d) {
+        switch (d) {
+        case Dir.none:
+            return new Vec3(0.0f, 0.0f, 0.0f);
+        case Dir.front:
+            return new Vec3(0.0f, 0.0f, 1.0f);
+        case Dir.back:
+            return new Vec3(0.0f, 0.0f, -1.0f);
+        case Dir.left:
+            return new Vec3(-1.0f, 0.0f, 0.0f);
+        case Dir.right:
+            return new Vec3(1.0f, 0.0f, 0.0f);
+        case Dir.top:
+            return new Vec3(0.0f, 1.0f, 0.0f);
+        case Dir.bottom:
+            return new Vec3(0.0f, -1.0f, 0.0f);
+        default:
+            throw new System.Exception("Invalid direction");
         }
     }
 }

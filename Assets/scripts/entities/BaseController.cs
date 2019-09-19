@@ -3,6 +3,7 @@ using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = ReportRelativeCollision.RelativePosition;
+using Vec3 = UnityEngine.Vector3;
 
 public interface OnEntityDone : EvSys.IEventSystemHandler {
     /** Event dispatched when the entity reaches its goal */
@@ -34,6 +35,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
     protected Animation anim;
     /** Whether the entity is on a block (and may ledge it) */
     private bool isOnBlock;
+    /** Position of the entity before its last movement */
+    private Vec3 lastPosition;
 
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
@@ -74,6 +77,8 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         /* Avoid corner cases by checking before doing anything */
         if (this.isMoving())
             return;
+
+        this.lastPosition = this.transform.position;
 
         /* Compound the movement by looking at the surroundings */
         bool frontWall = this.collisionTracker[RelPos.Front.toIdx()] > 0;
@@ -131,12 +136,11 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
         }
     }
 
-    protected Dir getRelativeDirection(GO target) {
+    protected Dir getRelativeDirection(UnityEngine.Vector3 other) {
         Dir d = Dir.none;
-        UnityEngine.Vector3 self, other;
+        UnityEngine.Vector3 self;
 
         self = this.transform.position;
-        other = target.transform.position;
 
         if (other.x > self.x)
             d = Dir.right;
@@ -152,6 +156,18 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
             d = Dir.bottom;
 
         return d;
+    }
+
+    protected Dir getRelativeDirection(GO target) {
+        return this.getRelativeDirection(target.transform.position);
+    }
+
+    public Dir getFacing() {
+        return this.facing;
+    }
+
+    public Vec3 getLastPosition() {
+        return this.lastPosition;
     }
 
     /**

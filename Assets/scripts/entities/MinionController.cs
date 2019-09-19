@@ -82,23 +82,28 @@ public class MinionController : BaseController, iDetectFall {
 
     private void followEntity(State st) {
         Vec3 self, other;
-        float dist, yDist;
+        float yDist;
+        Dir otherDir = Dir.none;
 
-        /* Calculate the Manhattan distance in the XZ axis of the
-         * entities to decide how to move */
-        self = this.transform.position;
         other = this.target.transform.position;
-        dist = v3dist(self, other, 0/*x*/);
-        dist += v3dist(self, other, 2/*z*/);
+        do {
+            BaseController b = this.target.GetComponent<BaseController>();
+            if (b != null) {
+                otherDir = b.getFacing();
+                other = b.getLastPosition();
+            }
+        } while (false);
+
+        self = this.transform.position;
         yDist = v3dist(self, other, 1/*y*/);
 
-        Dir d = this.getRelativeDirection(this.target);
-        if (d != this.facing)
+        Dir d = this.getRelativeDirection(other);
+        if (d == Dir.none)
+            { /* Do nothing */ }
+        else if (d != this.facing)
             this.turn(d);
-        else {
-            if (st == State.EnterChest || dist > 1.5f)
-                this.tryMoveForward(yDist < 1.0f);
-        }
+        else
+            this.tryMoveForward(yDist < 1.0f);
     }
 
     private void doState(State st) {
