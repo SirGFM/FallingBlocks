@@ -1,8 +1,10 @@
 ﻿using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using IEnumerator = System.Collections.IEnumerator;
-using Vec3 = UnityEngine.Vector3;
+using Obj = UnityEngine.Object;
+using Quat = UnityEngine.Quaternion;
 using Scene = UnityEngine.SceneManagement.Scene;
+using Vec3 = UnityEngine.Vector3;
 
 public class SpawnController : UnityEngine.MonoBehaviour {
     /** Tag of objects that should be vertically spaced out */
@@ -12,6 +14,10 @@ public class SpawnController : UnityEngine.MonoBehaviour {
     public UnityEngine.Transform startPosition;
     /** The starting position of the next sub-scene */
     public UnityEngine.Transform topRow;
+    /** The starting position on the minion in this sub-scene */
+    public UnityEngine.Transform[] minionPositions;
+    /** Minion prefab */
+    public GO minion;
 
     void Start() {
     }
@@ -58,6 +64,11 @@ public class SpawnController : UnityEngine.MonoBehaviour {
             Vec3 pos = this.startPosition.position;
             EvSys.ExecuteEvents.ExecuteHierarchy<OnSceneEvent>(
                     caller, null, (x,y)=>x.OnSceneReady(pos));
+        }
+
+        foreach (UnityEngine.Transform t in this.minionPositions) {
+            Obj.Instantiate(this.minion, t.position, Quat.identity);
+            /** TODO: Increase minion count */
         }
 
         for (; i < 16; i++) {
