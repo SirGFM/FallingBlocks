@@ -223,8 +223,11 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
                         this.gameObject, null, (x,y)=>x.Halt(this.gameObject));
             this.isOnBlock = (c.gameObject.tag == "Block");
         }
-        else if (p == RelPos.Center && c.gameObject != this.gameObject)
-            this.StartCoroutine(this.die());
+        else if (p == RelPos.Center && c.gameObject != this.gameObject) {
+            /* Only die if not colliding against an entity */
+            if (c.gameObject.GetComponent<BaseController>() == null)
+                this.StartCoroutine(this.die());
+        }
         this._onEnterRelativeCollision(p, c);
     }
 
