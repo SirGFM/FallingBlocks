@@ -51,6 +51,7 @@ public class MinionController : BaseController, iDetectFall {
     public enum State {
         None = 0,
         Shiver,       /* Shivers in place if no other entity is around */
+        WanderAround, /* WanderAround, trying to look another entity */
         Follow,       /* Following a leader of sorts */
         PseudoLeader, /* Ramdonly elected as a leader, in place of the player */
         Leader,       /* Minion closest to the player, and following them */
@@ -61,6 +62,10 @@ public class MinionController : BaseController, iDetectFall {
     private const string LeaderTag = "Player";
     /** Tag of the object that should be used as the goal */
     private const string GoalTag = "Finish";
+    /** Minimum duration of the shiver animation */
+    private const float minShiverTime = 0.5f;
+    /** Maximum duration of the shiver animation */
+    private const float maxShiverTime = 1.5f;
 
     /** The entity leading this one */
     private GO target;
@@ -109,6 +114,20 @@ public class MinionController : BaseController, iDetectFall {
     private void doState(State st) {
         switch (st) {
         case State.Shiver:
+            this.shiver(minShiverTime, maxShiverTime);
+            this.nextState = State.WanderAround;
+            break;
+        case State.WanderAround:
+            bool front = this.collisionTracker[RelPos.Front.toIdx()] > 0;
+            bool floor = this.collisionTracker[RelPos.FrontBottom.toIdx()] > 0;
+            if (!front && floor) {
+                this.tryMoveForward();
+                this.nextState = State.WanderAround;
+            }
+            else {
+                this.turn(Dir.right.toLocal(this.facing));
+                this.nextState = State.Shiver;
+            }
             break;
         case State.Follow:
         case State.Leader:
