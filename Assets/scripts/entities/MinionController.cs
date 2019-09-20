@@ -45,6 +45,16 @@ public static class StateMethods {
     public static bool isEnterChest(this MinionController.State s) {
         return s == MinionController.State.EnterChest;
     }
+
+    public static bool isShivering(this MinionController.State s) {
+        switch (s) {
+        case MinionController.State.Shiver:
+        case MinionController.State.WanderAround:
+            return true;
+        default:
+            return false;
+        }
+    }
 }
 
 public class MinionController : BaseController, iDetectFall {
@@ -58,6 +68,9 @@ public class MinionController : BaseController, iDetectFall {
         EnterChest,   /* Entering a nearby chest */
     };
 
+    /** Whether any of the minions on screen is a leader */
+    private static bool hasLeader = false;
+
     /** Tag of the object that should be used as the real leader */
     private const string LeaderTag = "Player";
     /** Tag of the object that should be used as the goal */
@@ -69,9 +82,15 @@ public class MinionController : BaseController, iDetectFall {
 
     /** The entity leading this one */
     private GO target;
+    private GO leader;
+    private GO goal;
+    private GO lastMinion;
+
     private State nextState;
     private State state;
     private int closeMinion;
+    /** How many colliders are detecting the leader */
+    private int closeLeader;
 
     // Start is called before the first frame update
     void Start() {
@@ -143,14 +162,47 @@ public class MinionController : BaseController, iDetectFall {
             else
                 this.turn(Dir.left.toLocal(this.facing));
             break;
-        }
+        } /* switch (st) */
+        if (this.state == State.Leader &&
+                this.nextState != this.state &&
+                this.nextState != State.None)
+            MinionController.hasLeader = false;
         this.state = st;
-        this.nextState = State.None;
+        if (this.nextState == st)
+            this.nextState = State.None;
+    }
+
+    private void updateState() {
+        if (this.goal != null) {
+            this.nextState = State.EnterChest;
+            this.target = this.goal;
+        }
+        else if (this.closeLeader > 0 && !MinionController.hasLeader) {
+            MinionController.hasLeader = true;
+            this.nextState = State.Leader;
+            this.target = this.leader;
+        }
+        else if (this.closeMinion > 0) {
+            MinionController other;
+            other = this.lastMinion.GetComponent<MinionController>();
+            if (other.state.shouldFollow() || other.nextState.shouldFollow()) {
+                this.nextState = State.Follow;
+                this.target = this.lastMinion;
+            }
+            else {
+                this.nextState = State.PseudoLeader;
+            }
+        }
+        else if (this.closeLeader == 0 && !this.state.isShivering()) {
+            this.nextState = State.Shiver;
+        }
     }
 
     void Update() {
         if (this.anim != Animation.None)
             return;
+
+        updateState();
 
         if (this.nextState != State.None)
             doState(this.nextState);
@@ -158,72 +210,43 @@ public class MinionController : BaseController, iDetectFall {
             doState(this.state);
     }
 
-    private void modCloseMinions(int num, MinionController other) {
-        this.closeMinion += num;
-
-        /* Do nothing if already targeting the chest */
-        if (this.state.isEnterChest() || this.nextState.isEnterChest())
-            return;
-
-        switch (this.closeMinion) {
-        case 0:
-            /* Just got separated of the last minion */
-            if (this.state != State.Leader) {
-                this.nextState = State.Shiver;
-                this.target = null;
-            }
-            break;
-        case 1:
-            if (this.state.isLeader() && this.nextState.isLeader())
-                { /* Do nothing: this entity is already following the player */ }
-            else if (other.state.shouldFollow() ||
-                    other.nextState.shouldFollow()) {
-                /* Just found another minion: follow it */
-                this.nextState = State.Follow;
-                this.target = other.gameObject;
-            }
-            else
-                /* Just *was* found by another minion: make it follow this */
-                this.nextState = State.PseudoLeader;
-            break;
-        }
-    }
-
     override protected void _onEnterRelativeCollision(RelPos p, UEColl c) {
         if (c.gameObject.tag == this.gameObject.tag) {
             MinionController other;
 
             other = c.gameObject.GetComponent<MinionController>();
-            this.modCloseMinions(1/*num*/, other);
+            if (other != this) {
+                this.lastMinion = c.gameObject;
+                this.closeMinion++;
+            }
         }
         else if (c.gameObject.tag == MinionController.LeaderTag) {
             /* Found the player */
-            this.nextState = State.Leader;
-            this.target = c.gameObject;
+            this.closeLeader++;
+            this.leader = c.gameObject;
         }
         else if (c.gameObject.tag == MinionController.GoalTag) {
             /* Found the end-of-level goal */
-            this.nextState = State.EnterChest;
-            this.target = c.gameObject;
+            this.goal = c.gameObject;
         }
     }
 
     override protected void _onExitRelativeCollision(RelPos p, UEColl c) {
         if (c.gameObject.tag == this.gameObject.tag) {
             MinionController other;
-
             other = c.gameObject.GetComponent<MinionController>();
-            this.modCloseMinions(-1/*num*/, other);
+            if (other != this)
+                this.closeMinion--;
         }
         else if (c.gameObject.tag == MinionController.LeaderTag) {
             /* Lost track of the player */
-            this.nextState = State.Shiver;
-            this.target = null;
+            this.closeLeader--;
+            if (this.closeLeader == 0)
+                this.leader = null;
         }
         else if (c.gameObject.tag == MinionController.GoalTag) {
             /* (shouldn't happen) Lost track of the end-of-level goal */
-            this.nextState = State.Shiver;
-            this.target = null;
+            this.goal = null;
         }
     }
 }
