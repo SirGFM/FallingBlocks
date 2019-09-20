@@ -282,4 +282,34 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
     public void OnFinishFalling(GO callee) {
         this.anim &= ~Animation.Fall;
     }
+
+    private System.Collections.IEnumerator doShiver(float duration) {
+        this.anim |= Animation.Shiver;
+        /* TODO: Find a way to send messages downward and clean this mess */
+        GO self = this.GetComponentInChildren<RumbleAnim>().gameObject;
+        if (self != null) {
+            EvSys.ExecuteEvents.ExecuteHierarchy<Rumbler>(
+                    self, null, (x,y)=>x.StartRumbling());
+            yield return new UnityEngine.WaitForSeconds(duration);
+            EvSys.ExecuteEvents.ExecuteHierarchy<Rumbler>(
+                    self, null, (x,y)=>x.StopRumbling());
+        }
+        this.anim &= ~Animation.Shiver;
+    }
+
+    /**
+     * Rumbles the object for a random amount of time, in seconds
+     *
+     * @param min Minimum duration of shiver animation
+     * @param max Maximum duration of shiver animation
+     */
+    protected void shiver(float min, float max) {
+        if ((this.anim & Animation.Shiver) != 0)
+            return;
+
+        uint mod = 1 + (Global.PRNG.fastUint() % 1000);
+        float fmod = ((float)mod) / 1000;
+
+        this.StartCoroutine(this.doShiver(min + (max - min) * fmod));
+    }
 }
