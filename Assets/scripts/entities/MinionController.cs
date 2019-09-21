@@ -182,7 +182,7 @@ public class MinionController : BaseController, iDetectFall {
             this.nextState = State.Leader;
             this.target = this.leader;
         }
-        else if (this.closeMinion > 0) {
+        else if (this.closeMinion > 0 && this.state.canFollowLeader()) {
             MinionController other;
             other = this.lastMinion.GetComponent<MinionController>();
             if (other.state.shouldFollow() || other.nextState.shouldFollow()) {
@@ -193,7 +193,8 @@ public class MinionController : BaseController, iDetectFall {
                 this.nextState = State.PseudoLeader;
             }
         }
-        else if (this.closeLeader == 0 && !this.state.isShivering()) {
+        else if (this.closeLeader == 0 && this.closeMinion == 0 &&
+                !this.state.isShivering()) {
             this.nextState = State.Shiver;
         }
     }
