@@ -21,6 +21,7 @@ public static class StateMethods {
     /** Whether this state makes the entity a desireable leader. */
     public static bool shouldFollow(this MinionController.State s) {
         switch (s) {
+        case MinionController.State.Follow:
         case MinionController.State.PseudoLeader:
         case MinionController.State.Leader:
         case MinionController.State.EnterChest:
@@ -33,7 +34,6 @@ public static class StateMethods {
     /** Whether this state allows the entity to follow a leader. */
     public static bool canFollowLeader(this MinionController.State s) {
         switch (s) {
-        case MinionController.State.PseudoLeader:
         case MinionController.State.Leader:
         case MinionController.State.EnterChest:
             return false;
