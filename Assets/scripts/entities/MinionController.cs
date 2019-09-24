@@ -104,6 +104,14 @@ public class MinionController : BaseController, iDetectFall {
         return Math.Abs(a[idx] - b[idx]);
     }
 
+    private System.Collections.IEnumerator destroy() {
+        /* XXX: Forcefully move the entity away from any close entity before
+         * destroying it, to avoid glitching the physics. */
+        this.transform.position = new UnityEngine.Vector3(0.0f, -10.0f, 0.0f);
+        yield return new UnityEngine.WaitForFixedUpdate();
+        UnityEngine.GameObject.Destroy(this.gameObject);
+    }
+
     private void followEntity(State st) {
         Vec3 self, other;
         float yDist;
@@ -248,6 +256,18 @@ public class MinionController : BaseController, iDetectFall {
         else if (c.gameObject.tag == MinionController.GoalTag) {
             /* (shouldn't happen) Lost track of the end-of-level goal */
             this.goal = null;
+        }
+    }
+
+    void OnTriggerEnter(UnityEngine.Collider c) {
+        if (c.gameObject.tag == MinionController.GoalTag) {
+            /* TODO: Find a way to send messages downward and clean this mess */
+            if (Global.sceneMinionGoal != null) {
+                Global.sceneMinionGoal.foundMinion();
+                this.StartCoroutine(this.destroy());
+                /* Force every other interaction to stop */
+                this.anim = Animation.Goal;
+            }
         }
     }
 }
