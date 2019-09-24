@@ -72,7 +72,9 @@ public class SpawnController : UnityEngine.MonoBehaviour {
 
         foreach (UnityEngine.Transform t in this.minionPositions) {
             Obj.Instantiate(this.minion, t.position, Quat.identity);
-            /** TODO: Increase minion count */
+            /** Increase minion count */
+            if (minionGoal != null)
+                minionGoal.increaseMaxMinion();
         }
 
         for (; i < 16; i++) {
