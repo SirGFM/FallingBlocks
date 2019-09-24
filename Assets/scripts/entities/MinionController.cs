@@ -57,7 +57,7 @@ public static class StateMethods {
     }
 }
 
-public class MinionController : BaseController, iDetectFall {
+public class MinionController : BaseController, iDetectFall, OnEntityDone {
     public enum State {
         None = 0,
         Shiver,       /* Shivers in place if no other entity is around */
@@ -259,15 +259,10 @@ public class MinionController : BaseController, iDetectFall {
         }
     }
 
-    void OnTriggerEnter(UnityEngine.Collider c) {
-        if (c.gameObject.tag == MinionController.GoalTag) {
-            /* TODO: Find a way to send messages downward and clean this mess */
-            if (Global.sceneMinionGoal != null) {
-                Global.sceneMinionGoal.foundMinion();
-                this.StartCoroutine(this.destroy());
-                /* Force every other interaction to stop */
-                this.anim = Animation.Goal;
-            }
-        }
+    public void OnGoal() {
+        this.StartCoroutine(this.destroy());
+
+        /* Force every other interaction to stop */
+        this.anim = Animation.Goal;
     }
 }

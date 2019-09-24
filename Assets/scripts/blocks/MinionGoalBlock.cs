@@ -1,4 +1,10 @@
-﻿public class MinionGoalBlock : BaseGoalBlock {
+﻿using EvSys = UnityEngine.EventSystems;
+using GO = UnityEngine.GameObject;
+
+public class MinionGoalBlock : BaseGoalBlock, ActivateOnTop {
+    /** Tag used to identify a player */
+    private const string minionTag = "Minion";
+
     /** Default size of the light */
     private const float defaultRadius = 1.5f;
     /** The halo object */
@@ -21,17 +27,6 @@
         this.max++;
     }
 
-    public void foundMinion() {
-        /* Looking back at this, I could have used ActivateOnTop... but I
-         * completely forgot about it */
-        this.count++;
-        if (this.count == this.max) {
-            this.showWinScreen();
-            /* TODO: Wait some time so the fanfare/screen is on for a while */
-            this.nextStage();
-        }
-    }
-
     // Update is called once per frame
     void Update() {
         float y;
@@ -44,5 +39,26 @@
         y = this.radius;
         y = 4 * y * (1.0f - y);
         this.halo.range = y + MinionGoalBlock.defaultRadius;
+    }
+
+    public void OnEnterTop(GO other) {
+        if (other.tag != MinionGoalBlock.minionTag)
+            return;
+
+        /* Make the minion disappear */
+        EvSys.ExecuteEvents.ExecuteHierarchy<OnEntityDone>(
+                other, null, (x,y)=>x.OnGoal());
+
+        /* Check whether the stage is over */
+        this.count++;
+        if (this.count == this.max) {
+            this.showWinScreen();
+            /* TODO: Wait some time so the fanfare/screen is on for a while */
+            this.nextStage();
+        }
+    }
+
+    public void OnLeaveTop(UnityEngine.GameObject other) {
+        /* Do nothing! */
     }
 }

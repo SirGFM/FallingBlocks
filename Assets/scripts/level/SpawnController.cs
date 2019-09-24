@@ -47,7 +47,6 @@ public class SpawnController : UnityEngine.MonoBehaviour {
             float newY = bPos.y + p.y * 1.3f;
             t.position = new Vec3(bPos.x + p.x, newY, bPos.z + p.z);
         }
-        Global.sceneMinionGoal = minionGoal;
 
         foreach (GO b in objs) {
             if (b.tag != blockTag)
