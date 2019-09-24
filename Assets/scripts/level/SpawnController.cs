@@ -35,15 +35,19 @@ public class SpawnController : UnityEngine.MonoBehaviour {
 
         GO[] objs = scene.GetRootGameObjects();
         Vec3 bPos = transform.position;
+        MinionGoalBlock minionGoal = null;
 
         foreach (GO b in objs) {
             if (b.tag != blockTag)
                 continue;
+            if (minionGoal == null)
+                minionGoal = b.GetComponentInChildren<MinionGoalBlock>();
             UnityEngine.Transform t = b.transform;
             Vec3 p = t.position;
             float newY = bPos.y + p.y * 1.3f;
             t.position = new Vec3(bPos.x + p.x, newY, bPos.z + p.z);
         }
+        Global.sceneMinionGoal = minionGoal;
 
         foreach (GO b in objs) {
             if (b.tag != blockTag)

@@ -2,6 +2,7 @@
     static public bool isReady = false;
 
     static public int curCheckpoint = 0;
+    static public MinionGoalBlock sceneMinionGoal = null;
 
     static public void setup() {
         if (Global.isReady)
@@ -10,6 +11,7 @@
         PRNG.setup();
         Global.isReady = true;
         Global.curCheckpoint = 0;
+        Global.sceneMinionGoal = null;
     }
 
     /** Implements a simple (Box-Muller?) PRNG */
