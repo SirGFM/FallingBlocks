@@ -154,13 +154,16 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
             GO[] list = getSortedBlocksInFront();
             if (list.Length == 0)
                 return;
-            this.anim |= Animation.Push;
+
             float speed = 0.0f;
             foreach (GO go in list) {
                 BlockMovement bm = go.GetComponent<BlockMovement>();
+                if (bm.MoveDelay == 0.0f)
+                    return;
                 speed = Math.Max(speed, bm.MoveDelay);
             }
 
+            this.anim |= Animation.Push;
             foreach (GO go in list) {
                 EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
                         go, null, (x,y)=>x.Move(this.facing, this.gameObject, speed));
@@ -171,6 +174,8 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
             /* Pull the block */
             BlockMovement bm = this.frontBlock.GetComponent<BlockMovement>();
             if (bm == null)
+                return;
+            else if (bm.MoveDelay == 0.0f)
                 return;
             this.anim |= Animation.Push;
             EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(
