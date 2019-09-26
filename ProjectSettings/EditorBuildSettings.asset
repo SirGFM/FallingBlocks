@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/scenes/002_Ledge/Loader.unity
     guid: 9bc32fa81a232164ea3673b490102385
   - enabled: 1
+    path: Assets/scenes/002-2_MoreLedges/Loader.unity
+    guid: b72b5024585555fcd9bdab0acf2b7543
+  - enabled: 1
     path: Assets/scenes/003_TakingItDown/Loader.unity
     guid: 2d7216d3d4cba1e97a5f6eaecb2a0d7f
   - enabled: 1
@@ -50,4 +53,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/002_Ledge/001.unity
     guid: 6570edb4f8c67b8e28190f3b7e8170a9
+  - enabled: 1
+    path: Assets/scenes/002-2_MoreLedges/001.unity
+    guid: c9350fdca1d4d9b209149f7ccf4195ba
+  - enabled: 1
+    path: Assets/scenes/002-2_MoreLedges/002.unity
+    guid: 8e97a79fe818a7afaa72932e2e706ce5
   m_configObjects: {}
