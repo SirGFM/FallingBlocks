@@ -304,7 +304,7 @@ MonoBehaviour:
   subSceneList:
   - scenes/002_Ledge/001
   player: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425, type: 3}
-  title: Going Around
+  title: Hanging on the Ledge
 --- !u!4 &2122245392
 Transform:
   m_ObjectHideFlags: 0
