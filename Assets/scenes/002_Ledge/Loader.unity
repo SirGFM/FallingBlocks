@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   subSceneList:
-  - scenes/002_OverTheLedge/001
+  - scenes/002_Ledge/001
   player: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425, type: 3}
   title: Going Around
 --- !u!4 &2122245392
