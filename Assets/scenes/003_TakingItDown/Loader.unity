@@ -220,6 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   subSceneList:
   - scenes/003_TakingItDown/001
+  - scenes/003_TakingItDown/002
   player: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425, type: 3}
   title: Taking It Down
 --- !u!4 &375701210
