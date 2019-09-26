@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/scenes/001_BasicWall/Loader.unity
     guid: 3be3e145c5c016b43b2af8311c65d941
   - enabled: 1
+    path: Assets/scenes/001-2_MovingBlocks/Loader.unity
+    guid: aa16920fe822cb3c7b970f069ae557ae
+  - enabled: 1
     path: Assets/scenes/002_OverTheLedge/Loader.unity
     guid: 9bc32fa81a232164ea3673b490102385
   - enabled: 1
@@ -38,4 +41,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/005_Companion/001.unity
     guid: 573759904d092d2be96992c54d0c62fc
+  - enabled: 1
+    path: Assets/scenes/001-2_MovingBlocks/001.unity
+    guid: a160055f5a192fb3494127f7a46ad11f
+  - enabled: 1
+    path: Assets/scenes/001-2_MovingBlocks/002.unity
+    guid: 7d8dcf7ce0357e2b493c892922ff24e5
+  - enabled: 1
+    path: Assets/scenes/001-2_MovingBlocks/003.unity
+    guid: 976e4500be4d2a0eca35a5f794ebe818
   m_configObjects: {}
