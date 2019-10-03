@@ -91,6 +91,7 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
     private int closeMinion;
     /** How many colliders are detecting the leader */
     private int closeLeader;
+    private static int globalCloseLeader = 0;
 
     // Start is called before the first frame update
     void Start() {
@@ -217,6 +218,11 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
             doState(this.nextState);
         else if (this.state != State.None)
             doState(this.state);
+
+        /* (possibly) Avoid weird corner cases */
+        if (MinionController.hasLeader &&
+                MinionController.globalCloseLeader == 0)
+            MinionController.hasLeader = false;
     }
 
     override protected void _onEnterRelativeCollision(RelPos p, UEColl c) {
@@ -232,6 +238,7 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
         else if (c.gameObject.tag == MinionController.LeaderTag) {
             /* Found the player */
             this.closeLeader++;
+            MinionController.globalCloseLeader++;
             this.leader = c.gameObject;
         }
         else if (c.gameObject.tag == MinionController.GoalTag) {
@@ -250,6 +257,7 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
         else if (c.gameObject.tag == MinionController.LeaderTag) {
             /* Lost track of the player */
             this.closeLeader--;
+            MinionController.globalCloseLeader--;
             if (this.closeLeader == 0)
                 this.leader = null;
         }
