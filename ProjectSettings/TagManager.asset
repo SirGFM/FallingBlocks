@@ -8,6 +8,7 @@ TagManager:
   - Minion
   - Checkpoint
   - Title
+  - KillPlane
   layers:
   - Default
   - TransparentFX
