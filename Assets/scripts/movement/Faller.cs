@@ -28,7 +28,7 @@ public interface iDetectFall : EvSys.IEventSystemHandler {
 
 public class Faller : BaseRemoteAction, iSignalFall {
     /** Whether the object is currently falling. */
-    private bool isFalling = false;
+    private bool _isFalling = false;
     /** Whether the object should start aligning itself. */
     private bool startAligning = false;
     /** Aligned after the object stops falling. */
@@ -73,7 +73,7 @@ public class Faller : BaseRemoteAction, iSignalFall {
         while (this.blocked)
             yield return new UnityEngine.WaitForFixedUpdate();
 
-        this.isFalling = true;
+        this._isFalling = true;
         this.issueEvent<iDetectFall>((x,y)=>x.OnStartFalling(this.gameObject));
 
         this.rb.isKinematic = false;
@@ -98,7 +98,7 @@ public class Faller : BaseRemoteAction, iSignalFall {
         yield return new UnityEngine.WaitForFixedUpdate();
 
         this.bgFunc = null;
-        this.isFalling = false;
+        this._isFalling = false;
         this.issueEvent<iDetectFall>((x,y)=>x.OnFinishFalling(this.gameObject));
     }
 
@@ -109,7 +109,7 @@ public class Faller : BaseRemoteAction, iSignalFall {
     }
 
     public void Fall(GO caller) {
-        if (this.isFalling)
+        if (this._isFalling)
             return;
 
         this.startAligning = false;
@@ -118,13 +118,13 @@ public class Faller : BaseRemoteAction, iSignalFall {
     }
 
     public void Halt(GO caller) {
-        if (this.bgFunc != null && !this.isFalling) {
+        if (this.bgFunc != null && !this._isFalling) {
             /* If this object was blocked long enough that it didn't even start
              * falling, simply cancel the action */
             this.StopCoroutine(this.bgFunc);
             this.bgFunc = null;
         }
-        else if (!this.isFalling)
+        else if (!this._isFalling)
             return;
 
         this.startAligning = true;
@@ -137,5 +137,9 @@ public class Faller : BaseRemoteAction, iSignalFall {
 
     public void unblock() {
         this.blocked = false;
+    }
+
+    public bool isFalling() {
+        return this._isFalling;
     }
 }
