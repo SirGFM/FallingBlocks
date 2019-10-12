@@ -63,6 +63,11 @@ public class BaseController : UnityEngine.MonoBehaviour, OnRelativeCollisionEven
      */
     virtual protected void setOnLedge() { }
 
+    /**
+     * Check whether the entity is on the ledge.
+     */
+    virtual public bool isOnLedge() { return false; }
+
     protected void move(Dir d, float speed) {
         GO self = this.gameObject;
         EvSys.ExecuteEvents.ExecuteHierarchy<iTiledMovement>(self, null,

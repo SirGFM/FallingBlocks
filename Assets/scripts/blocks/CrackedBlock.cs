@@ -59,6 +59,14 @@ public class CrackedBlock : UnityEngine.MonoBehaviour, ActivateOnTop {
     }
 
     public void OnLeaveTop(UnityEngine.GameObject other) {
+        BaseController bc;
+
+        if (other.tag == this.gameObject.tag)
+            return;
+        bc = other.GetComponentInChildren<BaseController>();;
+        if (bc && bc.isOnLedge())
+            return;
+
         this.state++;
         this.updateAsset();
         if (state == State.broken)

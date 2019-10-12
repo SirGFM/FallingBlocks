@@ -268,6 +268,10 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
         this.onLedge = true;
     }
 
+    override public bool isOnLedge() {
+        return this.onLedge;
+    }
+
     // Update is called once per frame
     void Update() {
         if (this.anim != Animation.None)
