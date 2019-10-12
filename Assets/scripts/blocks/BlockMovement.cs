@@ -2,7 +2,7 @@
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 
-public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved, iDetectFall {
+public class BlockMovement : DestroyableBlock, OnBlockEdge, iTiledMoved, iDetectFall, iDeathOnFall {
     /** How long to wait until falling, if the block bellow was pushed */
     private const float fallWait = 1.0f;
 
@@ -16,6 +16,8 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
     private bool _isMoving;
     /** Whether the block is already trying to fall (see haltedStartFalling) */
     private bool isTryingToFall;
+    /** Whether the block is falling as part of the level setup */
+    private bool isFirstFall;
 
     /** How long moving a tile takes */
     public float MoveDelay = 0.6f;
@@ -38,6 +40,7 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
             throw new System.Exception("Faller not found in BlockMovement");
 
         this._isMoving = false;
+        this.isFirstFall = true;
     }
 
     public void OnTouchEdge(EdgeBase.Direction d) {
@@ -107,9 +110,16 @@ public class BlockMovement : UnityEngine.MonoBehaviour, OnBlockEdge, iTiledMoved
     }
 
     public void OnFinishFalling(GO callee) {
+        this.isFirstFall = false;
     }
 
     public bool isMoving() {
         return this._isMoving;
+    }
+
+    public void OnKillPlane() {
+        if (this.fall.isFalling() && !this.isFirstFall) {
+            this.destroyBlock();
+        }
     }
 }

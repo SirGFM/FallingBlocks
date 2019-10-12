@@ -1,6 +1,7 @@
 ﻿using Container = System.Collections.Generic.HashSet<int>;
 
 public class DetectEdge : EdgeBase {
+    private const string KillPlaneTag = "KillPlane";
 
     /** List of colliders directly above this one */
     private Container colliders;
@@ -22,8 +23,17 @@ public class DetectEdge : EdgeBase {
         bc.isTrigger = true;
     }
 
+    private void checkKillPlane(UnityEngine.GameObject other) {
+        if (other.tag == DetectEdge.KillPlaneTag) {
+            /* Send upward event */
+            UnityEngine.EventSystems.ExecuteEvents.ExecuteHierarchy<iDeathOnFall>(
+                    this.gameObject, null, (x,y)=>x.OnKillPlane());
+        }
+    }
+
     void OnTriggerEnter(UnityEngine.Collider c) {
         /* XXX: Layer should ensure c is a ReportTopEdge */
+        this.checkKillPlane(c.gameObject);
 
         /* Ignore if already in the list */
         if (colliders.Contains(c.GetInstanceID()))
