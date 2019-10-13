@@ -6,13 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/scenes/001_BasicWall/Loader.unity
+    path: Assets/scenes/001-1_BasicWall/Loader.unity
     guid: 3be3e145c5c016b43b2af8311c65d941
   - enabled: 1
     path: Assets/scenes/001-2_MovingBlocks/Loader.unity
     guid: aa16920fe822cb3c7b970f069ae557ae
   - enabled: 1
-    path: Assets/scenes/002_Ledge/Loader.unity
+    path: Assets/scenes/001-3_CrumblingDown/Loader.unity
+    guid: 978ddd8f278864d2cb83b859a7597f2e
+  - enabled: 1
+    path: Assets/scenes/002-1_Ledge/Loader.unity
     guid: 9bc32fa81a232164ea3673b490102385
   - enabled: 1
     path: Assets/scenes/002-2_MoreLedges/Loader.unity
@@ -24,7 +27,7 @@ EditorBuildSettings:
     path: Assets/scenes/004-0_MakingBridges/Loader.unity
     guid: 4306f452afdce813ca58973305dff02b
   - enabled: 1
-    path: Assets/scenes/004_CrossingOver/Loader.unity
+    path: Assets/scenes/004-1_CrossingOver/Loader.unity
     guid: 30ca53c93283d73989e38d088dfc5ad9
   - enabled: 1
     path: Assets/scenes/005_Companion/Loader.unity
@@ -33,7 +36,7 @@ EditorBuildSettings:
     path: Assets/scenes/LoadingUI.unity
     guid: e34e4eb9bf10499a6bd14765fe0f079d
   - enabled: 1
-    path: Assets/scenes/001_BasicWall/001.unity
+    path: Assets/scenes/001-1_BasicWall/001.unity
     guid: a5ea42f1ba3c43db39883f3ffcfec827
   - enabled: 1
     path: Assets/scenes/001-2_MovingBlocks/001.unity
@@ -45,7 +48,7 @@ EditorBuildSettings:
     path: Assets/scenes/001-2_MovingBlocks/003.unity
     guid: 976e4500be4d2a0eca35a5f794ebe818
   - enabled: 1
-    path: Assets/scenes/002_Ledge/001.unity
+    path: Assets/scenes/002-1_Ledge/001.unity
     guid: 6570edb4f8c67b8e28190f3b7e8170a9
   - enabled: 1
     path: Assets/scenes/002-2_MoreLedges/001.unity
@@ -63,9 +66,15 @@ EditorBuildSettings:
     path: Assets/scenes/004-0_MakingBridges/001.unity
     guid: d24f957310573309684aa1963e08ba8d
   - enabled: 1
-    path: Assets/scenes/004_CrossingOver/001.unity
+    path: Assets/scenes/004-1_CrossingOver/001.unity
     guid: 5d57ed7f2bdd182da87f846f2a9b1c69
   - enabled: 1
     path: Assets/scenes/005_Companion/001.unity
     guid: 573759904d092d2be96992c54d0c62fc
+  - enabled: 1
+    path: Assets/scenes/001-3_CrumblingDown/001.unity
+    guid: 1eff5b6f3348d333bb9c91b4bf7b8ccc
+  - enabled: 1
+    path: Assets/scenes/001-3_CrumblingDown/002.unity
+    guid: 20eb881589a0fdaa69448a6d02691f7f
   m_configObjects: {}
