@@ -45,13 +45,15 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     public string title;
 
     /** Whether the current sub-scene has finished loading */
-    private bool done;
+    private int done;
     /** Whether the player has already been spawned in this scene */
     private bool didSpawnPlayer;
     /** Name of the level's main scene (that loads everything) */
     private int mainScene;
     /** Whether the level is already resetting */
     private bool resetting;
+    /** Whether reset has been pressed while loading */
+    private bool doReset;
 
     /** Tag of UI elements for displaying a level's name */
     private const string titleTag = "Title";
@@ -68,6 +70,8 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
         Global.setup();
         this.mainScene = SceneMng.GetActiveScene().buildIndex;
         this.resetting = false;
+        this.doReset = false;
+        this.done = 0;
         this.StartCoroutine(this.load());
         this.nextBaseY = new Vec3(0.0f, 1.0f, 0.0f);
     }
@@ -91,10 +95,10 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
             yield return op;
         } while (false);
 
+        this.done = first;
         for (int i = first; i < this.subSceneList.Length; i++) {
             string s = this.subSceneList[i];
 
-            this.done = false;
             /* XXX: When done, this dispatches an OnSceneLoaded */
             AsyncOp op = SceneMng.LoadSceneAsync(s, SceneMode.Additive);
             while (op.progress < 1.0f) {
@@ -105,7 +109,7 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
             }
 
             /* XXX: The progress should be updated from OnUpdateProgress */
-            while (!this.done)
+            while (this.done == i)
                 yield return null;
 
             /* Remove progress bar (if active) */
@@ -162,13 +166,19 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
     }
 
     public void OnSceneDone() {
-        this.done = true;
+        this.done++;
     }
 
     void Update() {
-        if (this.done && !this.resetting && Input.GetAxisRaw("Reset") > 0.5f) {
-            SceneMng.LoadSceneAsync(this.mainScene, SceneMode.Single);
-            this.resetting = true;
+        if (!this.resetting && this.doReset || Input.GetAxisRaw("Reset") > 0.5f) {
+            if (!this.doReset && this.done < this.subSceneList.Length) {
+                this.doReset = true;
+                /* TODO: Send in-game warning */
+            }
+            else if (this.done >= this.subSceneList.Length && !this.resetting) {
+                SceneMng.LoadSceneAsync(this.mainScene, SceneMode.Single);
+                this.resetting = true;
+            }
         }
     }
 }
