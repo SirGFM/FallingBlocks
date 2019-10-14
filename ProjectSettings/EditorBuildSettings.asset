@@ -33,6 +33,9 @@ EditorBuildSettings:
     path: Assets/scenes/005-0_EverythingIsFalling/Loader.unity
     guid: ee163353427c2fa2cbbed56d2b3f2052
   - enabled: 1
+    path: Assets/scenes/005-1_FragileIslands/Loader.unity
+    guid: 32f6429f46d76a3c8b70fbc4db257abc
+  - enabled: 1
     path: Assets/scenes/005_Companion/Loader.unity
     guid: f0eff9ac300624b64bada6750b2dc2c3
   - enabled: 1
@@ -86,4 +89,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/005-0_EverythingIsFalling/002.unity
     guid: 2f8217bc6b209f1bf8cbc06cd8af560a
+  - enabled: 1
+    path: Assets/scenes/005-1_FragileIslands/001.unity
+    guid: 0e9bbea5afdbfaf88b1d0e28282beb1d
   m_configObjects: {}
