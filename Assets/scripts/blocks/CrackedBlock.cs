@@ -51,7 +51,7 @@ public class CrackedBlock : DestroyableBlock, ActivateOnTop {
         /* TODO Play the breaking animation */
         yield return new UnityEngine.WaitForFixedUpdate();
 
-        this.corDestroyBlock();
+        yield return this.corDestroyBlock();
     }
 
     public void OnLeaveTop(UnityEngine.GameObject other) {
