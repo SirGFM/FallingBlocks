@@ -9,9 +9,13 @@ public class CrackedBlock : DestroyableBlock, ActivateOnTop {
         maxState
     }
 
+    private const float invulnerabilityTime = 1.0f;
+
     private State state;
     private UnityEngine.Coroutine bgFunc;
     private Model curModel;
+    private float firstFrame;
+    private bool invulnerable;
 
     public UnityEngine.Mesh defaultModel;
     public UnityEngine.Mesh breakingModel;
@@ -34,6 +38,8 @@ public class CrackedBlock : DestroyableBlock, ActivateOnTop {
     void Start() {
         this.curModel = this.gameObject.GetComponentInChildren<Model>();
         this.state = State.untouched;
+        this.invulnerable = true;
+        this.firstFrame = UnityEngine.Time.unscaledTime;
         this.updateAsset();
     }
 
@@ -57,6 +63,13 @@ public class CrackedBlock : DestroyableBlock, ActivateOnTop {
     public void OnLeaveTop(UnityEngine.GameObject other) {
         BaseController bc;
 
+        if (this.invulnerable) {
+            /* XXX: Fix a bug when a block originally spawns right bellow the player */
+            float dt = UnityEngine.Time.unscaledTime - this.firstFrame;
+            this.invulnerable = (dt < CrackedBlock.invulnerabilityTime);
+            if (this.invulnerable)
+                return;
+        }
         if (other.tag == this.gameObject.tag)
             return;
         bc = other.GetComponentInChildren<BaseController>();;
