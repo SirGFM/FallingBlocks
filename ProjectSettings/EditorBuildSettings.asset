@@ -30,6 +30,9 @@ EditorBuildSettings:
     path: Assets/scenes/004-1_CrossingOver/Loader.unity
     guid: 30ca53c93283d73989e38d088dfc5ad9
   - enabled: 1
+    path: Assets/scenes/005-0_EverythingIsFalling/Loader.unity
+    guid: ee163353427c2fa2cbbed56d2b3f2052
+  - enabled: 1
     path: Assets/scenes/005_Companion/Loader.unity
     guid: f0eff9ac300624b64bada6750b2dc2c3
   - enabled: 1
@@ -77,4 +80,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/001-3_CrumblingDown/002.unity
     guid: 20eb881589a0fdaa69448a6d02691f7f
+  - enabled: 1
+    path: Assets/scenes/005-0_EverythingIsFalling/001.unity
+    guid: c7cad6870bdbc1134b90a12f83f67e48
+  - enabled: 1
+    path: Assets/scenes/005-0_EverythingIsFalling/002.unity
+    guid: 2f8217bc6b209f1bf8cbc06cd8af560a
   m_configObjects: {}
