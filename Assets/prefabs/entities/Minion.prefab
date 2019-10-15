@@ -1026,8 +1026,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDelay: 0.4
-  nextState: 0
-  state: 0
 --- !u!114 &3741452095305061049
 MonoBehaviour:
   m_ObjectHideFlags: 0
