@@ -39,9 +39,6 @@ EditorBuildSettings:
     path: Assets/scenes/005-2_BreakingOut/Loader.unity
     guid: 2930ea7f5a54baa38910d66e808d144a
   - enabled: 1
-    path: Assets/scenes/005_Companion/Loader.unity
-    guid: f0eff9ac300624b64bada6750b2dc2c3
-  - enabled: 1
     path: Assets/scenes/006-0_Companion/Loader.unity
     guid: 58fd43a9b8e1fd0deac4cba8537693bc
   - enabled: 1
@@ -80,9 +77,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/004-1_CrossingOver/001.unity
     guid: 5d57ed7f2bdd182da87f846f2a9b1c69
-  - enabled: 1
-    path: Assets/scenes/005_Companion/001.unity
-    guid: 573759904d092d2be96992c54d0c62fc
   - enabled: 1
     path: Assets/scenes/001-3_CrumblingDown/001.unity
     guid: 1eff5b6f3348d333bb9c91b4bf7b8ccc
