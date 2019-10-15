@@ -60,7 +60,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2186808379501819570
 MonoBehaviour:
@@ -210,7 +210,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3196463812899544496
 MonoBehaviour:
@@ -285,7 +285,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &329656382394878938
 MonoBehaviour:
@@ -360,7 +360,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7151746436276946062
 MonoBehaviour:
@@ -435,7 +435,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2822129414488371642
 MonoBehaviour:
@@ -510,7 +510,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4303511566062330010
 MonoBehaviour:
@@ -585,7 +585,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8852543570465157615
 MonoBehaviour:
@@ -660,7 +660,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3686007622101142348
 MonoBehaviour:
@@ -735,7 +735,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4340560867282801731
 MonoBehaviour:
@@ -810,7 +810,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8382615270369714754
 MonoBehaviour:
@@ -1181,7 +1181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e88fde9cd8e9b1e87ad58694e340780c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveDelay: 0.4
+  MoveDelay: 0.3
 --- !u!114 &3832127238801929951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1279,7 +1279,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4386449870437101749
 MonoBehaviour:
@@ -1416,7 +1416,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5687744620712876001
 MonoBehaviour:
@@ -1491,7 +1491,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &378330523771970062
 MonoBehaviour:
@@ -1566,7 +1566,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6910306466465372261
 MonoBehaviour:
@@ -1641,7 +1641,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7137049970777046837
 MonoBehaviour:
@@ -1701,7 +1701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9967d4065879bb9aaf7b449c67be775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TurnDelay: 0.2
+  TurnDelay: 0.1
 --- !u!1 &8923024158020379189
 GameObject:
   m_ObjectHideFlags: 0
@@ -1762,7 +1762,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.0625
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8412793781219326794
 MonoBehaviour:
