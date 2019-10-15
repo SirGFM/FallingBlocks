@@ -233,9 +233,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   subSceneList:
-  - scenes/005_Companion/001
+  - scenes/006-3_MoreFriends/001
   player: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425, type: 3}
-  title: Companion
+  title: More Friends
 --- !u!4 &1571765807
 Transform:
   m_ObjectHideFlags: 0

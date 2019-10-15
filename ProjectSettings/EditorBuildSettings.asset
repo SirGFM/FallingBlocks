@@ -45,6 +45,9 @@ EditorBuildSettings:
     path: Assets/scenes/006-2_AFollower/Loader.unity
     guid: e273071b8e39b8c0eb34febcafe8db0a
   - enabled: 1
+    path: Assets/scenes/006-3_MoreFriends/Loader.unity
+    guid: f0eff9ac300624b64bada6750b2dc2c3
+  - enabled: 1
     path: Assets/scenes/LoadingUI.unity
     guid: e34e4eb9bf10499a6bd14765fe0f079d
   - enabled: 1
@@ -104,4 +107,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/006-2_AFollower/001.unity
     guid: ea576ef88634b9f36b5df89fefda4239
+  - enabled: 1
+    path: Assets/scenes/006-3_MoreFriends/001.unity
+    guid: 573759904d092d2be96992c54d0c62fc
   m_configObjects: {}
