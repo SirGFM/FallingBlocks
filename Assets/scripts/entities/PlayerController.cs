@@ -16,6 +16,7 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
     private const string fallAnim = "isFalling";
     private const string forceAnim = "stopIdle";
     private const string climbAnim = "isClimbing";
+    private const string ledgeAnim = "isOnLedge";
 
     /** The animation handler */
     private Animator unityAnimator;
@@ -390,6 +391,8 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
                 this.checkState(Animation.Fall));
         this.unityAnimator.SetBool(PlayerController.climbAnim,
                 (this.collisionTracker[RelPos.Front.toIdx()] > 0));
+        this.unityAnimator.SetBool(PlayerController.ledgeAnim,
+                this.onLedge);
 
         if (this.checkState(Animation.Move) &&
                 (this.collisionTracker[RelPos.FrontBottom.toIdx()] == 0) &&
