@@ -1,4 +1,5 @@
-﻿using Coll = System.Collections.Generic;
+﻿using Animator = UnityEngine.Animator;
+using Coll = System.Collections.Generic;
 using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
@@ -11,6 +12,13 @@ using SceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 using Vec3 = UnityEngine.Vector3;
 
 public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
+    private const string moveAnim = "isWalking";
+    private const string fallAnim = "isFalling";
+    private const string forceAnim = "stopIdle";
+    private const string climbAnim = "isClimbing";
+
+    /** The animation handler */
+    private Animator unityAnimator;
     /** Whether we are currently holding onto an ledge */
     private bool onLedge;
     /** Block right in front of the player (in local space), that may be moved */
@@ -23,6 +31,16 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
     private const float maxPushDistance = Math.Infinity;
     private const string blockTag = "Block";
 
+    private void getAnimator() {
+        if (this.unityAnimator == null)
+            this.unityAnimator = this.gameObject.GetComponentInChildren<Animator>();
+    }
+
+    private void resetAnimation() {
+        this.getAnimator();
+        this.unityAnimator.SetTrigger(PlayerController.forceAnim);
+    }
+
     // Start is called before the first frame update
     void Start() {
         this.facing = Dir.back;
@@ -33,6 +51,8 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
         this.allowLedgeMovement = true;
 
         this.rayLayer = Layer.GetMask("Game Model");
+
+        this.getAnimator();
 
         this.commonInit();
 
@@ -274,6 +294,8 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
 
     // Update is called once per frame
     void Update() {
+        this.updateAnimationState();
+
         if (this.anim != Animation.None)
             /* Ignore inputs unless stopped */
             return;
@@ -351,5 +373,29 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
         /* XXX: Ugly way of reloading the current level... urk */
         int scene = SceneMng.GetActiveScene().buildIndex;
         SceneMng.LoadSceneAsync(scene, SceneMode.Single);
+    }
+
+    private bool checkState(Animation target) {
+        return (this.anim & target) == target;
+    }
+
+    private void updateAnimationState() {
+        this.getAnimator();
+
+        if (this.anim != Animation.None)
+            this.resetAnimation();
+        this.unityAnimator.SetBool(PlayerController.moveAnim,
+                this.checkState(Animation.Move));
+        this.unityAnimator.SetBool(PlayerController.fallAnim,
+                this.checkState(Animation.Fall));
+        this.unityAnimator.SetBool(PlayerController.climbAnim,
+                (this.collisionTracker[RelPos.Front.toIdx()] > 0));
+
+        if (this.checkState(Animation.Move) &&
+                (this.collisionTracker[RelPos.FrontBottom.toIdx()] == 0) &&
+                (this.collisionTracker[RelPos.BottomBottomFront.toIdx()] > 0)) {
+            /* Set the falling animation for moving down a floor */
+            this.unityAnimator.SetBool(PlayerController.fallAnim, true);
+        }
     }
 }
