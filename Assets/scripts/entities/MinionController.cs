@@ -1,4 +1,5 @@
-﻿using Dir = Movement.Direction;
+﻿using Animator = UnityEngine.Animator;
+using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using Math = UnityEngine.Mathf;
@@ -58,6 +59,8 @@ public static class StateMethods {
 }
 
 public class MinionController : BaseController, iDetectFall, OnEntityDone {
+    private const string shiverAnim = "shiver";
+
     public enum State {
         None = 0,
         Shiver,       /* Shivers in place if no other entity is around */
@@ -80,6 +83,9 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
     /** Maximum duration of the shiver animation */
     private const float maxShiverTime = 1.5f;
 
+    /** The animation handler */
+    private Animator unityAnimator;
+
     /** The entity leading this one */
     private GO target;
     private GO leader;
@@ -93,8 +99,14 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
     private int closeLeader;
     private static int globalCloseLeader = 0;
 
+    private void getAnimator() {
+        if (this.unityAnimator == null)
+            this.unityAnimator = this.gameObject.GetComponentInChildren<Animator>();
+    }
+
     // Start is called before the first frame update
     void Start() {
+        this.getAnimator();
         this.commonInit();
 
         EvSys.ExecuteEvents.ExecuteHierarchy<iSignalFall>(
@@ -142,6 +154,8 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
     private void doState(State st) {
         switch (st) {
         case State.Shiver:
+            this.getAnimator();
+            this.unityAnimator.SetTrigger(MinionController.shiverAnim);
             this.shiver(minShiverTime, maxShiverTime);
             this.nextState = State.WanderAround;
             break;
