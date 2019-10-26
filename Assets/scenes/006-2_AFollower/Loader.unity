@@ -152,7 +152,7 @@ MonoBehaviour:
   subSceneList:
   - scenes/006-2_AFollower/001
   player: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425, type: 3}
-  title: A Follower
+  title: Stranded Friend
 --- !u!4 &542992367
 Transform:
   m_ObjectHideFlags: 0
