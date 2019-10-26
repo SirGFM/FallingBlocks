@@ -68,6 +68,7 @@ public class Loader : UnityEngine.MonoBehaviour, OnSceneEvent {
 
     void Start() {
         Global.setup();
+        MinionController.reset();
         this.mainScene = SceneMng.GetActiveScene().buildIndex;
         this.resetting = false;
         this.doReset = false;

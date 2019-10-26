@@ -99,6 +99,10 @@ public class MinionController : BaseController, iDetectFall, OnEntityDone {
     private int closeLeader;
     private static int globalCloseLeader = 0;
 
+    static public void reset() {
+        MinionController.globalCloseLeader = 0;
+    }
+
     private void getAnimator() {
         if (this.unityAnimator == null)
             this.unityAnimator = this.gameObject.GetComponentInChildren<Animator>();
