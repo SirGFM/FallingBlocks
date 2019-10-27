@@ -129,11 +129,11 @@ public class PlayerController : BaseController, iTiledMoved, OnEntityDone {
             int idx = Math.Abs(off - i);
             float v1 = list.Values[idx].transform.position[vec];
             float v2 = list.Values[idx - 1].transform.position[vec];
-            if (list.Values[idx].tag != PlayerController.blockTag ||
-                    list.Values[idx - 1].tag != PlayerController.blockTag)
-                return new GO[0];
             if (1.0f != Math.Abs(v1 - v2))
                 break;
+            else if (list.Values[idx].tag != PlayerController.blockTag ||
+                    list.Values[idx - 1].tag != PlayerController.blockTag)
+                return new GO[0];
             len++;
         }
 
