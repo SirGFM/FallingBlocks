@@ -21,4 +21,16 @@ In summary:
 When using function within `ExecuteEvents`, there's no way to send messages downwards. Two ways of bypassing this limitations are:
 
 1. Pass the caller to the event, and reply with an event starting on the caller (limited)
-2. Set an "event proxy" at the game object's root, which calls `GameObject.BroadcastMessage` whenever it receives an event (ugly, but get the job done)
+2. Set an "event proxy" at the game object's root, which calls `GameObject.BroadcastMessage()` whenever it receives an event (ugly, but get the job done)
+
+This second approach, has its limitations, as `GameObject.BroadcastMessage()` events can only receive a single object (which may be a custom class or a tuple). Also, beware that if this function is called on `MonoBehaviour.Start()`, the receiving object may **not have called its own `Start()` yet** (and thus it may not be initialized yet)!.
+
+# Execution order
+
+Events are resolved as soon as they are sent.
+
+Therefore, it's possible to **chain events** together, although this will increase stack usage (for example, calling something on every adjacent object).
+
+# Getting a response from an event
+
+An event may be declared with `out` parameters (e.g., `void GetHandler(out UnityEngine.GameObject go);`). Since an event blocks until it finishes resolving (instead of being queued and later resolved), this may be used to make arbitrary queries without keeping a reference to the queried object.
