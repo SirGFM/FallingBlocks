@@ -76,6 +76,9 @@ public class BaseEntity : BaseRemoteAction, FallDetector {
     }
 
     virtual protected void updateState() {
+        if ((this.anim & ~Animation.Fall) != 0)
+            return;
+
         if ((this.anim & Animation.Fall) != 0 && this.downCount > 0)
             this.issueEvent<FallController>( (x, y) => x.Halt(this.gameObject) );
         else if (this.downCount <= 0)
