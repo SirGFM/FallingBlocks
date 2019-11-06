@@ -192,6 +192,7 @@ public class RelativeCollision : BaseRemoteAction {
         FrontBottomFrontBottom = (Front << (Shift * 4)) | (Bottom << (Shift * 3)) | (Front << (Shift * 2)) | Bottom,
         Center                 = Top | Left | Right | Bottom | Front | Back,
         Nearby                 = 0,
+        None                   = 0x7fffffff,
     }
 
     /** Relative position of this game object in reference to its parent. */
