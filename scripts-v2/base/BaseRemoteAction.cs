@@ -16,7 +16,7 @@ public class BaseRemoteAction : UnityEngine.MonoBehaviour {
             GO customTarget = null) where T : Handler {
         if (customTarget != null)
             ExecEv.ExecuteHierarchy<T>(customTarget, null, cb);
-        if (customTarget != this.gameObject || customTarget == null)
+        else
             ExecEv.ExecuteHierarchy<T>(this.gameObject, null, cb);
     }
 }
