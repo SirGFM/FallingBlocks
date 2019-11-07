@@ -1,8 +1,9 @@
 using Anim = BaseEntity.Animation;
+using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 
-public class BaseEntity : BaseRemoteAction, FallDetector {
+public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
     public enum Animation {
         None   = 0x00,
         Stand  = 0x01,
@@ -93,5 +94,13 @@ public class BaseEntity : BaseRemoteAction, FallDetector {
 
     public void OnFinishFalling(GO callee) {
         this.anim &= ~Animation.Fall;
+    }
+
+    public void OnStartMovement(Dir d) {
+        this.anim |= Animation.Move;
+    }
+
+    public void OnFinishMovement(Dir d) {
+        this.anim &= ~Animation.Move;
     }
 }
