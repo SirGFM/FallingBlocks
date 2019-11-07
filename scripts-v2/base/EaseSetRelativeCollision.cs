@@ -87,8 +87,7 @@ public class EaseSetRelativeCollision : UnityEngine.MonoBehaviour {
                 var v = t.GetField(p.ToString());
                 if ((bool)v.GetValue(this))
                     hasPos = true;
-            } catch (System.Exception e) {
-            }
+            } catch {}
 
             if (hasPos)
                 cb(p);
