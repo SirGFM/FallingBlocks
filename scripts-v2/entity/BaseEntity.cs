@@ -25,16 +25,31 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
     private GO shaker;
 
     /** How many blocks this object is currently over */
-    public int downCount;
+    private int downCount;
 
     /* == Base Methods ====================================================== */
 
+    virtual protected void onLastBlockExit(RelPos p, GO other) {
+    }
+
+    private System.Collections.IEnumerator delayedOnLastBlockExit(RelPos p, GO other) {
+        yield return new UnityEngine.WaitForFixedUpdate();
+        if (this.downCount == 0)
+            this.onLastBlockExit(p, other);
+    }
+
     private void onCollisionDown(bool enter, RelPos p, GO other) {
         if (other.GetComponent<BaseBlock>() != null) {
-            if (enter)
-                downCount++;
-            else
-                downCount--;
+            if (enter) {
+                this.downCount++;
+            }
+            else {
+                this.downCount--;
+                if (this.downCount == 0) {
+                    /* Call as a coroutine, to delay until the end of frame */
+                    this.StartCoroutine(this.delayedOnLastBlockExit(p, other));
+                }
+            }
         }
     }
 
