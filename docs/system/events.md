@@ -34,3 +34,5 @@ Therefore, it's possible to **chain events** together, although this will increa
 # Getting a response from an event
 
 An event may be declared with `out` parameters (e.g., `void GetHandler(out UnityEngine.GameObject go);`). Since an event blocks until it finishes resolving (instead of being queued and later resolved), this may be used to make arbitrary queries without keeping a reference to the queried object.
+
+Note that this only works for events called by `ExecuteEvents.Execute*`, as these use templates to specify the signature of the called event.
