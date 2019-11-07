@@ -2,6 +2,7 @@ using Anim = BaseEntity.Animation;
 using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
+using BroadOpts = UnityEngine.SendMessageOptions;
 
 public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
     public enum Animation {
@@ -11,7 +12,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
         Move   = 0x04,
         Fall   = 0x08,
         Push   = 0x10, /* Player only */
-        Shiver = 0x20, /* Minion only */
+        Shake  = 0x20, /* Minion only */
         Goal   = 0x40,
         Death  = 0x80,
     }
@@ -19,9 +20,9 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
     /** Tracks whether we are already running a coroutine */
     protected Animation anim;
 
-    /** Dumb-ly keep track of the rumbler component (since Unity is bad at
+    /** Dumb-ly keep track of the shaker component (since Unity is bad at
      * sending events downward) */
-    private GO rumbler;
+    private GO shaker;
 
     /** How many blocks this object is currently over */
     public int downCount;
@@ -66,6 +67,11 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
         this.anim = Animation.None;
         this.downCount = 0;
 
+        ShakeControllerOutParam shakeParam = new ShakeControllerOutParam();
+        this.BroadcastMessage("GetShakeComponent", shakeParam,
+                BroadOpts.DontRequireReceiver);
+        this.shaker = shakeParam.obj;
+
         this.setCollisionDownCallback(positions);
     }
 
@@ -102,5 +108,36 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
 
     public void OnFinishMovement(Dir d) {
         this.anim &= ~Animation.Move;
+    }
+
+    private System.Collections.IEnumerator doShake (float duration) {
+        if (this.shaker != null) {
+            this.anim |= Animation.Shake ;
+            this.issueEvent<ShakeController>(
+                    (x, y) => x.StartShaking(), this.shaker);
+
+            yield return new UnityEngine.WaitForSeconds(duration);
+
+            this.issueEvent<ShakeController>(
+                    (x, y) => x.StopShaking(), this.shaker);
+
+            this.anim &= ~Animation.Shake ;
+        }
+    }
+
+    /**
+     * Shake the object for a random amount of time, in seconds
+     *
+     * @param min Minimum duration of shiver animation
+     * @param max Maximum duration of shiver animation
+     */
+    protected void shake(float min, float max) {
+        if ((this.anim & Animation.Shake ) != 0)
+            return;
+
+        uint mod = 1 + (Global.PRNG.fastUint() % 1000);
+        float fmod = ((float)mod) / 1000;
+
+        this.StartCoroutine(this.doShake (min + (max - min) * fmod));
     }
 }
