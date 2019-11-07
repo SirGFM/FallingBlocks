@@ -22,7 +22,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
 
     /** Dumb-ly keep track of the shaker component (since Unity is bad at
      * sending events downward) */
-    private GO shaker;
+    protected GO shaker;
 
     /** How many blocks this object is currently over */
     private int downCount;
