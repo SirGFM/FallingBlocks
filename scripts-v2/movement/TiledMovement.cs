@@ -9,6 +9,9 @@ public interface MovementController : EvSys.IEventSystemHandler {
      * Move the entity in a given direction, in world-space.
      */
     void Move(Dir d, float moveDelay);
+
+    /** Check whether a given entity is moving */
+    void IsMoving(out bool ret);
 }
 
 public interface MovementDetector : EvSys.IEventSystemHandler {
@@ -88,5 +91,9 @@ public class TiledMovement : BaseRemoteAction, MovementController {
         } /* for */
 
         this.StartCoroutine(this.move(tgtPosition, d, moveDelay));
+    }
+
+    public void IsMoving(out bool ret) {
+        ret = this.isMoving;
     }
 }
