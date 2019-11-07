@@ -130,4 +130,16 @@ public class TrackSurroundings : UnityEngine.MonoBehaviour, OnRelativeCollisionE
         else
             this.undefCbs = cb;
     }
+
+    void OnDrawGizmosSelected() {
+        UnityEngine.Gizmos.color = UnityEngine.Color.red;
+
+        if (this.objs != null) {
+            foreach (NearbyObject nb in this.objs) {
+                if (nb.getObject() != null) {
+                    UnityEngine.Gizmos.DrawWireSphere(nb.getObject().transform.position, 1.0f);
+                }
+            }
+        }
+    }
 }
