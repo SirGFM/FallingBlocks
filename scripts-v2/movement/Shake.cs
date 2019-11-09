@@ -2,10 +2,6 @@
 using Time = UnityEngine.Time;
 using Vec3 = UnityEngine.Vector3;
 
-public class ShakeControllerOutParam {
-    public UnityEngine.GameObject obj;
-}
-
 public interface ShakeController : EvSys.IEventSystemHandler {
     /** Signal the object to start shaking */
     void StartShaking();
@@ -14,7 +10,7 @@ public interface ShakeController : EvSys.IEventSystemHandler {
     void StopShaking();
 
     /** Retrieve the ShakeController receiver */
-    void GetShakeComponent(ShakeControllerOutParam param);
+    void GetShakeComponent(GetComponentControllerParam param);
 }
 
 public class Shake : BaseRemoteAction, ShakeController {
@@ -59,7 +55,7 @@ public class Shake : BaseRemoteAction, ShakeController {
         this.running = false;
     }
 
-    public void GetShakeComponent(ShakeControllerOutParam param) {
+    public void GetShakeComponent(GetComponentControllerParam param) {
         param.obj = this.gameObject;
     }
 }

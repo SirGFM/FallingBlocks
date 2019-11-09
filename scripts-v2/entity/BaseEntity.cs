@@ -4,6 +4,11 @@ using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 using BroadOpts = UnityEngine.SendMessageOptions;
 
+public class GetComponentControllerParam {
+    public UnityEngine.GameObject obj;
+}
+
+
 public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
     public enum Animation {
         None   = 0x00,
@@ -82,7 +87,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
         this.anim = Animation.None;
         this.downCount = 0;
 
-        ShakeControllerOutParam shakeParam = new ShakeControllerOutParam();
+        GetComponentControllerParam shakeParam = new GetComponentControllerParam();
         this.BroadcastMessage("GetShakeComponent", shakeParam,
                 BroadOpts.DontRequireReceiver);
         this.shaker = shakeParam.obj;
