@@ -8,8 +8,8 @@ public class GetComponentControllerParam {
     public UnityEngine.GameObject obj;
 }
 
-
-public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
+public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
+        TurnDetector {
     public enum Animation {
         None   = 0x00,
         Stand  = 0x01,
@@ -22,12 +22,19 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
         Death  = 0x80,
     }
 
+    /** Direction that the entity is currently facing */
+    protected Dir facing;
+
     /** Tracks whether we are already running a coroutine */
     protected Animation anim;
 
     /** Dumb-ly keep track of the shaker component (since Unity is bad at
      * sending events downward) */
     protected GO shaker;
+
+    /** Dumb-ly keep track of the turner component (since Unity is bad at
+     * sending events downward) */
+    protected GO turner;
 
     /** How many blocks this object is currently over */
     private int downCount;
@@ -82,15 +89,20 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
     /* == Virtual Methods =================================================== */
 
     virtual protected void start() {
+        GetComponentControllerParam subObj = new GetComponentControllerParam();
         RelPos[] positions = {RelPos.Bottom};
 
         this.anim = Animation.None;
         this.downCount = 0;
+        this.facing = Dir.Back;
 
-        GetComponentControllerParam shakeParam = new GetComponentControllerParam();
-        this.BroadcastMessage("GetShakeComponent", shakeParam,
+        this.BroadcastMessage("GetShakeComponent", subObj,
                 BroadOpts.DontRequireReceiver);
-        this.shaker = shakeParam.obj;
+        this.shaker = subObj.obj;
+
+        this.BroadcastMessage("GetTurnComponent", subObj,
+                BroadOpts.DontRequireReceiver);
+        this.turner = subObj.obj;
 
         this.setCollisionDownCallback(positions);
     }
@@ -130,6 +142,17 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
         this.anim &= ~Animation.Move;
     }
 
+    public void OnStartTurning(Dir d) {
+        this.anim |= Animation.Turn;
+    }
+
+    public void OnFinishTurning(Dir d) {
+        this.anim &= ~Animation.Turn;
+        this.facing = d;
+    }
+
+    /* == Event wrappers ==================================================== */
+
     private System.Collections.IEnumerator doShake (float duration) {
         if (this.shaker != null) {
             this.anim |= Animation.Shake ;
@@ -152,12 +175,25 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector {
      * @param max Maximum duration of shiver animation
      */
     protected void shake(float min, float max) {
-        if ((this.anim & Animation.Shake ) != 0)
+        if ((this.anim & Animation.Shake) != 0)
             return;
 
         uint mod = 1 + (Global.PRNG.fastUint() % 1000);
         float fmod = ((float)mod) / 1000;
 
         this.StartCoroutine(this.doShake (min + (max - min) * fmod));
+    }
+
+    /**
+     * Rotate the object to a given orientation
+     *
+     * @param to The new orientation
+     */
+    protected void turn(Dir to) {
+        if ((this.anim & Animation.Turn) != 0)
+            return;
+        else if (this.turner != null)
+            this.issueEvent<TurnController>(
+                    (x, y) => x.Rotate(this.facing, to), this.turner);
     }
 }
