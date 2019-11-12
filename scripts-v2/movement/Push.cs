@@ -12,8 +12,9 @@ public interface PushController : EvSys.IEventSystemHandler {
      * @param delay How long it will take to push this entity
      * @param didPush Whether the entity was pushed
      * @param d The direction of the movement, in world space
+     * @param ignored Object that pushed the others, and should be ignored
      */
-    void TryPush(ref float delay, ref bool didPush, Dir d);
+    void TryPush(ref float delay, ref bool didPush, Dir d, GO ignored = null);
 }
 
 public class Push : BaseRemoteAction, PushController {
@@ -22,7 +23,8 @@ public class Push : BaseRemoteAction, PushController {
     /** How long it takes to push this entity */
     public float moveDelay = 0.6f;
 
-    public void TryPush(ref float delay, ref bool didPush, Dir d) {
+    public void TryPush(ref float delay, ref bool didPush, Dir d,
+            GO ignored = null) {
         GO next = null;
         RelPos p;
         float localDelay;
@@ -53,7 +55,7 @@ public class Push : BaseRemoteAction, PushController {
 
         this.issueEvent<GetRelativeObject>(
                 (x,y) => x.GetObjectAt(out next, p) );
-        if (next != null) {
+        if (next != null && next != ignored) {
             bool localPush = false;
             /* Check whether the next object in this direction can be pushed */
             this.issueEvent<PushController>(
