@@ -39,6 +39,9 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
     /** How many blocks this object is currently over */
     private int downCount;
 
+    /** Whether the object is delaying starting to fall */
+    private bool delayingFall;
+
     /* == Base Methods ====================================================== */
 
     virtual protected void onLastBlockExit(RelPos p, GO other) {
@@ -105,23 +108,45 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
         this.turner = subObj.obj;
 
         this.setCollisionDownCallback(positions);
+
+        this.delayingFall = false;
     }
 
     /**
      * Whether the entity can fall (e.g., if not on the ledge)
      */
     virtual protected bool canFall() {
-        return true;
+        return this.delayingFall == false;
+    }
+
+    private System.Collections.IEnumerator delayedFall() {
+        this.delayingFall = true;
+        yield return new UnityEngine.WaitForSeconds(this.fallDelay());
+        this.delayingFall = false;
+
+        if (this.downCount <= 0 && this.canFall())
+            this.issueEvent<FallController>(
+                    (x, y) => x.Fall(this.gameObject) );
+    }
+
+    virtual protected float fallDelay() {
+        return 0.0f;
     }
 
     virtual protected void updateState() {
         if ((this.anim & ~Animation.Fall) != 0)
             return;
 
-        if ((this.anim & Animation.Fall) != 0 && this.downCount > 0)
+        if ((this.anim & Animation.Fall) != 0 && this.downCount > 0) {
             this.issueEvent<FallController>( (x, y) => x.Halt(this.gameObject) );
-        else if (this.downCount <= 0)
-            this.issueEvent<FallController>( (x, y) => x.Fall(this.gameObject) );
+        }
+        else if (this.downCount <= 0 && this.canFall()) {
+            if (this.fallDelay() <= 0.0f)
+                this.issueEvent<FallController>(
+                        (x, y) => x.Fall(this.gameObject) );
+            else
+                this.StartCoroutine(this.delayedFall());
+        }
     }
 
     /* == Custom Events ===================================================== */

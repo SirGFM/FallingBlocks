@@ -3,12 +3,17 @@ using RelPos = RelativeCollision.RelativePosition;
 
 public class BaseBlock : BaseEntity {
     private const float fallWait = 1.0f;
+    private const float blockFallDelay = 0.25f;
 
     override protected void start() {
         base.start();
 
         RelPos[] positions = {RelPos.BottomLeft, RelPos.BottomRight, RelPos.FrontBottom, RelPos.BackBottom};
         this.setCollisionDownCallback(positions);
+    }
+
+    override protected float fallDelay() {
+        return blockFallDelay;
     }
 
     private System.Collections.IEnumerator _onLastBlockExit() {
