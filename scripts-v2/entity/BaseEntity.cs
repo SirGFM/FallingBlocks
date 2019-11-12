@@ -221,4 +221,16 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
             this.issueEvent<TurnController>(
                     (x, y) => x.Rotate(this.facing, to), this.turner);
     }
+
+    /**
+     * Move the object in a given direction
+     *
+     * @param to The movement direction
+     * @param delay How long the movement shall take
+     */
+    protected void move(Dir to, float delay) {
+        if ((this.anim & Animation.Move) != 0)
+            return;
+        this.issueEvent<MovementController>( (x, y) => x.Move(to, delay) );
+    }
 }
