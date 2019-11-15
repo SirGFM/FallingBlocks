@@ -87,6 +87,8 @@ public class TrackSurroundings : UnityEngine.MonoBehaviour, OnRelativeCollisionE
             this.objs[idx].set(rc.pos, c.gameObject);
             if (this.cbs[idx] != null)
                 this.cbs[idx](true, rc.pos, c.gameObject);
+            else if (this.undefCbs != null)
+                this.undefCbs(true, rc.pos, c.gameObject);
         }
         else if (this.undefCbs != null) {
             this.undefCbs(true, rc.pos, c.gameObject);
@@ -100,6 +102,8 @@ public class TrackSurroundings : UnityEngine.MonoBehaviour, OnRelativeCollisionE
                 this.objs[idx].empty();
             if (this.cbs[idx] != null)
                 this.cbs[idx](false, rc.pos, c.gameObject);
+            else if (this.undefCbs != null)
+                this.undefCbs(false, rc.pos, c.gameObject);
         }
         else if (this.undefCbs != null) {
             this.undefCbs(false, rc.pos, c.gameObject);
