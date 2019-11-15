@@ -53,6 +53,9 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
             this.onLastBlockExit(p, other);
     }
 
+    virtual protected void onCollision(bool enter, RelPos p, GO other) {
+    }
+
     private void onCollisionDown(bool enter, RelPos p, GO other) {
         if (other.GetComponent<BaseBlock>() != null) {
             if (enter) {
@@ -66,6 +69,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
                 }
             }
         }
+        this.onCollision(enter, p, other);
     }
 
     protected void setCollisionDownCallback(RelPos[] positions) {
