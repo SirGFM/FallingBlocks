@@ -22,6 +22,8 @@ public class Minion : BaseAnimatedEntity {
     private UnityEngine.Transform otherT;
     private UnityEngine.Coroutine bgFunc;
 
+    protected Minion follower;
+
     static private Dir vec3ToDir(Vec3 pos) {
         /* XXX: Only check axis X and Z */
         int[] axisOrder = {0, 2};
@@ -73,12 +75,18 @@ public class Minion : BaseAnimatedEntity {
         this.issueEvent<RemoteGetType>(
                 (x,y) => x.Get(out otherPriority), other);
 
-        if (this.targetPriority >= otherPriority)
+        if (this.targetPriority >= otherPriority ||
+                (otherPriority == Type.Minion && this.follower != null))
             return;
 
         this.target = other;
         this.otherT = other.transform;
         this.targetPriority = otherPriority;
+
+        if (otherPriority == Type.Minion) {
+            Minion mFollower = other.GetComponent<Minion>();
+            mFollower.follower = this;
+        }
     }
 
     private System.Collections.IEnumerator follow(GO other, Dir moveDir) {
@@ -101,6 +109,11 @@ public class Minion : BaseAnimatedEntity {
         if (this.target == other) {
             Dir moveDir;
 
+            if (this.targetPriority == Type.Minion) {
+                Minion mFollower = other.GetComponent<Minion>();
+                mFollower.follower = null;
+            }
+
             /* The target we were following just left, try to move after it */
             this.target = null;
             this.targetPriority = Type.None;
@@ -117,9 +130,11 @@ public class Minion : BaseAnimatedEntity {
     }
 
     private System.Collections.IEnumerator wander() {
-        this.shake(minShiverTime, maxShiverTime);
-        while ((this.anim & Anim.Shake) != 0)
-            yield return new UnityEngine.WaitForFixedUpdate();
+        if (this.follower == null) {
+            this.shake(minShiverTime, maxShiverTime);
+            while ((this.anim & Anim.Shake) != 0)
+                yield return new UnityEngine.WaitForFixedUpdate();
+        }
 
         do {
             if ((this.anim & ~Anim.Move) != 0 || this.target != null)
