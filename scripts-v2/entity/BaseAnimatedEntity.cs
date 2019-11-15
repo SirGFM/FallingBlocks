@@ -1,8 +1,14 @@
 using Dir = Movement.Direction;
+using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 
-public class BaseAnimatedEntity : BaseEntity {
+public interface OnLedgeDetector : EvSys.IEventSystemHandler {
+    /** Check whether the object is currently on a ledge */
+    void Check(out bool isOnLedge);
+}
+
+public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
     protected bool onLedge;
 
     override protected void start() {
@@ -193,5 +199,9 @@ public class BaseAnimatedEntity : BaseEntity {
                     moveDir, moveDelay);
             break;
         }
+    }
+
+    public void Check(out bool isOnLedge) {
+        isOnLedge = this.onLedge;
     }
 }
