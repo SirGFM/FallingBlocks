@@ -1,3 +1,4 @@
+using Anim = BaseEntity.Animation;
 using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using Math = UnityEngine.Mathf;
@@ -6,14 +7,20 @@ using Type = GetType.Type;
 using Vec3 = UnityEngine.Vector3;
 
 public class Minion : BaseAnimatedEntity {
-    private GO target;
-    Type targetPriority;
+    /** Minimum duration of the shiver animation */
+    private const float minShiverTime = 0.5f;
+    /** Maximum duration of the shiver animation */
+    private const float maxShiverTime = 1.5f;
 
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
 
+    private GO target;
+    Type targetPriority;
+
     private UnityEngine.Transform selfT;
     private UnityEngine.Transform otherT;
+    private UnityEngine.Coroutine bgFunc;
 
     static private Dir vec3ToDir(Vec3 pos) {
         /* XXX: Only check axis X and Z */
@@ -57,6 +64,7 @@ public class Minion : BaseAnimatedEntity {
         this.target = null;
         this.targetPriority = Type.None;
         this.selfT = this.gameObject.transform;
+        this.bgFunc = null;
     }
 
     private void onCollisionEnter(RelPos p, GO other) {
@@ -65,7 +73,7 @@ public class Minion : BaseAnimatedEntity {
         this.issueEvent<RemoteGetType>(
                 (x,y) => x.Get(out otherPriority), other);
 
-        if (this.target != null && this.targetPriority > otherPriority)
+        if (this.targetPriority >= otherPriority)
             return;
 
         this.target = other;
@@ -106,5 +114,42 @@ public class Minion : BaseAnimatedEntity {
             this.onCollisionEnter(p, other);
         else
             this.onCollisionExit(p, other);
+    }
+
+    private System.Collections.IEnumerator wander() {
+        this.shake(minShiverTime, maxShiverTime);
+        while ((this.anim & Anim.Shake) != 0)
+            yield return new UnityEngine.WaitForFixedUpdate();
+
+        do {
+            if ((this.anim & ~Anim.Move) != 0 || this.target != null)
+                break;
+
+            if ((this.anim & Anim.Move) == 0) {
+                bool floor, frontTile;
+
+                frontTile = (getObjectAt(RelPos.Front) != null);
+                floor = (getBlockAt(RelPos.FrontBottom) != null);
+
+                if (!frontTile && floor)
+                    this.tryMoveForward(this.MoveDelay);
+                else {
+                    this.turn(Dir.Right.toLocal(this.facing));
+                    break;
+                }
+            }
+
+            yield return new UnityEngine.WaitForFixedUpdate();
+        } while (true);
+
+        this.bgFunc = null;
+    }
+
+    override protected void updateState() {
+        base.updateState();
+
+        if (this.target == null && this.anim == Anim.None &&
+                this.bgFunc == null)
+            this.bgFunc = this.StartCoroutine(this.wander());
     }
 }
