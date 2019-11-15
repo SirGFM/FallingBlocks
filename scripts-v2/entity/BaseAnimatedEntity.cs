@@ -3,23 +3,46 @@ using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 
+public interface LedgeTracker : EvSys.IEventSystemHandler {
+    /** Report that other has just dropped from the ledge into the receiver */
+    void JustDropped(GO other);
+}
+
 public interface OnLedgeDetector : EvSys.IEventSystemHandler {
     /** Check whether the object is currently on a ledge */
     void Check(out bool isOnLedge);
 }
 
 public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
-    protected bool onLedge;
+    private bool onLedge;
 
     override protected void start() {
         base.start();
         this.onLedge = false;
     }
 
+    protected bool isOnLedge() {
+        return this.onLedge;
+    }
+
+    protected void setOnLedge() {
+        this.onLedge = true;
+    }
+
+    protected void dropFromLedge() {
+        GO bellow;
+
+        this.onLedge = false;
+        bellow = getObjectAt(RelPos.Bottom);
+        if (bellow != null)
+            this.issueEvent<LedgeTracker>(
+                    (x,y) => x.JustDropped(this.gameObject), bellow);
+    }
+
     override protected void updateState() {
         if (this.onLedge && this.anim == Animation.None &&
                 getBlockAt(RelPos.Front) == null)
-            this.onLedge = false;
+            this.dropFromLedge();
 
         base.updateState();
     }
@@ -117,7 +140,7 @@ public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
                 Dir d = this.facing | Dir.Bottom;
                 this.move(d, moveDelay);
                 this.turn(newDir);
-                this.onLedge = true;
+                this.setOnLedge();
             }
         }
     }
@@ -179,12 +202,12 @@ public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
             if (this.getObjectAt(RelPos.FrontTop) == null) {
                 Dir d = this.facing | Dir.Top;
                 this.move(d, moveDelay);
-                this.onLedge = false;
+                this.dropFromLedge();
             }
             break;
         case Dir.Back:
             /* Simply start to fall */
-            this.onLedge = false;
+            this.dropFromLedge();
             break;
         case Dir.Right:
             this.tryMoveLedgeSide(RelPos.Right,

@@ -51,7 +51,7 @@ public class InputControlled : BaseAnimatedEntity {
         yield return new UnityEngine.WaitForSeconds(0.1f);
         this.issueEvent<FallController>( (x, y) => x.Halt(this.gameObject));
 
-        this.onLedge = true;
+        this.setOnLedge();
     }
 
     private void tryPushBlock(Dir pushDir) {
@@ -107,7 +107,7 @@ public class InputControlled : BaseAnimatedEntity {
 
         Dir newDir = this.getInputDirection();
         if (newDir != Dir.None) {
-            if (this.onLedge)
+            if (this.isOnLedge())
                 if (this.checkActionButton() &&
                         this.getBlockAt(RelPos.Bottom) != null)
                     this.tryPushBlock(newDir);
@@ -120,7 +120,7 @@ public class InputControlled : BaseAnimatedEntity {
             else
                 this.tryMoveForward(this.MoveDelay);
         }
-        else if (!this.onLedge && this.checkActionButton()) {
+        else if (!this.isOnLedge() && this.checkActionButton()) {
             GO obj = null;
             this.turnToClosestBlock(out obj);
         }
