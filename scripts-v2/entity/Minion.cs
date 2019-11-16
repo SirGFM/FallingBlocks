@@ -77,7 +77,8 @@ public class Minion : BaseAnimatedEntity {
         this.issueEvent<RemoteGetType>(
                 (x,y) => x.Get(out otherPriority), other);
 
-        if (this.targetPriority >= otherPriority ||
+        if (otherPriority < Type.Followable ||
+                this.targetPriority >= otherPriority ||
                 (otherPriority == Type.Minion && this.follower != null))
             return;
 
