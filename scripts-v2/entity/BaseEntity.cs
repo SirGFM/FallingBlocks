@@ -1,5 +1,6 @@
 using Anim = BaseEntity.Animation;
 using Dir = Movement.Direction;
+using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 using BroadOpts = UnityEngine.SendMessageOptions;
@@ -8,8 +9,13 @@ public class GetComponentControllerParam {
     public UnityEngine.GameObject obj;
 }
 
+public interface SetOnGoal : EvSys.IEventSystemHandler {
+    /** Signal sent when the entity is on the goal */
+    void OnGoal();
+}
+
 public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
-        TurnDetector {
+        TurnDetector, SetOnGoal {
     public enum Animation {
         None   = 0x00,
         Stand  = 0x01,
@@ -178,6 +184,10 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
     public void OnFinishTurning(Dir d) {
         this.anim &= ~Animation.Turn;
         this.facing = d;
+    }
+
+    public void OnGoal() {
+        this.anim |= Animation.Goal;
     }
 
     /* == Event wrappers ==================================================== */
