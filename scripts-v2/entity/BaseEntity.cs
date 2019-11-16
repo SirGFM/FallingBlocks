@@ -159,6 +159,9 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
         }
     }
 
+    virtual protected void onGoal() {
+    }
+
     /* == Custom Events ===================================================== */
 
     public void OnStartFalling(GO callee) {
@@ -188,6 +191,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
 
     public void OnGoal() {
         this.anim |= Animation.Goal;
+        this.onGoal();
     }
 
     /* == Event wrappers ==================================================== */
