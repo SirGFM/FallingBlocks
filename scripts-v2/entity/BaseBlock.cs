@@ -1,3 +1,4 @@
+using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 
@@ -10,6 +11,8 @@ public class BaseBlock : BaseEntity {
 
         RelPos[] positions = {RelPos.BottomLeft, RelPos.BottomRight, RelPos.FrontBottom, RelPos.BackBottom};
         this.setCollisionDownCallback(positions);
+
+        this.facing = Dir.None;
     }
 
     override protected float fallDelay() {
