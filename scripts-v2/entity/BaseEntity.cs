@@ -3,6 +3,7 @@ using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
+using Type = GetType.Type;
 using BroadOpts = UnityEngine.SendMessageOptions;
 
 public class GetComponentControllerParam {
@@ -48,6 +49,9 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
     /** Whether the object is delaying starting to fall */
     private bool delayingFall;
 
+    /** Delay of the last movement, used while on ice */
+    private float lastDelay;
+
     /* == Base Methods ====================================================== */
 
     virtual protected void onLastBlockExit(RelPos p, GO other) {
@@ -87,6 +91,13 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
             arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(p, cb);
             this.BroadcastMessage("SetRelativePositionCallback", arg);
         }
+    }
+
+    protected GO getObjectAt(RelPos p) {
+        GO ret = null;
+        this.issueEvent<GetRelativeObject>(
+                (x, y) => x.GetObjectAt(out ret, p));
+        return ret;
     }
 
     /* == Unity Events ====================================================== */
@@ -174,10 +185,28 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
 
     public void OnStartMovement(Dir d, float moveDelay) {
         this.anim |= Animation.Move;
+        this.lastDelay = moveDelay;
     }
 
     public void OnFinishMovement(Dir d) {
-        this.anim &= ~Animation.Move;
+        bool slip = false;
+
+        if (d == this.facing || this.facing == Dir.None) {
+            /* If on ice (and nothing in front), repeat */
+            GO obj = getObjectAt(RelPos.Bottom);
+            if (obj != null) {
+                Type blockType = Type.Error;
+                this.issueEvent<RemoteGetType>(
+                        (x,y) => x.Get(out blockType), obj);
+                slip = (blockType == Type.IceBlock);
+            }
+            slip = (slip && (getObjectAt(RelPos.Front) == null));
+        }
+
+        if (slip)
+            this.uncheckedMove(d, this.lastDelay);
+        else
+            this.anim &= ~Animation.Move;
     }
 
     public void OnStartTurning(Dir d) {
@@ -240,6 +269,10 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
                     (x, y) => x.Rotate(this.facing, to), this.turner);
     }
 
+    private void uncheckedMove(Dir to, float delay) {
+        this.issueEvent<MovementController>( (x, y) => x.Move(to, delay) );
+    }
+
     /**
      * Move the object in a given direction
      *
@@ -249,6 +282,6 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
     protected void move(Dir to, float delay) {
         if ((this.anim & Animation.Move) != 0)
             return;
-        this.issueEvent<MovementController>( (x, y) => x.Move(to, delay) );
+        this.uncheckedMove(to, delay);
     }
 }

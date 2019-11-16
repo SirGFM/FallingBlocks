@@ -8,6 +8,7 @@ public class GetType : UnityEngine.MonoBehaviour, RemoteGetType {
     public enum Type {
         Error = 0,
         None,
+        IceBlock,
         Followable,
         Minion,
         Player,

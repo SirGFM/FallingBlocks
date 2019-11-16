@@ -70,13 +70,6 @@ public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
         return (obj != null && obj.GetComponent<BaseBlock>() != null);
     }
 
-    protected GO getObjectAt(RelPos p) {
-        GO ret = null;
-        this.issueEvent<GetRelativeObject>(
-                (x, y) => x.GetObjectAt(out ret, p));
-        return ret;
-    }
-
     protected GO getBlockAt(RelPos p) {
         GO ret = this.getObjectAt(p);
         if (!isBlock(ret))
