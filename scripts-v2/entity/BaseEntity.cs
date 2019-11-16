@@ -172,7 +172,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
         this.anim &= ~Animation.Fall;
     }
 
-    public void OnStartMovement(Dir d) {
+    public void OnStartMovement(Dir d, float moveDelay) {
         this.anim |= Animation.Move;
     }
 

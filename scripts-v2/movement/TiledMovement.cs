@@ -19,7 +19,7 @@ public interface MovementDetector : EvSys.IEventSystemHandler {
      * Signal the the entity started to move in the given direction
      * (in world-space).
      */
-    void OnStartMovement(Dir d);
+    void OnStartMovement(Dir d, float moveDelay);
 
     /**
      * Signal the the entity finished moving in the given direction
@@ -37,7 +37,7 @@ public class TiledMovement : BaseRemoteAction, MovementController {
      */
     private System.Collections.IEnumerator move(Vec3 tgtPosition, Dir d, float moveDelay) {
         this.isMoving = true;
-        this.issueEvent<MovementDetector>((x,y)=>x.OnStartMovement(d));
+        this.issueEvent<MovementDetector>((x,y)=>x.OnStartMovement(d, moveDelay));
 
         int steps = (int)(moveDelay / Time.fixedDeltaTime);
         Vec3 dtMovement = tgtPosition / (float)steps;
