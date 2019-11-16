@@ -1,15 +1,11 @@
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 using Type = GetType.Type;
-using Vec3 = UnityEngine.Vector3;
 
-public class Checkpoint : BaseRemoteAction {
-    private int idx;
-
-    void Start() {
+public class Checkpoint : InitialPlayerPosition {
+    override protected void start() {
+        base.start();
         this.setupCollision( (x, y, z) => this.onCollisionDown(x, y, z) );
-        this.rootEvent<LoaderEvents>(
-                (x,y) => x.GetCheckpointCount(out this.idx) );
     }
 
     private void setupCollision(System.Action<bool, RelPos, GO> cb) {
@@ -28,16 +24,6 @@ public class Checkpoint : BaseRemoteAction {
         }
     }
 
-    private System.Collections.IEnumerator destroy() {
-        /* TODO Play a VFX? */
-
-        /* XXX: Forcefully move the entity away from any close entity before
-         * destroying it, to avoid glitching the physics. */
-        this.transform.position = new Vec3(0.0f, -10.0f, 0.0f);
-        yield return new UnityEngine.WaitForFixedUpdate();
-        GO.Destroy(this.gameObject);
-    }
-
     void OnTriggerEnter(UnityEngine.Collider c) {
         GO obj = c.gameObject;
         Type other = Type.Error;
@@ -45,8 +31,8 @@ public class Checkpoint : BaseRemoteAction {
         this.issueEvent<RemoteGetType>( (x,y) => x.Get(out other), obj);
         if (other == Type.Player) {
             this.rootEvent<LoaderEvents>(
-                    (x,y) => x.SetActiveCheckpoint(this.idx) );
-            this.StartCoroutine(this.destroy());
+                    (x,y) => x.SetActiveCheckpoint(this.checkPointIdx) );
+            this.destroy();
         }
     }
 }
