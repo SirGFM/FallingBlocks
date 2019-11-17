@@ -24,6 +24,13 @@ public interface Leader : EvSys.IEventSystemHandler {
 }
 
 public class Minion : BaseAnimatedEntity, Leader {
+    private struct collCtx {
+        public bool enter;
+        public RelPos p;
+        public GO other;
+        public Type otherType;
+    };
+
     /** Minimum duration of the shiver animation */
     private const float minShiverTime = 0.5f;
     /** Maximum duration of the shiver animation */
@@ -84,23 +91,18 @@ public class Minion : BaseAnimatedEntity, Leader {
         this.rootEvent<LoaderEvents>( (x,y) => x.IncreaseMaxMinion() );
     }
 
-    private void onCollisionEnter(RelPos p, GO other) {
-        Type otherPriority = Type.Error;
-
-        this.issueEvent<RemoteGetType>(
-                (x,y) => x.Get(out otherPriority), other);
-
-        if (otherPriority < Type.Followable ||
-                this.targetPriority >= otherPriority ||
-                (otherPriority == Type.Minion && this.follower != null))
+    private void onCollisionEnter(collCtx ctx) {
+        if (this.targetPriority >= ctx.otherType ||
+                (ctx.otherType == Type.Minion && this.follower != null))
             return;
 
-        this.target = other;
-        this.otherT = other.transform;
-        this.targetPriority = otherPriority;
+        this.target = ctx.other;
+        this.otherT = ctx.other.transform;
+        this.targetPriority = ctx.otherType;
 
-        if (otherPriority == Type.Minion)
-            this.issueEvent<Leader>( (x,y) => x.SetFollower(this), other);
+        if (ctx.otherType == Type.Minion)
+            this.issueEvent<Leader>(
+                    (x,y) => x.SetFollower(this), ctx.other);
     }
 
     private System.Collections.IEnumerator follow(GO other, Dir moveDir) {
@@ -119,27 +121,40 @@ public class Minion : BaseAnimatedEntity, Leader {
             this.tryMoveForward(this.MoveDelay);
     }
 
-    private void onCollisionExit(RelPos p, GO other) {
-        if (this.target == other) {
+    private void onCollisionExit(collCtx ctx) {
+        if (this.target == ctx.other) {
             Dir moveDir;
 
             if (this.targetPriority == Type.Minion)
                 this.issueEvent<Leader>(
-                        (x,y) => x.RemoveFollower(this), other);
+                        (x,y) => x.RemoveFollower(this), ctx.other);
 
             /* The target we were following just left, try to move after it */
             this.target = null;
             this.targetPriority = Type.None;
             moveDir = vec3ToDir(otherT.position - this.selfT.position);
-            this.StartCoroutine(this.follow(other, moveDir));
+            this.StartCoroutine(this.follow(ctx.other, moveDir));
         }
     }
 
     override protected void onCollision(bool enter, RelPos p, GO other) {
-        if (enter)
-            this.onCollisionEnter(p, other);
-        else
-            this.onCollisionExit(p, other);
+        Type otherType = Type.Error;
+
+        this.issueEvent<RemoteGetType>(
+                (x,y) => x.Get(out otherType), other);
+        if (otherType > Type.Followable) {
+            collCtx ctx;
+
+            ctx.enter = enter;
+            ctx.p = p;
+            ctx.other = other;
+            ctx.otherType = otherType;
+
+            if (enter)
+                this.onCollisionEnter(ctx);
+            else
+                this.onCollisionExit(ctx);
+        }
     }
 
     private System.Collections.IEnumerator wander() {
