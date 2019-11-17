@@ -5,14 +5,14 @@ using Type = GetType.Type;
 public class Checkpoint : InitialPlayerPosition {
     override protected void start() {
         base.start();
-        this.setupCollision( (x, y, z) => this.onCollisionDown(x, y, z) );
+        this.setCollisionCb(RelPos.Bottom,
+                (x, y, z) => this.onCollisionDown(x, y, z) );
+        this.setCollisionCb(RelPos.Center,
+                (x, y, z) => this.onCollisionCenter(x, y, z) );
     }
 
-    private void setupCollision(System.Action<bool, RelPos, GO> cb) {
+    private void setCollisionCb(RelPos p, System.Action<bool, RelPos, GO> cb) {
         System.Tuple<RelPos, System.Action<bool, RelPos, GO>> arg;
-        RelPos p;
-
-        p = RelPos.Bottom;
         arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(p, cb);
         this.BroadcastMessage("SetRelativePositionCallback", arg);
     }
@@ -20,19 +20,19 @@ public class Checkpoint : InitialPlayerPosition {
     private void onCollisionDown(bool enter, RelPos p, GO other) {
         if (enter && other.GetComponent<BaseBlock>() != null) {
             this.transform.SetParent(other.transform);
-            this.setupCollision(null);
+            this.setCollisionCb(RelPos.Bottom, null);
         }
     }
 
-    void OnTriggerEnter(UnityEngine.Collider c) {
-        GO obj = c.gameObject;
-        Type other = Type.Error;
+    private void onCollisionCenter(bool enter, RelPos p, GO other) {
+        Type type = Type.Error;
 
-        this.issueEvent<RemoteGetType>( (x,y) => x.Get(out other), obj);
-        if (other == Type.Player) {
+        this.issueEvent<RemoteGetType>( (x,y) => x.Get(out type), other);
+        if (enter && type == Type.Player) {
             this.rootEvent<LoaderEvents>(
                     (x,y) => x.SetActiveCheckpoint(this.checkPointIdx) );
             this.destroy();
+            this.setCollisionCb(RelPos.Center, null);
         }
     }
 }
