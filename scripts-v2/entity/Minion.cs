@@ -39,13 +39,20 @@ public class Minion : BaseAnimatedEntity, Leader {
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
 
+    /** Currently following target */
     private GO target;
-    Type targetPriority;
+    /** Target priority (used to detect when we approach a higher priority) */
+    private Type targetPriority;
 
+    /** Entity's tranform (used when following another entity) */
     private UnityEngine.Transform selfT;
+    /** Followed entity's tranform (used when following another entity) */
     private UnityEngine.Transform otherT;
+    /** Coroutine that handles the entity main behaviour, when not following
+     * any entity */
     private UnityEngine.Coroutine bgFunc;
-
+    /** Track this entity's follower (if any), so it may continue wandering
+     * without shivering */
     protected Minion follower;
 
     static private Dir vec3ToDir(Vec3 pos) {
