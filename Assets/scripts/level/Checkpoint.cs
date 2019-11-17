@@ -1,35 +1,38 @@
-﻿using GO = UnityEngine.GameObject;
+using GO = UnityEngine.GameObject;
+using RelPos = RelativeCollision.RelativePosition;
+using Type = GetType.Type;
 
-public class Checkpoint : UnityEngine.MonoBehaviour {
-    /** Tag used to identify a player */
-    private const string playerTag = "Player";
-
-    /** Set the object's parent (to avoid breaking prefabs) */
-    public GO Parent;
-    /** Index of the sub-scene in the loader scene */
-    public int CheckpointIndex;
-
-    void Start() {
-        if (this.Parent != null)
-            this.transform.SetParent(this.Parent.transform);
+public class Checkpoint : InitialPlayerPosition {
+    override protected void start() {
+        base.start();
+        this.setCollisionCb(RelPos.Bottom,
+                (x, y, z) => this.onCollisionDown(x, y, z) );
+        this.setCollisionCb(RelPos.Center,
+                (x, y, z) => this.onCollisionCenter(x, y, z) );
     }
 
-    private System.Collections.IEnumerator destroy() {
-        /* TODO Play the effects */
-        yield return new UnityEngine.WaitForFixedUpdate();
-
-        /* XXX: Forcefully move the entity away from any close entity before
-         * destroying it, to avoid glitching the physics. */
-        this.transform.position = new UnityEngine.Vector3(0.0f, -10.0f, 0.0f);
-        yield return new UnityEngine.WaitForFixedUpdate();
-        UnityEngine.GameObject.Destroy(this.gameObject);
+    private void setCollisionCb(RelPos p, System.Action<bool, RelPos, GO> cb) {
+        System.Tuple<RelPos, System.Action<bool, RelPos, GO>> arg;
+        arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(p, cb);
+        this.BroadcastMessage("SetRelativePositionCallback", arg);
     }
 
-    void OnTriggerEnter(UnityEngine.Collider c) {
-        if (this.CheckpointIndex != -1 && c.gameObject.tag == playerTag) {
-            Global.curCheckpoint = this.CheckpointIndex;
-            this.StartCoroutine(this.destroy());
-            this.CheckpointIndex = -1;
+    private void onCollisionDown(bool enter, RelPos p, GO other) {
+        if (enter && other.GetComponent<BaseBlock>() != null) {
+            this.transform.SetParent(other.transform);
+            this.setCollisionCb(RelPos.Bottom, null);
+        }
+    }
+
+    private void onCollisionCenter(bool enter, RelPos p, GO other) {
+        Type type = Type.Error;
+
+        this.issueEvent<RemoteGetType>( (x,y) => x.Get(out type), other);
+        if (enter && type == Type.Player) {
+            this.rootEvent<LoaderEvents>(
+                    (x,y) => x.SetActiveCheckpoint(this.checkPointIdx) );
+            this.destroy();
+            this.setCollisionCb(RelPos.Center, null);
         }
     }
 }

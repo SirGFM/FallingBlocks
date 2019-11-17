@@ -4,28 +4,31 @@ using GO = UnityEngine.GameObject;
 using Vec3 = UnityEngine.Vector3;
 using Time = UnityEngine.Time;
 
-public interface iTiledMovement : EvSys.IEventSystemHandler {
+public interface MovementController : EvSys.IEventSystemHandler {
     /**
      * Move the entity in a given direction, in world-space.
      */
-    void Move(Dir d, GO caller, float moveDelay);
+    void Move(Dir d, float moveDelay);
+
+    /** Check whether a given entity is moving */
+    void IsMoving(out bool ret);
 }
 
-public interface iTiledMoved : EvSys.IEventSystemHandler {
+public interface MovementDetector : EvSys.IEventSystemHandler {
     /**
      * Signal the the entity started to move in the given direction
      * (in world-space).
      */
-    void OnStartMovement(Dir d, GO callee);
+    void OnStartMovement(Dir d, float moveDelay);
 
     /**
      * Signal the the entity finished moving in the given direction
      * (in world-space).
      */
-    void OnFinishMovement(Dir d, GO callee);
+    void OnFinishMovement(Dir d);
 }
 
-public class TiledMovement : BaseRemoteAction, iTiledMovement {
+public class TiledMovement : BaseRemoteAction, MovementController {
     /** Whether the object is currently moving. */
     private bool isMoving = false;
 
@@ -34,7 +37,7 @@ public class TiledMovement : BaseRemoteAction, iTiledMovement {
      */
     private System.Collections.IEnumerator move(Vec3 tgtPosition, Dir d, float moveDelay) {
         this.isMoving = true;
-        this.issueEvent<iTiledMoved>((x,y)=>x.OnStartMovement(d, this.gameObject));
+        this.issueEvent<MovementDetector>((x,y)=>x.OnStartMovement(d, moveDelay));
 
         int steps = (int)(moveDelay / Time.fixedDeltaTime);
         Vec3 dtMovement = tgtPosition / (float)steps;
@@ -53,41 +56,44 @@ public class TiledMovement : BaseRemoteAction, iTiledMovement {
         yield return new UnityEngine.WaitForFixedUpdate();
 
         this.isMoving = false;
-        this.issueEvent<iTiledMoved>((x,y)=>x.OnFinishMovement(d, this.gameObject));
+        this.issueEvent<MovementDetector>((x,y)=>x.OnFinishMovement(d));
     }
 
-    public void Move(Dir d, GO caller, float moveDelay) {
+    public void Move(Dir d, float moveDelay) {
         if (this.isMoving)
             return;
 
         Vec3 tgtPosition = new Vec3();
 
         Dir tmp = d;
-        for (int i = (int)Dir.first; tmp != Dir.none && i < (int)Dir.max; i <<= 1) {
+        for (int i = (int)Dir.First; tmp != Dir.None && i < (int)Dir.Max; i <<= 1) {
             switch (tmp & (Dir)i) {
-            case Dir.back:
+            case Dir.Back:
                 tgtPosition.z = -1.0f;
                 break;
-            case Dir.left:
+            case Dir.Left:
                 tgtPosition.x = -1.0f;
                 break;
-            case Dir.front:
+            case Dir.Front:
                 tgtPosition.z = 1.0f;
                 break;
-            case Dir.right:
+            case Dir.Right:
                 tgtPosition.x = 1.0f;
                 break;
-            case Dir.top:
+            case Dir.Top:
                 tgtPosition.y = 1.0f;
                 break;
-            case Dir.bottom:
+            case Dir.Bottom:
                 tgtPosition.y = -1.0f;
                 break;
             } /* switch */
             tmp = (Dir)(((int)tmp) & ~i);
         } /* for */
 
-        this.caller = caller;
         this.StartCoroutine(this.move(tgtPosition, d, moveDelay));
+    }
+
+    public void IsMoving(out bool ret) {
+        ret = this.isMoving;
     }
 }

@@ -1,32 +1,33 @@
-﻿using EvSys = UnityEngine.EventSystems;
+using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using Vec3 = UnityEngine.Vector3;
 
-public interface iSignalFall : EvSys.IEventSystemHandler {
-    /**
-     * Start falling.
-     */
+public interface FallController : EvSys.IEventSystemHandler {
+    /** Block falling for a while */
+    void Block();
+
+    /** Re-allow falling */
+    void Unblock();
+
+    /** Start falling */
     void Fall(GO caller);
 
-    /**
-     * Signal the entity to stop falling, aligned to the grid.
-     */
+    /** Signal the entity to stop falling, aligned to the grid */
     void Halt(GO caller);
+
+    /** Check whether the object is currently falling */
+    void IsFalling(out bool isFalling);
 }
 
-public interface iDetectFall : EvSys.IEventSystemHandler {
-    /**
-     * Signal that the entity started falling.
-     */
+public interface FallDetector : EvSys.IEventSystemHandler {
+    /** Signal that the entity started falling */
     void OnStartFalling(GO callee);
 
-    /**
-     * Signal that the entity has finished falling.
-     */
+    /** Signal that the entity has finished falling */
     void OnFinishFalling(GO callee);
 }
 
-public class Faller : BaseRemoteAction, iSignalFall {
+public class Faller : BaseRemoteAction, FallController {
     /** Whether the object is currently falling. */
     private bool _isFalling = false;
     /** Whether the object should start aligning itself. */
@@ -65,7 +66,7 @@ public class Faller : BaseRemoteAction, iSignalFall {
     /**
      * Fall until signaled, and then until the object becomes aligned.
      */
-    private System.Collections.IEnumerator fall() {
+    private System.Collections.IEnumerator fall(GO caller) {
         /* XXX: Avoids a silly bug when objects are instantiated mid-game */
         while (this.rb == null)
             yield return null;
@@ -74,7 +75,8 @@ public class Faller : BaseRemoteAction, iSignalFall {
             yield return new UnityEngine.WaitForFixedUpdate();
 
         this._isFalling = true;
-        this.issueEvent<iDetectFall>((x,y)=>x.OnStartFalling(this.gameObject));
+        this.issueEvent<FallDetector>(
+                (x,y) => x.OnStartFalling(this.gameObject), caller);
 
         this.rb.isKinematic = false;
         this.rb.useGravity = true;
@@ -99,7 +101,8 @@ public class Faller : BaseRemoteAction, iSignalFall {
 
         this.bgFunc = null;
         this._isFalling = false;
-        this.issueEvent<iDetectFall>((x,y)=>x.OnFinishFalling(this.gameObject));
+        this.issueEvent<FallDetector>(
+                (x,y) => x.OnFinishFalling(this.gameObject), caller);
     }
 
     void FixedUpdate() {
@@ -113,8 +116,7 @@ public class Faller : BaseRemoteAction, iSignalFall {
             return;
 
         this.startAligning = false;
-        this.caller = caller;
-        this.bgFunc = this.StartCoroutine(this.fall());
+        this.bgFunc = this.StartCoroutine(this.fall(caller));
     }
 
     public void Halt(GO caller) {
@@ -131,15 +133,15 @@ public class Faller : BaseRemoteAction, iSignalFall {
         this.newAlignedY = this.getGridAlignedY();
     }
 
-    public void block() {
+    public void Block() {
         this.blocked = true;
     }
 
-    public void unblock() {
+    public void Unblock() {
         this.blocked = false;
     }
 
-    public bool isFalling() {
-        return this._isFalling;
+    public void IsFalling(out bool isFalling) {
+        isFalling = this._isFalling;
     }
 }

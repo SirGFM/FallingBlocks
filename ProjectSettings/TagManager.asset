@@ -18,12 +18,12 @@ TagManager:
   - UI
   - 
   - 
-  - Game Model
-  - Probe Trigger
-  - No collision
-  - Block Edge Detector
-  - Block Edge Reporter
-  - Checkpoint
+  - detector
+  - tracker
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

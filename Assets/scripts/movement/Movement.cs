@@ -5,15 +5,15 @@ namespace Movement {
     /** List of directions an object may face (in camera space),
      * sorted clock-wise. */
     public enum Direction {
-        none   = 0x00,
-        first  = 0x01,
-        back   = 0x01, /* Camera facing */
-        left   = 0x02,
-        front  = 0x04,
-        right  = 0x08,
-        top    = 0x10,
-        bottom = 0x20,
-        max
+        None   = 0x00,
+        First  = 0x01,
+        Back   = 0x01, /* Camera facing */
+        Left   = 0x02,
+        Front  = 0x04,
+        Right  = 0x08,
+        Top    = 0x10,
+        Bottom = 0x20,
+        Max
     };
 }
 
@@ -43,13 +43,13 @@ public static class MovementMethods {
      */
     public static Dir toLocal(this Dir d, Dir forward) {
         switch (forward) {
-        case Dir.front:
+        case Dir.Front:
             return d;
-        case Dir.back:
+        case Dir.Back:
             return d.rotateClockWise().rotateClockWise();
-        case Dir.left:
+        case Dir.Left:
             return d.rotateCounterClockWise();
-        case Dir.right:
+        case Dir.Right:
             return d.rotateClockWise();
         default:
             throw new System.Exception("Invalid forward orientation");
@@ -61,19 +61,19 @@ public static class MovementMethods {
      */
     public static Vec3 toVec3(this Dir d) {
         switch (d) {
-        case Dir.none:
+        case Dir.None:
             return new Vec3(0.0f, 0.0f, 0.0f);
-        case Dir.front:
+        case Dir.Front:
             return new Vec3(0.0f, 0.0f, 1.0f);
-        case Dir.back:
+        case Dir.Back:
             return new Vec3(0.0f, 0.0f, -1.0f);
-        case Dir.left:
+        case Dir.Left:
             return new Vec3(-1.0f, 0.0f, 0.0f);
-        case Dir.right:
+        case Dir.Right:
             return new Vec3(1.0f, 0.0f, 0.0f);
-        case Dir.top:
+        case Dir.Top:
             return new Vec3(0.0f, 1.0f, 0.0f);
-        case Dir.bottom:
+        case Dir.Bottom:
             return new Vec3(0.0f, -1.0f, 0.0f);
         default:
             throw new System.Exception("Invalid direction");
