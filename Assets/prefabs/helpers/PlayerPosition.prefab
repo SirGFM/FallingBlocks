@@ -43,3 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8336506b2d46b7db799c89c01aa78db4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dbgPlayer: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425,
+    type: 3}
+  dbgCamera: {fileID: 2284879740272603675, guid: 1ee3a0eeba63ba53daaf8ca0e6037235,
+    type: 3}
