@@ -97,6 +97,8 @@ public class Loader : BaseRemoteAction, LoaderEvents {
         this.minionCount = 0;
         this.minionSaved = 0;
 
+        BaseRemoteAction.root = this.gameObject;
+
         this.StartCoroutine(this.load());
     }
 
