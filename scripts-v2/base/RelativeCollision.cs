@@ -133,8 +133,10 @@ public static class RelativePositionMethods {
         return (RelPos)((int)p >> (int)RelPos.Shift);
     }
 
+    private const RelPos mask = RelPos.Top | RelPos.Left | RelPos.Right |
+            RelPos.Bottom | RelPos.Front | RelPos.Back;
     public static RelPos masked(this RelPos p) {
-        return (RelPos)((int)p & (int)RelPos.Mask);
+        return (RelPos)((int)p & (int)mask);
     }
     public static int toInt(this RelPos p) {
         return (int)p;
@@ -144,7 +146,6 @@ public static class RelativePositionMethods {
 public class RelativeCollision : BaseRemoteAction {
     public enum RelativePosition {
         /* Helpers */
-        Mask                   = 0x3f,
         Shift                  = 6,
         /* Middle slice */
         Top                    = 0x01,
