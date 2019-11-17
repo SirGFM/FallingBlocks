@@ -1,6 +1,7 @@
 using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
+using Type = GetType.Type;
 
 public class InputControlled : BaseAnimatedEntity {
     public string horizontalAxis = "Horizontal";
@@ -9,6 +10,24 @@ public class InputControlled : BaseAnimatedEntity {
 
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
+
+    private void onCenter(bool enter, RelPos p, GO other) {
+        Type otherType = Type.Error;
+
+        this.issueEvent<RemoteGetType>(
+                (x,y) => x.Get(out otherType), other);
+        if (otherType != Type.Player && otherType != Type.Minion)
+            this.rootEvent<Loader>( (x,y) => x.ReloadLevel() );
+    }
+
+    override protected void start() {
+        System.Action<bool, RelPos, GO> cb;
+
+        base.start();
+
+        cb = (x, y, z) => this.onCenter(x, y, z);
+        this.setCollisionCb(RelPos.Center, cb);
+    }
 
     /**
      * Retrieve the current input direction, if any.

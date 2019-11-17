@@ -32,6 +32,9 @@ public interface LoaderEvents : EvSys.IEventSystemHandler {
      */
     void GetCheckpointCount(out int count);
 
+    /** Reload the current level */
+    void ReloadLevel();
+
     /** Load the next level */
     void NextLevel();
 
@@ -168,6 +171,10 @@ public class Loader : BaseRemoteAction, LoaderEvents {
     private void reload() {
         SceneMng.LoadSceneAsync(this.loaderScene, SceneMode.Single);
         this.resetting = true;
+    }
+
+    public void ReloadLevel() {
+        this.reload();
     }
 
     public void NextLevel() {
