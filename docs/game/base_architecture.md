@@ -21,7 +21,7 @@ Main game object
  |_ Model controller
  |   |_ Actual model
  |   |_ ...
- |_ Relative collsion parent
+ |_ Relative collision parent
      |_ Relative collision 1 (e.g., left)
      |_ Relative collision 2 (e.g., right)
      | ...
@@ -31,7 +31,7 @@ Main game object
 * **Main game object**: Contain most of the game component behaviours
 * **Model controller**: Wrapper for the model, with components that control how the model is displayed (e.g., shaking it in place)
 * **Actual model**: One or more objects used to render the object's model
-* **Relative collsion parent**: Parent to every relative collision in the object. Should have a single `EaseSetRelativeCollision` component, which **copies the object's layer into its children**
+* **Relative collision parent**: Parent to every relative collision in the object. Should have a single `EaseSetRelativeCollision` component, which **copies the object's layer into its children**
 * **Relative collision N**: Each of the object's relative collision detector. Should be created mainly by the parent object
 
 ## Inter-Component Communication
@@ -67,3 +67,7 @@ Scripts that control entities. To simplify implementing similar components, ther
 * `BaseEntity`: Most generic entity implementation, should be inherited by every entity. Implements moving, turning and falling.
 * `BaseBlock`: Basic block; inherits `BaseEntity`. Customize falling (so it's delayed).
 * `BaseAnimatedEntity`: Basic mobile entity; inherits `BaseEntity`. Implements various functions to enable moving the entity around blocks.
+
+## `level`
+
+Scripts related to level logic. All levels are loaded by the single component `Loader`, which keeps track of many events: initial player position, the various checkpoints thorough the level, how to load the next level etc.

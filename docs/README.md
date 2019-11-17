@@ -4,3 +4,5 @@
     * [Levels](system/levels.md) - how levels may be organized
 * Game - description of the game's inner workings
     * [Base architecture](game/base_architecture.md) - how most of the code is organized/implemented
+    * [Blocks](game/blocks.md) - how blocks were implemented
+    * [Collectibles](game/collectibles.md) - how collectibles (and the checkpoint) could be implemented
