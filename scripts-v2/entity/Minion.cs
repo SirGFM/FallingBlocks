@@ -1,12 +1,29 @@
 using Anim = BaseEntity.Animation;
 using Dir = Movement.Direction;
+using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using Math = UnityEngine.Mathf;
 using RelPos = RelativeCollision.RelativePosition;
 using Type = GetType.Type;
 using Vec3 = UnityEngine.Vector3;
 
-public class Minion : BaseAnimatedEntity {
+public interface Leader : EvSys.IEventSystemHandler {
+    /**
+     * Assigns a leader's follower
+     *
+     * @param follower The follower
+     */
+    void SetFollower(Minion follower);
+
+    /**
+     * Remove a leader's follower
+     *
+     * @param callee Whoever is removing the leader's follower
+     */
+    void RemoveFollower(Minion callee);
+}
+
+public class Minion : BaseAnimatedEntity, Leader {
     /** Minimum duration of the shiver animation */
     private const float minShiverTime = 0.5f;
     /** Maximum duration of the shiver animation */
@@ -82,10 +99,8 @@ public class Minion : BaseAnimatedEntity {
         this.otherT = other.transform;
         this.targetPriority = otherPriority;
 
-        if (otherPriority == Type.Minion) {
-            Minion mFollower = other.GetComponent<Minion>();
-            mFollower.follower = this;
-        }
+        if (otherPriority == Type.Minion)
+            this.issueEvent<Leader>( (x,y) => x.SetFollower(this), other);
     }
 
     private System.Collections.IEnumerator follow(GO other, Dir moveDir) {
@@ -108,10 +123,9 @@ public class Minion : BaseAnimatedEntity {
         if (this.target == other) {
             Dir moveDir;
 
-            if (this.targetPriority == Type.Minion) {
-                Minion mFollower = other.GetComponent<Minion>();
-                mFollower.follower = null;
-            }
+            if (this.targetPriority == Type.Minion)
+                this.issueEvent<Leader>(
+                        (x,y) => x.RemoveFollower(this), other);
 
             /* The target we were following just left, try to move after it */
             this.target = null;
@@ -179,5 +193,15 @@ public class Minion : BaseAnimatedEntity {
 
     override protected void onGoal() {
         this.StartCoroutine(this.destroy());
+    }
+
+    public void SetFollower(Minion newFollower) {
+        this.follower = newFollower;
+    }
+
+    public void RemoveFollower(Minion callee) {
+        if (callee == this.follower) {
+            this.follower = null;
+        }
     }
 }
