@@ -1,10 +1,15 @@
 using Animator = UnityEngine.Animator;
+using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 using Type = GetType.Type;
 using Vec3 = UnityEngine.Vector3;
 
-public class GoalBlock : BaseBlock, LedgeTracker {
+public interface Goal : EvSys.IEventSystemHandler {
+    void AnimationFinished();
+}
+
+public class GoalBlock : BaseBlock, LedgeTracker, Goal {
     /** The animation handler */
     private Animator animator;
     /** The trigger used to start the animation */
@@ -49,7 +54,7 @@ public class GoalBlock : BaseBlock, LedgeTracker {
         this.showWinScreen();
     }
 
-    public void OnAnimationFinished() {
+    public void AnimationFinished() {
         this.rootEvent<LoaderEvents>( (x,y) => x.NextLevel() );
     }
 
