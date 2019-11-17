@@ -1,15 +1,25 @@
+using Animator = UnityEngine.Animator;
 using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 using Type = GetType.Type;
 
 public class InputControlled : BaseAnimatedEntity {
+    private const string moveAnim = "isWalking";
+    private const string fallAnim = "isFalling";
+    private const string forceAnim = "stopIdle";
+    private const string climbAnim = "isClimbing";
+    private const string ledgeAnim = "isOnLedge";
+
     public string horizontalAxis = "Horizontal";
     public string verticalAxis = "Vertical";
     public string actionAxis = "Action";
 
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
+
+    /** The animation handler */
+    private Animator unityAnimator;
 
     private void onCenter(bool enter, RelPos p, GO other) {
         Type otherType = Type.Error;
@@ -27,6 +37,8 @@ public class InputControlled : BaseAnimatedEntity {
 
         cb = (x, y, z) => this.onCenter(x, y, z);
         this.setCollisionCb(RelPos.Center, cb);
+
+        this.resetAnimation();
     }
 
     /**
@@ -120,6 +132,7 @@ public class InputControlled : BaseAnimatedEntity {
 
     override protected void updateState() {
         base.updateState();
+        this.updateAnimationState();
 
         if (this.anim != Animation.None)
             return;
@@ -142,6 +155,49 @@ public class InputControlled : BaseAnimatedEntity {
         else if (!this.isOnLedge() && this.checkActionButton()) {
             GO obj = null;
             this.turnToClosestBlock(out obj);
+        }
+    }
+
+    private bool checkState(Animation target) {
+        return (this.anim & target) == target;
+    }
+
+    private void getAnimator() {
+        GO self = this.gameObject;
+        if (this.unityAnimator == null)
+            this.unityAnimator = self.GetComponentInChildren<Animator>();
+    }
+
+    private void resetAnimation() {
+        this.setAnimTrigger(forceAnim);
+    }
+
+    private void setAnimTrigger(string anim) {
+        this.getAnimator();
+        if (this.unityAnimator != null)
+            this.unityAnimator.SetTrigger(anim);
+    }
+
+    private void setAnimBool(string anim, bool b) {
+        this.getAnimator();
+        if (this.unityAnimator != null)
+            this.unityAnimator.SetBool(anim, b);
+    }
+
+    private void updateAnimationState() {
+        if (this.anim != Animation.None)
+            this.resetAnimation();
+
+        this.setAnimBool(moveAnim, this.checkState(Animation.Move));
+        this.setAnimBool(fallAnim, this.checkState(Animation.Fall));
+        this.setAnimBool(climbAnim, this.getObjectAt(RelPos.Front) != null);
+        this.setAnimBool(ledgeAnim, this.isOnLedge());
+
+        if (this.checkState(Animation.Move) &&
+                (this.getObjectAt(RelPos.FrontBottom) == null) &&
+                (this.getObjectAt(RelPos.BottomBottomFront) != null)) {
+            /* Set the falling animation for moving down a floor */
+            this.setAnimBool(fallAnim, true);
         }
     }
 }
