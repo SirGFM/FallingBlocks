@@ -53,15 +53,11 @@ public class Minion : BaseAnimatedEntity {
 
     override protected void start() {
         System.Action<bool, RelPos, GO> cb;
-        System.Tuple<RelPos, System.Action<bool, RelPos, GO>> arg;
-        RelPos p;
 
         base.start();
 
         cb = (x, y, z) => this.onCollision(x, y, z);
-        p = RelPos.None;
-        arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(p, cb);
-        this.BroadcastMessage("SetRelativePositionCallback", arg);
+        this.setCollisionCb(RelPos.None, cb);
 
         this.target = null;
         this.targetPriority = Type.None;

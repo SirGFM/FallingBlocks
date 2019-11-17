@@ -27,13 +27,11 @@ public class CrackedBlock : BaseBlock, LedgeTracker {
 
     override protected void start() {
         System.Action<bool, RelPos, GO> cb;
-        System.Tuple<RelPos, System.Action<bool, RelPos, GO>> arg;
 
         base.start();
 
         cb = (x, y, z) => this.onCollisionUp(x, y, z);
-        arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(RelPos.Top, cb);
-        this.BroadcastMessage("SetRelativePositionCallback", arg);
+        this.setCollisionCb(RelPos.Top, cb);
 
         this.model = this.gameObject.GetComponentInChildren<Model>();
         this.updateCrackedState();

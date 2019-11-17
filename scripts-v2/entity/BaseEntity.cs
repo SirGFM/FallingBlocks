@@ -82,14 +82,18 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
         this.onCollision(enter, p, other);
     }
 
+    protected void setCollisionCb(RelPos p, System.Action<bool, RelPos, GO> c) {
+        System.Tuple<RelPos, System.Action<bool, RelPos, GO>> arg;
+        arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(p, c);
+        this.BroadcastMessage("SetRelativePositionCallback", arg);
+    }
+
     protected void setCollisionDownCallback(RelPos[] positions) {
         System.Action<bool, RelPos, GO> cb;
 
         cb = (x, y, z) => this.onCollisionDown(x, y, z);
         foreach (RelPos p in positions) {
-            System.Tuple<RelPos, System.Action<bool, RelPos, GO>> arg;
-            arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(p, cb);
-            this.BroadcastMessage("SetRelativePositionCallback", arg);
+            this.setCollisionCb(p, cb);
         }
     }
 

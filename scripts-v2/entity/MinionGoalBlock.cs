@@ -21,12 +21,8 @@ public class MinionGoalBlock : BaseBlock, LedgeTracker {
 
     private void setupCollision() {
         System.Action<bool, RelPos, GO> cb;
-        System.Tuple<RelPos, System.Action<bool, RelPos, GO>> arg;
-        RelPos p = RelPos.Top;
-
         cb = (x, y, z) => this.onCollisionUp(x, y, z);
-        arg = new System.Tuple<RelPos, System.Action<bool, RelPos, GO>>(p, cb);
-        this.BroadcastMessage("SetRelativePositionCallback", arg);
+        this.setCollisionCb(RelPos.Top, cb);
     }
 
     private void showWinScreen() {
