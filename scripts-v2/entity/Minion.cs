@@ -1,4 +1,5 @@
 using Anim = BaseEntity.Animation;
+using Animator = UnityEngine.Animator;
 using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
@@ -31,6 +32,8 @@ public class Minion : BaseAnimatedEntity, Leader {
         public Type otherType;
     };
 
+    private const string shiverAnim = "shiver";
+
     /** Minimum duration of the shiver animation */
     private const float minShiverTime = 0.5f;
     /** Maximum duration of the shiver animation */
@@ -54,6 +57,9 @@ public class Minion : BaseAnimatedEntity, Leader {
     /** Track this entity's follower (if any), so it may continue wandering
      * without shivering */
     protected Minion follower;
+
+    /** The animation handler */
+    private Animator unityAnimator;
 
     static private Dir vec3ToDir(Vec3 pos) {
         /* XXX: Only check axis X and Z */
@@ -164,8 +170,17 @@ public class Minion : BaseAnimatedEntity, Leader {
         }
     }
 
+    private void getAnimator() {
+        GO self = this.gameObject;
+        if (this.unityAnimator == null)
+            this.unityAnimator = self.GetComponentInChildren<Animator>();
+    }
+
     private System.Collections.IEnumerator wander() {
         if (this.follower == null) {
+            this.getAnimator();
+            if (this.unityAnimator != null)
+                this.unityAnimator.SetTrigger(shiverAnim);
             this.shake(minShiverTime, maxShiverTime);
             while ((this.anim & Anim.Shake) != 0)
                 yield return new UnityEngine.WaitForFixedUpdate();
