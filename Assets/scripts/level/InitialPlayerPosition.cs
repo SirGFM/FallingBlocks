@@ -3,11 +3,13 @@ using Obj = UnityEngine.Object;
 using Quat = UnityEngine.Quaternion;
 using Vec3 = UnityEngine.Vector3;
 
-public class InitialPlayerPosition : BaseRemoteAction {
-    /** DEBUG ONLY:The player prefab */
+public class InitialPlayerPosition : BaseRemoteAction, GetPlayer {
+    /** DEBUG ONLY: The player prefab */
     public GO dbgPlayer;
-    /** DEBUG ONLY:The main camera */
+    /** DEBUG ONLY: The main camera */
     public GO dbgCamera;
+    /** DEBUG ONLY: Instance of the player */
+    private GO dbgPlayerInstance;
 
     protected int checkPointIdx;
 
@@ -29,18 +31,25 @@ public class InitialPlayerPosition : BaseRemoteAction {
         p = this.transform.position;
 
         if (UnityEngine.Application.isEditor &&
-                UnityEngine.Camera.main == null) {
+                this.dbgCamera != null && UnityEngine.Camera.main == null) {
             /* XXX: If testing a particular scene, it won't have neither the
              * camera nor the player (as those are maintained by the loader
              * scene)... So spawn them here. */
             Obj.Instantiate(this.dbgCamera, new Vec3(), Quat.identity);
-            Obj.Instantiate(this.dbgPlayer, p, Quat.identity);
+            this.dbgPlayerInstance = Obj.Instantiate(this.dbgPlayer, p,
+                    Quat.identity);
+
+            /* XXX: Set this as the root object so the camera may retrieve
+             * the player */
+            BaseRemoteAction.root = this.gameObject;
         }
 
         this.rootEvent<LoaderEvents>(
                 (x,y) => x.SetCheckpointPosition(this.checkPointIdx, p) );
 
-        this.destroy();
+        if (UnityEngine.Application.isEditor &&
+                this.dbgCamera != null && UnityEngine.Camera.main == null)
+            this.destroy();
     }
 
     private System.Collections.IEnumerator goDestroy() {
@@ -55,5 +64,9 @@ public class InitialPlayerPosition : BaseRemoteAction {
 
     protected void destroy() {
         this.StartCoroutine(this.goDestroy());
+    }
+
+    public void Get(out GO player) {
+        player = this.dbgPlayerInstance;
     }
 }
