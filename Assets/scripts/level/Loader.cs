@@ -49,7 +49,16 @@ public interface LoaderEvents : EvSys.IEventSystemHandler {
     void SavedMinion(out bool done);
 }
 
-public class Loader : BaseRemoteAction, LoaderEvents {
+public interface GetPlayer : EvSys.IEventSystemHandler {
+    /**
+     * Retrieve the scene's player.
+     *
+     * @param player The instanced player (if any)
+     */
+    void Get(out GO player);
+}
+
+public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     /** XXX: The first scene in the game **must** be the mainmenu, while the
      * second one is the first stage...
      * To reset the game back to the first stage, this must be manually
@@ -76,6 +85,8 @@ public class Loader : BaseRemoteAction, LoaderEvents {
     private int minionCount;
     /** How many minions the player has found/saved */
     private int minionSaved;
+    /** The instanced player */
+    private GO playerInstance;
 
     private bool resetting;
     private bool doReset;
@@ -156,7 +167,8 @@ public class Loader : BaseRemoteAction, LoaderEvents {
 
     public void SetCheckpointPosition(int idx, Vec3 pos) {
         if (idx == checkpoint && !this.didSpawnPlayer) {
-            Obj.Instantiate(this.player, pos, Quat.identity);
+            this.playerInstance = Obj.Instantiate(this.player, pos,
+                    Quat.identity);
             this.didSpawnPlayer = true;
         }
     }
@@ -192,6 +204,10 @@ public class Loader : BaseRemoteAction, LoaderEvents {
     public void SavedMinion(out bool done) {
         this.minionSaved++;
         done = (this.minionSaved >= this.minionCount);
+    }
+
+    public void Get(out GO player) {
+        player = this.playerInstance;
     }
 
     void Update() {
