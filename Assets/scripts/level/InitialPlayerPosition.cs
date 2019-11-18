@@ -11,24 +11,25 @@ public class InitialPlayerPosition : BaseRemoteAction, GetPlayer {
     /** DEBUG ONLY: Instance of the player */
     private GO dbgPlayerInstance;
 
-    protected int checkPointIdx;
+    public int checkPointIdx;
 
     void Start() {
         this.start();
-        this.StartCoroutine(this.delayedSetPlayer());
     }
 
     virtual protected void start() {
-        this.rootEvent<LoaderEvents>(
-                (x,y) => x.GetCheckpointCount(out this.checkPointIdx) );
+        this.StartCoroutine(this.delayedSetPlayer());
     }
 
     private System.Collections.IEnumerator delayedSetPlayer() {
         Vec3 p;
 
-        yield return null;
-
         p = this.transform.position;
+        float delay = p.y / 100.0f;
+        yield return new UnityEngine.WaitForSeconds(delay);
+
+        this.rootEvent<LoaderEvents>(
+                (x,y) => x.GetCheckpointCount(out this.checkPointIdx) );
 
         if (UnityEngine.Application.isEditor &&
                 this.dbgCamera != null && UnityEngine.Camera.main == null) {
@@ -44,6 +45,8 @@ public class InitialPlayerPosition : BaseRemoteAction, GetPlayer {
             BaseRemoteAction.root = this.gameObject;
         }
 
+        if (this.checkPointIdx > 0)
+            p.y += 2.0f;
         this.rootEvent<LoaderEvents>(
                 (x,y) => x.SetCheckpointPosition(this.checkPointIdx, p) );
 
