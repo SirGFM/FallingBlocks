@@ -76,6 +76,7 @@ public class InputControlled : BaseAnimatedEntity {
 
     private System.Collections.IEnumerator delayedFall(float duration) {
         yield return new UnityEngine.WaitForSeconds(duration);
+        this.dropFromLedge();
 
         while ((this.anim & Animation.Fall) == 0)
             yield return null;
