@@ -126,16 +126,16 @@ MonoBehaviour:
   gizmoColor: {r: 1, g: 1, b: 1, a: 1}
   gizmoRadius: 0.5
   showGizmo: 0
-  UpdateColliders: 0
+  UpdateColliders: 1
   Top: 0
-  Left: 0
-  Right: 0
+  Left: 1
+  Right: 1
   Bottom: 1
   TopLeft: 0
   TopRight: 0
   BottomLeft: 1
   BottomRight: 1
-  Back: 0
+  Back: 1
   BackTop: 0
   BackLeft: 0
   BackRight: 0
@@ -144,7 +144,7 @@ MonoBehaviour:
   BackTopRight: 0
   BackBottomLeft: 0
   BackBottomRight: 0
-  Front: 0
+  Front: 1
   FrontTop: 0
   FrontLeft: 0
   FrontRight: 0
