@@ -109,6 +109,8 @@ public class InputControlled : BaseAnimatedEntity {
                         this.StartCoroutine(this.delayedFall(delay));
                     }
                     else {
+                        if (this.isOnLedge())
+                            this.dropFromLedge();
                         this.move(pushDir, delay);
                     }
                 }
