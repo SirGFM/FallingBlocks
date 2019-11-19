@@ -1,4 +1,5 @@
 using GO = UnityEngine.GameObject;
+using Mesh = UnityEngine.Mesh;
 using Model = UnityEngine.MeshFilter;
 using RelPos = RelativeCollision.RelativePosition;
 using Type = GetType.Type;
@@ -16,12 +17,12 @@ public class CrackedBlock : BaseBlock, LedgeTracker {
 
     public State state = State.Intact;
 
-    public Model IntactModel;
-    public Model PreCrackedModel;
-    public Model CrackedModel;
-    public Model PreBreakingModel;
-    public Model BreakingModel;
-    public Model BrokenModel;
+    public Mesh IntactModel;
+    public Mesh PreCrackedModel;
+    public Mesh CrackedModel;
+    public Mesh PreBreakingModel;
+    public Mesh BreakingModel;
+    public Mesh BrokenModel;
 
     private Model model;
 
@@ -50,7 +51,7 @@ public class CrackedBlock : BaseBlock, LedgeTracker {
     }
 
     private void updateCrackedState() {
-        Model newModel;
+        Mesh newModel;
 
         switch (this.state) {
         case State.Intact:
@@ -78,7 +79,7 @@ public class CrackedBlock : BaseBlock, LedgeTracker {
         }
 
         if (newModel != null)
-            this.model = newModel;
+            this.model.mesh = newModel;
     }
 
     private void updateCrackedStateExit() {
