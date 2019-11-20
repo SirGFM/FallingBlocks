@@ -97,6 +97,10 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
         }
     }
 
+    protected static bool isBlock(GO obj) {
+        return (obj != null && obj.GetComponent<BaseBlock>() != null);
+    }
+
     protected GO getObjectAt(RelPos p) {
         GO ret = null;
         this.issueEvent<GetRelativeObject>(
