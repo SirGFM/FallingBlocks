@@ -15,8 +15,13 @@ public interface SetOnGoal : EvSys.IEventSystemHandler {
     void OnGoal();
 }
 
+public interface GetDownCount : EvSys.IEventSystemHandler {
+    /** Retrieve how many objects there are bellow this one */
+    void Get(out int count);
+}
+
 public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
-        TurnDetector, SetOnGoal {
+        TurnDetector, SetOnGoal, GetDownCount {
     public enum Animation {
         None   = 0x00,
         Stand  = 0x01,
@@ -106,6 +111,10 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
         this.issueEvent<GetRelativeObject>(
                 (x, y) => x.GetObjectAt(out ret, p));
         return ret;
+    }
+
+    public void Get(out int count) {
+        count = this.downCount;
     }
 
     /* == Unity Events ====================================================== */
