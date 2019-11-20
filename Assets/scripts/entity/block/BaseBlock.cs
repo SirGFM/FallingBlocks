@@ -4,19 +4,36 @@ using RelPos = RelativeCollision.RelativePosition;
 
 public class BaseBlock : BaseEntity {
     private const float fallWait = 1.0f;
-    private const float blockFallDelay = 0.25f;
+    private const float blockFallDelay = 0.15f;
+
+    static private RelPos[] downPositions = {RelPos.Bottom, RelPos.BottomLeft,
+            RelPos.BottomRight, RelPos.FrontBottom, RelPos.BackBottom};
 
     override protected void start() {
         base.start();
 
-        RelPos[] positions = {RelPos.BottomLeft, RelPos.BottomRight, RelPos.FrontBottom, RelPos.BackBottom};
-        this.setCollisionDownCallback(positions);
+        this.setCollisionDownCallback(downPositions);
 
         this.facing = Dir.None;
     }
 
     override protected float fallDelay() {
         return blockFallDelay;
+    }
+
+    override protected bool checkFirstEntityEnter() {
+        foreach (RelPos p in downPositions) {
+            GO block = this.getObjectAt(p);
+            if (block != null && isBlock(block)) {
+                int count = 0;
+                this.issueEvent<GetDownCount>(
+                        (x,y) => x.Get(out count), block);
+                return (count > 0);
+            }
+        }
+
+        /* Shouldn't ever happen... */
+        return false;
     }
 
     private System.Collections.IEnumerator _onLastBlockExit() {
