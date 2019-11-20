@@ -171,12 +171,21 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
         return 0.0f;
     }
 
+    virtual protected bool checkFirstEntityEnter() {
+        return true;
+    }
+
+    protected void stopFall() {
+        if (this.downCount > 1 || this.checkFirstEntityEnter())
+            this.issueEvent<FallController>( (x, y) => x.Halt(this.gameObject) );
+    }
+
     virtual protected void updateState() {
         if ((this.anim & ~Animation.Fall) != 0)
             return;
 
         if ((this.anim & Animation.Fall) != 0 && this.downCount > 0) {
-            this.issueEvent<FallController>( (x, y) => x.Halt(this.gameObject) );
+            this.stopFall();
         }
         else if (this.downCount <= 0 && this.canFall()) {
             if (this.fallDelay() <= 0.0f)
