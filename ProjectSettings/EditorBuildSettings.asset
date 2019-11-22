@@ -6,108 +6,51 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/scenes/001-1_BasicWall/Loader.unity
-    guid: 3be3e145c5c016b43b2af8311c65d941
+    path: Assets/scenes/Loader.unity
+    guid: df9855d06bbc1be1bbbf9551b19bcb77
   - enabled: 1
-    path: Assets/scenes/001-2_MovingBlocks/Loader.unity
-    guid: aa16920fe822cb3c7b970f069ae557ae
+    path: Assets/scenes/001-01-BasicWalls.unity
+    guid: 6d0384cfae656a482b2d9863e6ae0303
   - enabled: 1
-    path: Assets/scenes/001-3_CrumblingDown/Loader.unity
-    guid: 978ddd8f278864d2cb83b859a7597f2e
+    path: Assets/scenes/001-02-MovingBlocks.unity
+    guid: 635a24070ef3ddaf19e511178aea8c02
   - enabled: 1
-    path: Assets/scenes/002-1_Ledge/Loader.unity
-    guid: 9bc32fa81a232164ea3673b490102385
+    path: Assets/scenes/001-03-CrumblingDown.unity
+    guid: 768a29a31f8ca7869acf368d648dfe60
   - enabled: 1
-    path: Assets/scenes/002-2_MoreLedges/Loader.unity
-    guid: b72b5024585555fcd9bdab0acf2b7543
+    path: Assets/scenes/002-1-Ledge.unity
+    guid: 45ab08e3bdb5ac35e8aea00c9f2617e7
   - enabled: 1
-    path: Assets/scenes/003_TakingItDown/Loader.unity
-    guid: 2d7216d3d4cba1e97a5f6eaecb2a0d7f
+    path: Assets/scenes/002-2-MoreLedges.unity
+    guid: 47e6cd139199ca13dab6d3527f59bf1e
   - enabled: 1
-    path: Assets/scenes/004-0_MakingBridges/Loader.unity
-    guid: 4306f452afdce813ca58973305dff02b
+    path: Assets/scenes/003-TakingItDown.unity
+    guid: 06affd8955195be8283dff8f2a121d6a
   - enabled: 1
-    path: Assets/scenes/004-1_CrossingOver/Loader.unity
-    guid: 30ca53c93283d73989e38d088dfc5ad9
+    path: Assets/scenes/004-0-MakingBridges.unity
+    guid: b1678aa77734216a1a354beb17ee487c
   - enabled: 1
-    path: Assets/scenes/005-0_EverythingIsFalling/Loader.unity
-    guid: ee163353427c2fa2cbbed56d2b3f2052
+    path: Assets/scenes/004-1-CrossingOver.unity
+    guid: b9ab1a5f52c1dd8399dcea4640b53f37
   - enabled: 1
-    path: Assets/scenes/005-1_FragileIslands/Loader.unity
-    guid: 32f6429f46d76a3c8b70fbc4db257abc
+    path: Assets/scenes/005-0-EverythingIsFalling.unity
+    guid: 2b1f7bf9981efc5b69bc38538eab56ff
   - enabled: 1
-    path: Assets/scenes/005-2_BreakingOut/Loader.unity
-    guid: 2930ea7f5a54baa38910d66e808d144a
+    path: Assets/scenes/005-1-FragileIsland.unity
+    guid: b6a4c2d991dfdfd2e9a4e0c4c7fb7580
   - enabled: 1
-    path: Assets/scenes/006-0_Companion/Loader.unity
-    guid: 58fd43a9b8e1fd0deac4cba8537693bc
+    path: Assets/scenes/005-2-BreakingOut.unity
+    guid: e32c054a95a123a9b9e3881aba9392ac
   - enabled: 1
-    path: Assets/scenes/006-2_AFollower/Loader.unity
-    guid: e273071b8e39b8c0eb34febcafe8db0a
+    path: Assets/scenes/006-0-Companion.unity
+    guid: 1be4e3dc988db637facd25cc281864c3
   - enabled: 1
-    path: Assets/scenes/006-3_MoreFriends/Loader.unity
-    guid: f0eff9ac300624b64bada6750b2dc2c3
+    path: Assets/scenes/006-2-AFollower.unity
+    guid: 695dea719eb953312b28a025e0730cee
+  - enabled: 1
+    path: Assets/scenes/006-3-MoreFriends.unity
+    guid: 33ec6c3c19ddf99e1800a881d38df18a
   - enabled: 1
     path: Assets/scenes/LoadingUI.unity
     guid: e34e4eb9bf10499a6bd14765fe0f079d
-  - enabled: 1
-    path: Assets/scenes/001-1_BasicWall/001.unity
-    guid: a5ea42f1ba3c43db39883f3ffcfec827
-  - enabled: 1
-    path: Assets/scenes/001-2_MovingBlocks/001.unity
-    guid: a160055f5a192fb3494127f7a46ad11f
-  - enabled: 1
-    path: Assets/scenes/001-2_MovingBlocks/002.unity
-    guid: 7d8dcf7ce0357e2b493c892922ff24e5
-  - enabled: 1
-    path: Assets/scenes/001-2_MovingBlocks/003.unity
-    guid: 976e4500be4d2a0eca35a5f794ebe818
-  - enabled: 1
-    path: Assets/scenes/002-1_Ledge/001.unity
-    guid: 6570edb4f8c67b8e28190f3b7e8170a9
-  - enabled: 1
-    path: Assets/scenes/002-2_MoreLedges/001.unity
-    guid: c9350fdca1d4d9b209149f7ccf4195ba
-  - enabled: 1
-    path: Assets/scenes/002-2_MoreLedges/002.unity
-    guid: 8e97a79fe818a7afaa72932e2e706ce5
-  - enabled: 1
-    path: Assets/scenes/003_TakingItDown/001.unity
-    guid: cc27a034eea20b3c1a71a7c72a830cb6
-  - enabled: 1
-    path: Assets/scenes/003_TakingItDown/002.unity
-    guid: 4393297624a08ae6cb5b707433994863
-  - enabled: 1
-    path: Assets/scenes/004-0_MakingBridges/001.unity
-    guid: d24f957310573309684aa1963e08ba8d
-  - enabled: 1
-    path: Assets/scenes/004-1_CrossingOver/001.unity
-    guid: 5d57ed7f2bdd182da87f846f2a9b1c69
-  - enabled: 1
-    path: Assets/scenes/001-3_CrumblingDown/001.unity
-    guid: 1eff5b6f3348d333bb9c91b4bf7b8ccc
-  - enabled: 1
-    path: Assets/scenes/001-3_CrumblingDown/002.unity
-    guid: 20eb881589a0fdaa69448a6d02691f7f
-  - enabled: 1
-    path: Assets/scenes/005-0_EverythingIsFalling/001.unity
-    guid: c7cad6870bdbc1134b90a12f83f67e48
-  - enabled: 1
-    path: Assets/scenes/005-0_EverythingIsFalling/002.unity
-    guid: 2f8217bc6b209f1bf8cbc06cd8af560a
-  - enabled: 1
-    path: Assets/scenes/005-1_FragileIslands/001.unity
-    guid: 0e9bbea5afdbfaf88b1d0e28282beb1d
-  - enabled: 1
-    path: Assets/scenes/005-2_BreakingOut/001.unity
-    guid: b36d65dc9c7329e7bba1ec9510131d99
-  - enabled: 1
-    path: Assets/scenes/006-0_Companion/001.unity
-    guid: 8474d4525ae5e28b88ed95c1afc917fc
-  - enabled: 1
-    path: Assets/scenes/006-2_AFollower/001.unity
-    guid: ea576ef88634b9f36b5df89fefda4239
-  - enabled: 1
-    path: Assets/scenes/006-3_MoreFriends/001.unity
-    guid: 573759904d092d2be96992c54d0c62fc
   m_configObjects: {}
