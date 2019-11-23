@@ -116,7 +116,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     private void getUiComponents(Scene scene, SceneMode mode) {
         string levelName = "Unknown";
         if (currentLevel - 1 < this.levelNames.Length)
-            levelName = this.levelNames[currentLevel];
+            levelName = this.levelNames[currentLevel - 1];
         string sceneName = $"Level {currentLevel}\n{levelName}";
 
         /* Retrieve all components from the loading scene */

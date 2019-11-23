@@ -99,7 +99,8 @@ public class InputControlled : BaseAnimatedEntity {
                 if (didPush)
                     this.StartCoroutine(this.doPush(delay));
             }
-            else if (pushDir == this.facing.toLocal(Dir.Back)) {
+            else if (pushDir == this.facing.toLocal(Dir.Back) &&
+                    getObjectAt(RelPos.Back) == null) {
                 this.issueEvent<PushController>(
                         (x,y) => x.TryPush(ref delay, ref didPush, pushDir,
                                 this.gameObject),
