@@ -1,7 +1,9 @@
+using Col = UnityEngine.BoxCollider;
 using Dir = Movement.Direction;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
+using Vec3 = UnityEngine.Vector3;
 
 public interface IsShaking : EvSys.IEventSystemHandler {
     /** Check whether the block is currently shaking */
@@ -24,6 +26,12 @@ public class BaseBlock : BaseEntity, IsShaking {
 
         this.facing = Dir.None;
         this.isShaking = false;
+
+        /* XXX: Add an extra collider so moving the only block beneath another
+         * doesn't cause the latter to shake */
+        Col topCol = this.gameObject.AddComponent<Col>();
+        topCol.size = new Vec3(0.75f, 0.1f, 0.75f);
+        topCol.isTrigger = true;
     }
 
     override protected float fallDelay() {
