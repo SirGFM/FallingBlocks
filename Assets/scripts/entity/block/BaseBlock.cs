@@ -1,10 +1,18 @@
 using Dir = Movement.Direction;
+using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
 
-public class BaseBlock : BaseEntity {
+public interface IsShaking : EvSys.IEventSystemHandler {
+    /** Check whether the block is currently shaking */
+    void Check(out bool val);
+}
+
+public class BaseBlock : BaseEntity, IsShaking {
     private const float fallWait = 1.0f;
     private const float blockFallDelay = 0.15f;
+
+    private bool isShaking;
 
     static private RelPos[] downPositions = {RelPos.Bottom, RelPos.BottomLeft,
             RelPos.BottomRight, RelPos.FrontBottom, RelPos.BackBottom};
@@ -15,6 +23,7 @@ public class BaseBlock : BaseEntity {
         this.setCollisionDownCallback(downPositions);
 
         this.facing = Dir.None;
+        this.isShaking = false;
     }
 
     override protected float fallDelay() {
@@ -40,9 +49,11 @@ public class BaseBlock : BaseEntity {
         this.issueEvent<FallController>( (x, y) => x.Block() );
         this.issueEvent<ShakeController>(
                 (x, y) => x.StartShaking(), this.shaker);
+        this.isShaking = true;
         yield return new UnityEngine.WaitForSeconds(BaseBlock.fallWait);
         this.issueEvent<ShakeController>(
                 (x, y) => x.StopShaking(), this.shaker);
+        this.isShaking = false;
         this.issueEvent<FallController>( (x, y) => x.Unblock() );
     }
 
@@ -53,5 +64,9 @@ public class BaseBlock : BaseEntity {
                 (x, y) => x.IsMoving(out otherMoving), other);
         if (otherMoving)
             this.StartCoroutine(this._onLastBlockExit());
+    }
+
+    public void Check(out bool val) {
+        val = (this.isShaking || (this.anim & Animation.Shake) != 0);
     }
 }

@@ -28,6 +28,14 @@ public class Push : BaseRemoteAction, PushController {
         GO next = null;
         RelPos p;
         float localDelay;
+        bool isShaking = false;
+
+        this.issueEvent<IsShaking>( (x,y) => x.Check(out isShaking) );
+        if (isShaking) {
+            /* Pushing while shaking causes a bug, so block it */
+            didPush = false;
+            return;
+        }
 
         /* Use the slowest movement */
         if (this.moveDelay > delay)
