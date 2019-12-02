@@ -71,6 +71,8 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     private const string titleTag = "Title";
     /** Name of the sub-scene used to display the loading progress */
     private const string uiScene = "LoadingUI";
+    /** Name of the sub-scene used to display the game UI */
+    private const string gameUiScene = "GameUI";
 
     /** Scene with components related to displaying the loading progress */
     private Scene loadingUi;
@@ -78,6 +80,8 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     private ProgressBar pb;
     /** Name of the loader scene */
     private int loaderScene;
+    /** Text displaying the minion count */
+    private UiText minionCountTxt;
 
     /** How many checkpoints this scene has (increase by an event) */
     private int checkpointCount;
@@ -107,17 +111,22 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         this.checkpointCount = 0;
         this.minionCount = 0;
         this.minionSaved = 0;
+        this.minionCountTxt = null;
 
         BaseRemoteAction.root = this.gameObject;
 
         this.StartCoroutine(this.load());
     }
 
-    private void getUiComponents(Scene scene, SceneMode mode) {
+    private string getLevelName(string sep) {
         string levelName = "Unknown";
         if (currentLevel - 1 < this.levelNames.Length)
             levelName = this.levelNames[currentLevel - 1];
-        string sceneName = $"Level {currentLevel}\n{levelName}";
+        return $"Level {currentLevel}{sep}{levelName}";
+    }
+
+    private void getUiComponents(Scene scene, SceneMode mode) {
+        string sceneName = this.getLevelName("\n");
 
         /* Retrieve all components from the loading scene */
         this.loadingUi = scene;
@@ -128,6 +137,38 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
             foreach (UiText txt in go.GetComponentsInChildren<UiText>())
                 if (txt.tag == Loader.titleTag)
                     txt.text = sceneName;
+        }
+    }
+
+    private void updateMinionText() {
+        if (this.minionCountTxt != null) {
+            /* For reference, this '$' denotes a "intepolated string" */
+            this.minionCountTxt.text = $"{this.minionSaved:D2} / {this.minionCount:D2}";
+        }
+    }
+
+    private void setupGameUI(Scene scene, SceneMode mode) {
+        string title = this.getLevelName(": ");
+        foreach (GO go in scene.GetRootGameObjects()) {
+            UiText[] txts = go.GetComponentsInChildren<UiText>();
+            foreach (UiText txt in txts) {
+                this.issueEvent<MinionCountIface>(
+                        (x,y) => x.GetText(out this.minionCountTxt), txt.gameObject);
+                if (this.minionCountTxt == null) {
+                    /* Not the minion count text, therefore(?) the title */
+                    txt.text = title;
+                }
+                else if (this.minionCount == 0) {
+                    /* No minions in this level, just hide the display */
+                    UnityEngine.Transform txtT = this.minionCountTxt.transform;
+                    GO txtParent = txtT.parent.gameObject;
+                    txtParent.SetActive(false);
+                }
+                else {
+                    /* This level has minions! Update the text */
+                    this.updateMinionText();
+                }
+            }
         }
     }
 
@@ -162,6 +203,16 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         yield return null;
 
         SceneMng.UnloadSceneAsync(this.loadingUi);
+
+        do {
+            AsyncOp op;
+
+            SceneMng.sceneLoaded += setupGameUI;
+            op = SceneMng.LoadSceneAsync(Loader.gameUiScene, SceneMode.Additive);
+            yield return op;
+            SceneMng.sceneLoaded -= setupGameUI;
+        } while (false);
+
         this.done = true;
     }
 
@@ -203,6 +254,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
 
     public void SavedMinion(out bool done) {
         this.minionSaved++;
+        this.updateMinionText();
         done = (this.minionSaved >= this.minionCount);
     }
 
