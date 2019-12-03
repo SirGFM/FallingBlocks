@@ -9,46 +9,46 @@ EditorBuildSettings:
     path: Assets/scenes/Loader.unity
     guid: df9855d06bbc1be1bbbf9551b19bcb77
   - enabled: 1
-    path: Assets/scenes/001-01-BasicWalls.unity
+    path: Assets/scenes/001-01-First Steps.unity
     guid: 6d0384cfae656a482b2d9863e6ae0303
   - enabled: 1
-    path: Assets/scenes/001-02-MovingBlocks.unity
+    path: Assets/scenes/001-02-Moving Blocks.unity
     guid: 635a24070ef3ddaf19e511178aea8c02
   - enabled: 1
-    path: Assets/scenes/001-03-CrumblingDown.unity
+    path: Assets/scenes/001-03-Crumbling Down.unity
     guid: 768a29a31f8ca7869acf368d648dfe60
   - enabled: 1
-    path: Assets/scenes/002-1-Ledge.unity
+    path: Assets/scenes/002-01-Hanging on the Ledge.unity
     guid: 45ab08e3bdb5ac35e8aea00c9f2617e7
   - enabled: 1
-    path: Assets/scenes/002-2-MoreLedges.unity
+    path: Assets/scenes/002-02-Going Around.unity
     guid: 47e6cd139199ca13dab6d3527f59bf1e
   - enabled: 1
-    path: Assets/scenes/003-TakingItDown.unity
+    path: Assets/scenes/003-Taking It Down.unity
     guid: 06affd8955195be8283dff8f2a121d6a
   - enabled: 1
-    path: Assets/scenes/004-0-MakingBridges.unity
+    path: Assets/scenes/004-00-Making Bridges.unity
     guid: b1678aa77734216a1a354beb17ee487c
   - enabled: 1
-    path: Assets/scenes/004-1-CrossingOver.unity
+    path: Assets/scenes/004-01-Crossing Over.unity
     guid: b9ab1a5f52c1dd8399dcea4640b53f37
   - enabled: 1
-    path: Assets/scenes/005-0-EverythingIsFalling.unity
+    path: Assets/scenes/005-00-Everything Is Falling.unity
     guid: 2b1f7bf9981efc5b69bc38538eab56ff
   - enabled: 1
-    path: Assets/scenes/005-1-FragileIsland.unity
+    path: Assets/scenes/005-01-Fragile Island.unity
     guid: b6a4c2d991dfdfd2e9a4e0c4c7fb7580
   - enabled: 1
-    path: Assets/scenes/005-2-BreakingOut.unity
+    path: Assets/scenes/005-02-Breaking Out.unity
     guid: e32c054a95a123a9b9e3881aba9392ac
   - enabled: 1
-    path: Assets/scenes/006-0-Companion.unity
+    path: Assets/scenes/006-00-Companion.unity
     guid: 1be4e3dc988db637facd25cc281864c3
   - enabled: 1
-    path: Assets/scenes/006-2-AFollower.unity
+    path: Assets/scenes/006-02-Stranded Friend.unity
     guid: 695dea719eb953312b28a025e0730cee
   - enabled: 1
-    path: Assets/scenes/006-3-MoreFriends.unity
+    path: Assets/scenes/006-03-More Friends.unity
     guid: 33ec6c3c19ddf99e1800a881d38df18a
   - enabled: 1
     path: Assets/scenes/LoadingUI.unity
