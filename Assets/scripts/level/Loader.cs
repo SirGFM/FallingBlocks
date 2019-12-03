@@ -97,8 +97,6 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     private bool done;
     private bool didSpawnPlayer;
 
-    /** Name of each level in the game */
-    public string[] levelNames;
     /** The player prefab */
     public GO player;
 
@@ -119,9 +117,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     }
 
     private string getLevelName(string sep) {
-        string levelName = "Unknown";
-        if (currentLevel - 1 < this.levelNames.Length)
-            levelName = this.levelNames[currentLevel - 1];
+        string levelName = LevelNameList.GetLevel(currentLevel);
         return $"Level {currentLevel}{sep}{levelName}";
     }
 
