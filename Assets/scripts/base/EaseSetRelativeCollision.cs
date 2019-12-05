@@ -54,6 +54,14 @@ public class EaseSetRelativeCollision : UnityEngine.MonoBehaviour {
 
     private GO dummy;
 
+    void Enable() {
+        this.UpdateColliders = false;
+    }
+
+    void Start() {
+        this.UpdateColliders = false;
+    }
+
     private Vec3 getRelPos(RelPos p) {
         Vec3 pos = new Vec3();
         for (RelPos tmp = p; tmp != 0; tmp = tmp.shift()) {
