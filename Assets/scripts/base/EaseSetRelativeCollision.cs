@@ -13,6 +13,7 @@ public class EaseSetRelativeCollision : UnityEngine.MonoBehaviour {
     public float gizmoRadius = 0.5f;
     public bool showGizmo = false;
 
+    private bool ignoreFirstFrame = true;
     public bool UpdateColliders = false;
 
     public bool Top = false;
@@ -56,10 +57,12 @@ public class EaseSetRelativeCollision : UnityEngine.MonoBehaviour {
 
     void Enable() {
         this.UpdateColliders = false;
+        this.ignoreFirstFrame = true;
     }
 
     void Start() {
         this.UpdateColliders = false;
+        this.ignoreFirstFrame = true;
     }
 
     private Vec3 getRelPos(RelPos p) {
@@ -119,7 +122,11 @@ public class EaseSetRelativeCollision : UnityEngine.MonoBehaviour {
     }
 
     void Update() {
-        if (this.UpdateColliders) {
+        if (this.ignoreFirstFrame) {
+            this.ignoreFirstFrame = false;
+            this.UpdateColliders = false;
+        }
+        else if (this.UpdateColliders) {
             foreach (RelCol rc in this.GetComponentsInChildren<RelCol>())
                 Obj.DestroyImmediate(rc.gameObject);
             this.createEveryDetectors();
