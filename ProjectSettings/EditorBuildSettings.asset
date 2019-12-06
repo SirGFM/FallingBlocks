@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/scenes/001-01-First Steps.unity
     guid: 6d0384cfae656a482b2d9863e6ae0303
   - enabled: 1
+    path: Assets/scenes/001-01-2-Hanging There.unity
+    guid: 7a3899993aeafd504b97e214b800fed4
+  - enabled: 1
     path: Assets/scenes/001-02-Moving Blocks.unity
     guid: 635a24070ef3ddaf19e511178aea8c02
   - enabled: 1
