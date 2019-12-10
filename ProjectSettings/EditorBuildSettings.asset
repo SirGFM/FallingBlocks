@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/scenes/001-03-Crumbling Down.unity
     guid: 768a29a31f8ca7869acf368d648dfe60
   - enabled: 1
+    path: Assets/scenes/001-04-Bridging Islands.unity
+    guid: b82ae6bd5991d766d9e67b9f06ca5130
+  - enabled: 1
     path: Assets/scenes/002-01-Hanging on the Ledge.unity
     guid: 45ab08e3bdb5ac35e8aea00c9f2617e7
   - enabled: 1
