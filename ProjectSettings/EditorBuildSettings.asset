@@ -30,6 +30,9 @@ EditorBuildSettings:
     path: Assets/scenes/002-02-Going Around.unity
     guid: 47e6cd139199ca13dab6d3527f59bf1e
   - enabled: 1
+    path: Assets/scenes/002-03-Flattening Towers.unity
+    guid: 813daa007c2287d648b38e741b212595
+  - enabled: 1
     path: Assets/scenes/003-Taking It Down.unity
     guid: 06affd8955195be8283dff8f2a121d6a
   - enabled: 1
