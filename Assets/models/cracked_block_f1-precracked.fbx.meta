@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bed5c800caee93be49867b4a256a3716
+guid: 889440648c16031b082d37aa8d0fd89b
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable: []
@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Material
-    second: {fileID: 2100000, guid: 820a533896aaa735b895bd5abab1aefa, type: 2}
+    second: {fileID: 2100000, guid: 2e8e9e55f3a2c3a6882d8ec32e558b20, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -39,7 +39,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.05882353
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -62,7 +62,7 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -85,7 +85,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.05882353
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
