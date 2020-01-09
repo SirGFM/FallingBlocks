@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3682820987290998694}
   - component: {fileID: 370833716866740554}
   - component: {fileID: 8707822426992304640}
+  - component: {fileID: 1023388584391350514}
   m_Layer: 8
   m_Name: StaticBlock
   m_TagString: Block
@@ -89,6 +90,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1023388584391350514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1598178437186725208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c68f4c2357a06c561aa9531edd93486a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelA: {fileID: -5495902117074765545, guid: 35e3cbd002916050db58374ab2815f55, type: 3}
+  modelB: {fileID: -5495902117074765545, guid: 92818b2ce0c6c972689b9745233fffa4, type: 3}
 --- !u!1 &5230163806501952310
 GameObject:
   m_ObjectHideFlags: 0
