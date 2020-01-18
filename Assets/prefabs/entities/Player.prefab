@@ -1203,7 +1203,7 @@ MonoBehaviour:
   horizontalAxis: Horizontal
   verticalAxis: Vertical
   actionAxis: Action
-  MoveDelay: 0.4
+  MoveDelay: 0.3
 --- !u!114 &6131046787314269090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1767,7 +1767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5641a42f0cf44ddab8a3a185e5485a0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TurnDelay: 0.2
+  TurnDelay: 0.1
 --- !u!1 &8741099101715302395
 GameObject:
   m_ObjectHideFlags: 0
