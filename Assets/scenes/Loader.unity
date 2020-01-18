@@ -240,21 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7598a3b2c218e361d8272a2115e307d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelNames:
-  - First Steps
-  - Moving Blocks
-  - Crumbling Down
-  - Hanging on the Ledge
-  - Going Around
-  - Taking It Down
-  - Making Bridges
-  - Crossing Over
-  - Everything Is Falling
-  - Fragile Islands
-  - Breaking Out
-  - Companion
-  - Stranded Friend
-  - More Friends
   player: {fileID: 5468593514470965763, guid: bd2c7d65bfe70ca39b230023c229b425, type: 3}
 --- !u!4 &1315304670
 Transform:
