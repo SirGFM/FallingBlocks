@@ -106,7 +106,8 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         this.done = false;
         this.didSpawnPlayer = false;
         this.loaderScene = SceneMng.GetActiveScene().buildIndex;
-        this.checkpointCount = 0;
+        /* Starts at 1 since there's always the player position */
+        this.checkpointCount = 1;
         this.minionCount = 0;
         this.minionSaved = 0;
         this.minionCountTxt = null;

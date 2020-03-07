@@ -3,8 +3,9 @@ using RelPos = RelativeCollision.RelativePosition;
 using Type = GetType.Type;
 
 public class Checkpoint : InitialPlayerPosition {
-    override protected void start() {
-        base.start();
+    override protected void start(bool getCheckpointIdx) {
+        /* Forcefully request the checkpoint index */
+        base.start(true);
         this.setCollisionCb(RelPos.Bottom,
                 (x, y, z) => this.onCollisionDown(x, y, z) );
         this.setCollisionCb(RelPos.Center,

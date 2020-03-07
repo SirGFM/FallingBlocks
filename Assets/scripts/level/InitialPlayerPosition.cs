@@ -14,22 +14,24 @@ public class InitialPlayerPosition : BaseRemoteAction, GetPlayer {
     public int checkPointIdx;
 
     void Start() {
-        this.start();
+        /* By default (for the initial position), ignore the checkpoint index */
+        this.start(false);
     }
 
-    virtual protected void start() {
-        this.StartCoroutine(this.delayedSetPlayer());
+    virtual protected void start(bool getCheckpointIdx) {
+        this.StartCoroutine(this.delayedSetPlayer(getCheckpointIdx));
     }
 
-    private System.Collections.IEnumerator delayedSetPlayer() {
+    private System.Collections.IEnumerator delayedSetPlayer(bool getCheckpointIdx) {
         Vec3 p;
 
         p = this.transform.position;
         float delay = p.y / 100.0f;
         yield return new UnityEngine.WaitForSeconds(delay);
 
-        this.rootEvent<LoaderEvents>(
-                (x,y) => x.GetCheckpointCount(out this.checkPointIdx) );
+        if (getCheckpointIdx)
+            this.rootEvent<LoaderEvents>(
+                    (x,y) => x.GetCheckpointCount(out this.checkPointIdx) );
 
         if (UnityEngine.Application.isEditor &&
                 this.dbgCamera != null && UnityEngine.Camera.main == null) {
