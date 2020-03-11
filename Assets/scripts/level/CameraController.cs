@@ -41,16 +41,16 @@ public class CameraController : BaseRemoteAction {
 
         if (UnityEngine.Input.GetAxisRaw("MouseCamera") == 0) {
             /* Try to manipulate the camera using a gamepad */
-            xCosTeta = UnityEngine.Input.GetAxis("CameraX");
-            ySinPhi = -1.0f * UnityEngine.Input.GetAxis("CameraY");
+            xCosTeta = -1.0f * UnityEngine.Input.GetAxis("CameraX");
+            ySinPhi = UnityEngine.Input.GetAxis("CameraY");
             this.wasUsingMouse = false;
         }
         else {
             if (this.wasUsingMouse) {
                 /* Move the camera, using a 50px (?) circle around the mouse */
                 Vec3 mouseDelta = UnityEngine.Input.mousePosition - this.mouse;
-                xCosTeta = mouseDelta.x * 0.02f;
-                ySinPhi = mouseDelta.y * 0.02f;
+                xCosTeta = -1.0f * mouseDelta.x * 0.02f;
+                ySinPhi = -1.0f * mouseDelta.y * 0.02f;
                 ySinPhi = Math.Clamp(ySinPhi, -1.0f, 1.0f);
             }
             else {
