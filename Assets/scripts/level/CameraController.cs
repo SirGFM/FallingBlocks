@@ -8,17 +8,21 @@ public class CameraController : BaseRemoteAction {
     public Transform cam;
     public Transform player;
 
-    private Vec3 globalOffset;
-
-    private float distance = 7.0f;
+    private float distance = 6.0f;
+    private float baseDX = -1.5f;
     private float baseDY = 6.0f;
     private float baseDZ = -17.0f;
 
+    private Vec3 lastPos;
+
     void Start() {
         this.cam = this.transform;
+        this.lastPos = new Vec3();
     }
 
     void Update() {
+        Vec3 pos;
+
         if (this.player == null) {
             GO pl = null;
             this.rootEvent<GetPlayer>( (x,y) => x.Get(out pl) );
@@ -27,37 +31,26 @@ public class CameraController : BaseRemoteAction {
             return;
         }
 
-        Vec3 v = new Vec3();
-        v.x = 0f;
-        v.y = this.baseDY;
-        v.z = this.baseDZ;
-        v = v.normalized * this.distance;
+        /* Cosine of the angle on the X-Z ("horizontal") plane */
+        float xCosTeta = UnityEngine.Input.GetAxis("CameraX");
+        xCosTeta = Math.Clamp(xCosTeta, -0.8f, 0.8f);
+        /* Sine of the angle on the Z-Y ("vertical") plane */
+        float ySinPhi = -1.0f * UnityEngine.Input.GetAxis("CameraY");
 
-        if (this.player.position.y >= this.globalOffset.y)
-            this.globalOffset = this.player.position;
-        else {
-            this.globalOffset.x = this.player.position.x;
-            this.globalOffset.z = this.player.position.z;
-        }
-        this.globalOffset.x *= 1.25f;
-
-        Vec3 localOffset = new Vec3();
-        float offY = UnityEngine.Input.GetAxis("CameraY");
-        float absOffY = Math.Abs(offY);
-        if (offY < 0) {
-            /* Moving camera up, looking down */
-            localOffset.z = this.baseDZ * absOffY * -0.3f;
-            localOffset.y = absOffY * 4.0f;
+        float dist = Math.Sqrt(xCosTeta * xCosTeta + ySinPhi * ySinPhi);
+        if (dist < 0.5f) {
+            pos = new Vec3(this.baseDX, this.baseDY, this.baseDZ);
         }
         else {
-            /* Moving camera down, looking up */
-            localOffset.z = this.baseDZ * absOffY * -0.35f;
-            localOffset.z += absOffY * -5.0f;
-            localOffset.y = this.baseDY * -absOffY;
-        }
-        localOffset.x = UnityEngine.Input.GetAxis("CameraX") * 2.0f;
+            float zSinTeta = -1.0f * Math.Sqrt(1.0f - xCosTeta * xCosTeta);
+            float zCosPhi = -1.0f * Math.Sqrt(1.0f - ySinPhi * ySinPhi);
 
-        this.cam.position = v + this.globalOffset + localOffset;
+            pos = new Vec3(xCosTeta, ySinPhi, (zSinTeta + zCosPhi) * 0.5f);
+        }
+        pos = pos.normalized * this.distance;
+        this.lastPos = 0.75f * this.lastPos + pos * 0.25f;
+
+        this.cam.position = this.player.position + this.lastPos;
         this.cam.LookAt(this.player);
     }
 }
