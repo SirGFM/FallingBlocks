@@ -15,13 +15,21 @@ public class CameraController : BaseRemoteAction {
 
     private Vec3 lastPos;
 
+    private bool wasUsingMouse;
+    private Vec3 mouse;
+
     void Start() {
         this.cam = this.transform;
         this.lastPos = new Vec3();
+        this.wasUsingMouse = false;
     }
 
     void Update() {
         Vec3 pos;
+        /* Cosine of the angle on the X-Z ("horizontal") plane */
+        float xCosTeta;
+        /* Sine of the angle on the Z-Y ("vertical") plane */
+        float ySinPhi;
 
         if (this.player == null) {
             GO pl = null;
@@ -31,14 +39,32 @@ public class CameraController : BaseRemoteAction {
             return;
         }
 
-        /* Cosine of the angle on the X-Z ("horizontal") plane */
-        float xCosTeta = UnityEngine.Input.GetAxis("CameraX");
+        if (UnityEngine.Input.GetAxisRaw("MouseCamera") == 0) {
+            /* Try to manipulate the camera using a gamepad */
+            xCosTeta = UnityEngine.Input.GetAxis("CameraX");
+            ySinPhi = -1.0f * UnityEngine.Input.GetAxis("CameraY");
+            this.wasUsingMouse = false;
+        }
+        else {
+            if (this.wasUsingMouse) {
+                /* Move the camera, using a 50px (?) circle around the mouse */
+                Vec3 mouseDelta = UnityEngine.Input.mousePosition - this.mouse;
+                xCosTeta = mouseDelta.x * 0.02f;
+                ySinPhi = mouseDelta.y * 0.02f;
+                ySinPhi = Math.Clamp(ySinPhi, -1.0f, 1.0f);
+            }
+            else {
+                /* Use the current position as the mouse's origin */
+                this.mouse = UnityEngine.Input.mousePosition;
+                this.wasUsingMouse = true;
+                xCosTeta = 0.0f;
+                ySinPhi = 0.0f;
+            }
+        }
         xCosTeta = Math.Clamp(xCosTeta, -0.8f, 0.8f);
-        /* Sine of the angle on the Z-Y ("vertical") plane */
-        float ySinPhi = -1.0f * UnityEngine.Input.GetAxis("CameraY");
 
         float dist = Math.Sqrt(xCosTeta * xCosTeta + ySinPhi * ySinPhi);
-        if (dist < 0.5f) {
+        if (!this.wasUsingMouse && dist < 0.5f) {
             pos = new Vec3(this.baseDX, this.baseDY, this.baseDZ);
         }
         else {
