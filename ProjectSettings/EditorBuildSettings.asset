@@ -9,53 +9,65 @@ EditorBuildSettings:
     path: Assets/scenes/Loader.unity
     guid: df9855d06bbc1be1bbbf9551b19bcb77
   - enabled: 1
-    path: Assets/scenes/001-00-First Steps.unity
-    guid: 6d0384cfae656a482b2d9863e6ae0303
+    path: Assets/scenes/001-basic-tutorial/005-First Steps.unity
+    guid: d47b1a8f52bc936668139b498ef9f5c5
   - enabled: 1
-    path: Assets/scenes/001-01-Hanging There.unity
-    guid: 7a3899993aeafd504b97e214b800fed4
+    path: Assets/scenes/001-basic-tutorial/010-Simple Path.unity
+    guid: 7eed27c12028ad398a0aef772f8ff78a
   - enabled: 1
-    path: Assets/scenes/001-02-Moving Blocks.unity
-    guid: 635a24070ef3ddaf19e511178aea8c02
+    path: Assets/scenes/001-basic-tutorial/015-Moving Blocks.unity
+    guid: 978622199b3752fbb93e06aa1831ef40
   - enabled: 1
-    path: Assets/scenes/001-04-Bridging Islands.unity
-    guid: b82ae6bd5991d766d9e67b9f06ca5130
+    path: Assets/scenes/001-basic-tutorial/017-Pushing All Away.unity
+    guid: 01c7646d3636e6ad797c1c9df858b66a
   - enabled: 1
-    path: Assets/scenes/002-01-Hanging on the Ledge.unity
-    guid: 45ab08e3bdb5ac35e8aea00c9f2617e7
+    path: Assets/scenes/001-basic-tutorial/020-Connecting Towers.unity
+    guid: bb9bd51d1271d8c43b7cc8441381268d
   - enabled: 1
-    path: Assets/scenes/002-02-Going Around.unity
-    guid: 47e6cd139199ca13dab6d3527f59bf1e
+    path: Assets/scenes/001-basic-tutorial/025-Around The Ledges.unity
+    guid: 272b5c750e320a3af934b5fc3c83fdcb
   - enabled: 1
-    path: Assets/scenes/002-03-Flattening Towers.unity
-    guid: 813daa007c2287d648b38e741b212595
+    path: Assets/scenes/001-basic-tutorial/030-Do Not Drop.unity
+    guid: 87053e5ef3516f440aa08d2ed6217337
   - enabled: 1
-    path: Assets/scenes/003-Taking It Down.unity
-    guid: 06affd8955195be8283dff8f2a121d6a
+    path: Assets/scenes/001-basic-tutorial/035-Falling Apart.unity
+    guid: f680c56d6a4ec134c96bedfc0649d1b3
   - enabled: 1
-    path: Assets/scenes/004-00-Making Bridges.unity
-    guid: b1678aa77734216a1a354beb17ee487c
+    path: Assets/scenes/001-basic-tutorial/040-Fragile Towers.unity
+    guid: ff6c87b4d73587feab63a27f45b6512a
   - enabled: 1
-    path: Assets/scenes/004-01-Crossing Over.unity
-    guid: b9ab1a5f52c1dd8399dcea4640b53f37
+    path: Assets/scenes/001-basic-tutorial/070-Starting To Get Serious.unity
+    guid: 516ed2d7d748fb7239e3b6b2307910ea
   - enabled: 1
-    path: Assets/scenes/005-00-Everything Is Falling.unity
-    guid: 2b1f7bf9981efc5b69bc38538eab56ff
+    path: Assets/scenes/002-not-too-broken/002-Flattening Towers.unity
+    guid: b695c460de843825482e9bf8d887ad4e
   - enabled: 1
-    path: Assets/scenes/005-01-Fragile Island.unity
-    guid: b6a4c2d991dfdfd2e9a4e0c4c7fb7580
+    path: Assets/scenes/002-not-too-broken/005-Making Bridges.unity
+    guid: 05765567300c2ef84b4f65250740ca9e
   - enabled: 1
-    path: Assets/scenes/005-02-Breaking Out.unity
-    guid: e32c054a95a123a9b9e3881aba9392ac
+    path: Assets/scenes/002-not-too-broken/010-Bridging Islands.unity
+    guid: 07e068aad3dd4bbbdb6b749b8e5a060a
   - enabled: 1
-    path: Assets/scenes/006-00-Companion.unity
-    guid: 1be4e3dc988db637facd25cc281864c3
+    path: Assets/scenes/002-not-too-broken/015-Going Around.unity
+    guid: cbdc56adc2dd94582aa67ca6993bb16b
   - enabled: 1
-    path: Assets/scenes/006-02-Stranded Friend.unity
-    guid: 695dea719eb953312b28a025e0730cee
+    path: Assets/scenes/002-not-too-broken/020-Everything Is Falling.unity
+    guid: 86acc5696d9d24a0da093c64979dff00
   - enabled: 1
-    path: Assets/scenes/006-03-More Friends.unity
-    guid: 33ec6c3c19ddf99e1800a881d38df18a
+    path: Assets/scenes/002-not-too-broken/022-Suspended Platforms.unity
+    guid: c08248ffc3db84e4a94faa8b4d70d62c
+  - enabled: 1
+    path: Assets/scenes/002-not-too-broken/025-Connecting Stairs.unity
+    guid: 9906b005e8df766e594676f34ff3525a
+  - enabled: 1
+    path: Assets/scenes/002-not-too-broken/030-Expanding Stairs.unity
+    guid: 182708185faf16f92ba8057931300f98
+  - enabled: 1
+    path: Assets/scenes/002-not-too-broken/070-Fragile Island.unity
+    guid: b1ffd970bc7df6a9996af36fcae5b211
+  - enabled: 1
+    path: Assets/scenes/002-not-too-broken/080-Breaking Out.unity
+    guid: 22b119d79dbcc87fb8a4b91222a0f02c
   - enabled: 1
     path: Assets/scenes/LoadingUI.unity
     guid: e34e4eb9bf10499a6bd14765fe0f079d
