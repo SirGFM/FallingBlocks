@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/scenes/Loader.unity
-    guid: df9855d06bbc1be1bbbf9551b19bcb77
-  - enabled: 1
     path: Assets/scenes/001-basic-tutorial/005-First Steps.unity
     guid: d47b1a8f52bc936668139b498ef9f5c5
   - enabled: 1
@@ -69,9 +66,12 @@ EditorBuildSettings:
     path: Assets/scenes/002-not-too-broken/080-Breaking Out.unity
     guid: 22b119d79dbcc87fb8a4b91222a0f02c
   - enabled: 1
-    path: Assets/scenes/LoadingUI.unity
+    path: Assets/scenes/000-game-controller/Loader.unity
+    guid: df9855d06bbc1be1bbbf9551b19bcb77
+  - enabled: 1
+    path: Assets/scenes/000-game-controller/LoadingUI.unity
     guid: e34e4eb9bf10499a6bd14765fe0f079d
   - enabled: 1
-    path: Assets/scenes/GameUI.unity
+    path: Assets/scenes/000-game-controller/GameUI.unity
     guid: 5f384cf69690d5511a0ab4fcdf0c4880
   m_configObjects: {}
