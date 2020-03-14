@@ -1,0 +1,10 @@
+
+[[actions]]
+name = "play"
+path = "MysteryTower"
+platform = "linux"
+
+[[actions]]
+name = "play"
+path = "MysteryTower.exe"
+platform = "windows"
