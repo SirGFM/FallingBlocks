@@ -106,13 +106,15 @@ public class InputControlled : BaseAnimatedEntity {
                                 this.gameObject),
                         block);
                 if (didPush) {
+                    /* Make sure any block bellow becomes cracked */
+                    if (this.isOnLedge())
+                        this.dropFromLedge();
+
                     if (!getBlockAt(RelPos.BackBottom)) {
                         this.move(pushDir, delay);
                         this.StartCoroutine(this.delayedFall(delay));
                     }
                     else {
-                        if (this.isOnLedge())
-                            this.dropFromLedge();
                         this.move(pushDir, delay);
                     }
                 }
