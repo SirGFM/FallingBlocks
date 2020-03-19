@@ -16,6 +16,13 @@ using View = UnityEngine.UI.ScrollRect;
 using UiText = UnityEngine.UI.Text;
 
 public class CreateLevelSelectors : BaseRemoteAction, ScreenshotLevelController {
+    private struct CachedLevel {
+        public TexBuffer tex;
+        public Material mat;
+        public string name;
+    };
+    static private CachedLevel[] cache = null;
+
     const float elementHeight = 56;
     const float elementDist = 4;
 
@@ -34,9 +41,17 @@ public class CreateLevelSelectors : BaseRemoteAction, ScreenshotLevelController 
         /* Wait until the previous event has ended */
         yield return null;
 
-        this.issueEvent<ScreenshotLevelEvents>(
-                (x, y) => x.TakeSS(this.gameObject, this.curIdx),
-                this.target);
+        while (this.curIdx < this.lastIdx &&
+                CreateLevelSelectors.cache[this.curIdx].mat != null) {
+            createLevelSelector(this.curIdx);
+            yield return null;
+            this.curIdx++;
+        }
+
+        if (this.curIdx < this.lastIdx)
+            this.issueEvent<ScreenshotLevelEvents>(
+                    (x, y) => x.TakeSS(this.gameObject, this.curIdx),
+                    this.target);
     }
 
     private System.Collections.IEnumerator start() {
@@ -71,10 +86,18 @@ public class CreateLevelSelectors : BaseRemoteAction, ScreenshotLevelController 
         if (this.lastIdx == -1)
             throw new System.Exception("Couldn't find the last level");
 
+        if (CreateLevelSelectors.cache == null) {
+            cache = new CachedLevel[this.lastIdx];
+            for (int i = 0; i < cache.Length; i++) {
+                CreateLevelSelectors.cache[i].tex = null;
+                CreateLevelSelectors.cache[i].mat = null;
+            }
+        }
+
         this.StartCoroutine(this.start());
     }
 
-    public void OnSSTaken(TexBuffer tex, Material mat) {
+    private void createLevelSelector(int idx) {
         UnityEngine.Transform t = this.view.content.transform;
         GO lvl;
         RectT rect;
@@ -88,7 +111,7 @@ public class CreateLevelSelectors : BaseRemoteAction, ScreenshotLevelController 
         float right = 1.0f - 16.0f / this.viewWidth;
         /* XXX: 1.0f == top, 0.0f == bottom */
         float bottom = elementDist;
-        bottom += (this.curIdx - 1) * (elementHeight + elementDist);
+        bottom += (idx - 1) * (elementHeight + elementDist);
         float top = bottom + elementHeight;
 
         bottom = 1.0f - bottom / this.viewHeight;
@@ -100,16 +123,25 @@ public class CreateLevelSelectors : BaseRemoteAction, ScreenshotLevelController 
 
         /* XXX: Unity is terrible at sending events downward... So just...
          * whatever */
-        lvl.GetComponentInChildren<LoadLevelOnClick>().idx = this.curIdx;
+        lvl.GetComponentInChildren<LoadLevelOnClick>().idx = idx;
 
         img = lvl.GetComponentInChildren<RawImage>();
-        img.texture = tex;
-        img.material = mat;
-        /* TODO: Cache texture/materials */
+        img.texture = CreateLevelSelectors.cache[this.curIdx].tex;
+        img.material = CreateLevelSelectors.cache[this.curIdx].mat;
 
-        string levelName = LevelNameList.GetLevel(this.curIdx);
         txt = lvl.GetComponentInChildren<UiText>();
-        txt.text = $"Level {this.curIdx} - {levelName}";
+        txt.text = CreateLevelSelectors.cache[this.curIdx].name;
+    }
+
+    public void OnSSTaken(TexBuffer tex, Material mat) {
+        string levelName = LevelNameList.GetLevel(this.curIdx);
+        string fullName = $"Level {this.curIdx} - {levelName}";
+
+        CreateLevelSelectors.cache[this.curIdx].tex = tex;
+        CreateLevelSelectors.cache[this.curIdx].mat = mat;
+        CreateLevelSelectors.cache[this.curIdx].name = fullName;
+
+        this.createLevelSelector(this.curIdx);
 
         this.curIdx++;
         if (this.curIdx < this.lastIdx)
