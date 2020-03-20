@@ -73,7 +73,11 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     private const string uiScene = "LoadingUI";
     /** Name of the sub-scene used to display the game UI */
     private const string gameUiScene = "GameUI";
+    /** Name of the sub-scene used to display the pause UI */
+    private const string pauseUiScene = "Pause";
 
+    /** Scene with components related to displaying the pause menu */
+    private Scene pauseUi;
     /** Scene with components related to displaying the loading progress */
     private Scene loadingUi;
     /** UI progress bar */
@@ -95,6 +99,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     private bool resetting;
     private bool doReset;
     private bool done;
+    private bool loadingPause;
     private bool didSpawnPlayer;
 
     /** The player prefab */
@@ -104,6 +109,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         this.resetting = false;
         this.doReset = false;
         this.done = false;
+        this.loadingPause = false;
         this.didSpawnPlayer = false;
         this.loaderScene = SceneMng.GetActiveScene().buildIndex;
         /* Starts at 1 since there's always the player position */
@@ -259,6 +265,12 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         player = this.playerInstance;
     }
 
+    private void onLoadPause(Scene scene, SceneMode mode) {
+        this.pauseUi = scene;
+        this.loadingPause = false;
+        SceneMng.sceneLoaded -= onLoadPause;
+    }
+
     void Update() {
         if (!this.resetting && this.doReset || Input.GetAxisRaw("Reset") > 0.5f) {
             if (!this.doReset && !this.done) {
@@ -268,6 +280,17 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
             else if (this.done && !this.resetting) {
                 this.reload();
             }
+        }
+
+        if (this.done && !this.loadingPause && !this.pauseUi.isLoaded &&
+                Input.GetButtonDown("Pause")) {
+            SceneMng.sceneLoaded += onLoadPause;
+            this.loadingPause = true;
+            SceneMng.LoadSceneAsync(Loader.pauseUiScene,
+                    SceneMode.Additive);
+        }
+        else if (this.pauseUi.isLoaded && Input.GetButtonDown("Pause")) {
+            SceneMng.UnloadSceneAsync(this.pauseUi);
         }
     }
 }

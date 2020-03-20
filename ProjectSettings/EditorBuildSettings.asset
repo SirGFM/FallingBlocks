@@ -83,4 +83,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/000-game-controller/LevelSelect.unity
     guid: 8df10b27ded50df828c79ac3067d0837
+  - enabled: 1
+    path: Assets/scenes/000-game-controller/Pause.unity
+    guid: 3f0f65e6ae4b0a9f099e49374fdc1a57
   m_configObjects: {}
