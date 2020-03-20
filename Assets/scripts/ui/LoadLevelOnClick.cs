@@ -10,7 +10,6 @@ public class LoadLevelOnClick : UnityEngine.MonoBehaviour {
             return;
 
         this.isLoading = true;
-        Loader.currentLevel = this.idx;
-        SceneMng.LoadSceneAsync("Loader", SceneMode.Single);
+        Loader.LoadLevel(idx);
     }
 }

@@ -293,4 +293,10 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
             SceneMng.UnloadSceneAsync(this.pauseUi);
         }
     }
+
+    static public void LoadLevel(int idx) {
+        Loader.currentLevel = idx;
+        Loader.checkpoint = 0;
+        SceneMng.LoadSceneAsync("Loader", SceneMode.Single);
+    }
 }
