@@ -1,6 +1,9 @@
 ﻿static public class Global {
     static public bool isReady = false;
 
+    static public float camX = 1.0f;
+    static public float camY = 1.0f;
+
     static public void setup() {
         if (Global.isReady)
             return;
