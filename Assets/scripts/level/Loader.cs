@@ -1,7 +1,6 @@
 using AsyncOp = UnityEngine.AsyncOperation;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
-using Input = UnityEngine.Input;
 using Obj = UnityEngine.Object;
 using Quat = UnityEngine.Quaternion;
 using Scene = UnityEngine.SceneManagement.Scene;
@@ -272,7 +271,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     }
 
     void Update() {
-        if (!this.resetting && this.doReset || Input.GetAxisRaw("Reset") > 0.5f) {
+        if (!this.resetting && this.doReset || Input.GetResetButton()) {
             if (!this.doReset && !this.done) {
                 this.doReset = true;
                 /* TODO: Send in-game warning */
@@ -283,13 +282,13 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         }
 
         if (this.done && !this.loadingPause && !this.pauseUi.isLoaded &&
-                Input.GetButtonDown("Pause")) {
+                Input.GetPauseJustPressed()) {
             SceneMng.sceneLoaded += onLoadPause;
             this.loadingPause = true;
             SceneMng.LoadSceneAsync(Loader.pauseUiScene,
                     SceneMode.Additive);
         }
-        else if (this.pauseUi.isLoaded && Input.GetButtonDown("Pause")) {
+        else if (this.pauseUi.isLoaded && Input.GetPauseJustPressed()) {
             SceneMng.UnloadSceneAsync(this.pauseUi);
         }
     }

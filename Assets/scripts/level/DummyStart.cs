@@ -46,7 +46,7 @@ public class DummyStart : UnityEngine.MonoBehaviour {
         if (swap)
             this.delta *= -1.0f;
 
-        if (this.allowChange && UnityEngine.Input.anyKey) {
+        if (this.allowChange && Input.CheckAnyKeyDown()) {
             SceneMng.LoadSceneAsync("Loader", SceneMode.Single);
             this.allowChange = false;
         }

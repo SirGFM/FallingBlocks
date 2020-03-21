@@ -39,23 +39,23 @@ public class CameraController : BaseRemoteAction {
             return;
         }
 
-        if (UnityEngine.Input.GetAxisRaw("MouseCamera") == 0) {
+        if (!Input.GetMouseCameraEnabled()) {
             /* Try to manipulate the camera using a gamepad */
-            xCosTeta = Global.camX * -1.0f * UnityEngine.Input.GetAxis("CameraX");
-            ySinPhi = Global.camY * UnityEngine.Input.GetAxis("CameraY");
+            xCosTeta = Global.camX * -1.0f * Input.GetCameraX();
+            ySinPhi = Global.camY * Input.GetCameraY();
             this.wasUsingMouse = false;
         }
         else {
             if (this.wasUsingMouse) {
                 /* Move the camera, using a 50px (?) circle around the mouse */
-                Vec3 mouseDelta = UnityEngine.Input.mousePosition - this.mouse;
+                Vec3 mouseDelta = Input.GetMousePosition() - this.mouse;
                 xCosTeta = Global.camX * -1.0f * mouseDelta.x * 0.02f;
                 ySinPhi = Global.camY * -1.0f * mouseDelta.y * 0.02f;
                 ySinPhi = Math.Clamp(ySinPhi, -1.0f, 1.0f);
             }
             else {
                 /* Use the current position as the mouse's origin */
-                this.mouse = UnityEngine.Input.mousePosition;
+                this.mouse = Input.GetMousePosition();
                 this.wasUsingMouse = true;
                 xCosTeta = 0.0f;
                 ySinPhi = 0.0f;

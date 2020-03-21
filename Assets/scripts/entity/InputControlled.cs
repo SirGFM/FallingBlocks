@@ -45,12 +45,12 @@ public class InputControlled : BaseAnimatedEntity {
      * Retrieve the current input direction, if any.
      */
     private Dir getInputDirection() {
-        float tmp = UnityEngine.Input.GetAxisRaw(this.horizontalAxis);
+        float tmp = Input.GetHorizontalAxis();
         if (tmp > 0.5)
             return Dir.Right;
         else if (tmp < -0.5)
             return Dir.Left;
-        tmp = UnityEngine.Input.GetAxisRaw(this.verticalAxis);
+        tmp = Input.GetVerticalAxis();
         if (tmp > 0.5)
             return Dir.Front;
         else if (tmp < -0.5)
@@ -59,7 +59,7 @@ public class InputControlled : BaseAnimatedEntity {
     }
 
     private bool checkActionButton() {
-        return UnityEngine.Input.GetAxisRaw(this.actionAxis) > 0.5;
+        return Input.GetActionButton();
     }
 
     override protected bool canLedge() {

@@ -78,7 +78,7 @@ public class GameOver : UnityEngine.MonoBehaviour {
         if (swap)
             this.delta *= -1.0f;
 
-        if (this.allowReset && UnityEngine.Input.anyKey) {
+        if (this.allowReset && Input.CheckAnyKeyDown()) {
             SceneMng.LoadSceneAsync(this.MainMenuSceneName, SceneMode.Single);
             this.allowReset = false;
         }
