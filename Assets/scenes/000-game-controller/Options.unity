@@ -731,7 +731,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 226210203}
-        m_MethodName: SetVertical
+        m_MethodName: SetCameraAxis
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 226210202}
@@ -756,6 +756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94178ecbcec75238fbd8d5e5b12eeaf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHorizontal: 0
 --- !u!1 &360857197
 GameObject:
   m_ObjectHideFlags: 0
@@ -2565,7 +2566,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1162429737}
-        m_MethodName: SetHorizontal
+        m_MethodName: SetCameraAxis
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1162429736}
@@ -2590,6 +2591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94178ecbcec75238fbd8d5e5b12eeaf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHorizontal: 1
 --- !u!1 &1174526508
 GameObject:
   m_ObjectHideFlags: 0
