@@ -1,5 +1,7 @@
-using KeyCode = UnityEngine.KeyCode;
+using CoroutineRet = System.Collections.IEnumerator;
 using DefInput = UnityEngine.Input;
+using KeyCode = UnityEngine.KeyCode;
+using GO = UnityEngine.GameObject;
 
 public static class ActionsMethods {
     public static int idx(this Input.Actions a) {
@@ -8,6 +10,10 @@ public static class ActionsMethods {
 }
 
 static public class Input {
+    private const int gamepadNum = 9;
+    private const int gamepadAxisNum = 10;
+    private const int gamepadButtonNum = 20;
+
     public enum Actions {
         Left = 0,
         Right,
@@ -220,12 +226,118 @@ static public class Input {
      *   Remapping helpers
      * =======================================================================*/
 
+    static private axis[] getArr(int column) {
+        switch (column) {
+        case 0:
+            return axis0;
+        case 1:
+            return axis1;
+        case 2:
+            return axis2;
+        default:
+            throw new System.Exception($"Invalid input column ({column})");
+        }
+    }
+
     static public bool CheckAnyKeyDown() {
         return UnityEngine.Input.anyKey;
     }
 
     static public bool CheckAnyKeyJustPressed() {
         return UnityEngine.Input.anyKeyDown;
+    }
+
+    static private UnityEngine.Coroutine waitFunc = null;
+    static private KeyLogger waitCaller = null;
+
+    static private CoroutineRet _waitInput(axis[] arr, Actions action) {
+        int idx = action.idx();
+        bool done = false;
+
+        while (!done) {
+            /* Wait until the end of the next frame */
+            yield return null;
+
+            if (waitCaller.lastKey != KeyCode.None) {
+                arr[idx] = new axis(waitCaller.lastKey);
+                done = true;
+                break;
+            }
+            else {
+                /* Test every option in every gamepad :grimacing: */
+                for (int gpIdx = 1; !done && gpIdx < gamepadNum; gpIdx++) {
+                    for (int gpAxis = 0; gpAxis < gamepadAxisNum; gpAxis++) {
+                        string name = $"joystick {gpIdx} axis {gpAxis}";
+                        if (DefInput.GetAxisRaw(name) > 0.8f) {
+                            arr[idx] = new axis(name, axisType.positiveAxis);
+                            done = true;
+                            break;
+                        }
+                        else if (DefInput.GetAxisRaw(name) < -0.8f) {
+                            arr[idx] = new axis(name, axisType.negativeAxis);
+                            done = true;
+                            break;
+                        }
+                    }
+                    for (int gpBt = 0; gpBt < gamepadButtonNum; gpBt++) {
+                        string name = $"joystick {gpIdx} button {gpBt}";
+                        if (DefInput.GetButton(name)) {
+                            arr[idx] = new axis(name, axisType.none);
+                            done = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        waitFunc = null;
+        waitCaller.GetComponentInChildren<KeyLogger>().enabled = false;
+        waitCaller = null;
+    }
+
+    static public void WaitInput(GO caller, int column, Actions action) {
+        if (waitFunc != null || waitCaller != null)
+            return;
+
+        axis[] arr = getArr(column);
+
+        KeyLogger kl = caller.GetComponentInChildren<KeyLogger>();
+        if (kl == null)
+            kl = caller.AddComponent<KeyLogger>();
+        kl.enabled = true;
+
+        waitCaller = kl;
+        waitFunc = kl.StartCoroutine(_waitInput(arr, action));
+    }
+
+    static public void CancelWaitInput() {
+        if (waitFunc == null || waitCaller == null)
+            return;
+
+        waitCaller.StopCoroutine(waitFunc);
+        waitFunc = null;
+        waitCaller.GetComponentInChildren<KeyLogger>().enabled = false;
+        waitCaller = null;
+    }
+
+    static public bool IsWaitingInput() {
+        return (waitFunc != null);
+    }
+
+    static public void ClearAxis(Actions action, int column) {
+        axis[] arr = getArr(column);
+
+        if (action.idx() < arr.Length && arr[action.idx()] != null)
+            arr[action.idx()] = null;
+    }
+
+    static public string AxisName(Actions action, int column) {
+        axis[] arr = getArr(column);
+
+        if (action.idx() < arr.Length && arr[action.idx()] != null)
+            return arr[action.idx()].ToString();
+        return "";
     }
 
     /* =======================================================================
