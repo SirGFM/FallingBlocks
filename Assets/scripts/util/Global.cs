@@ -1,8 +1,17 @@
 ﻿static public class Global {
+    public enum ParticleQuality {
+        Off = 0,
+        Low,
+        Mid,
+        High,
+    };
+
     static public bool isReady = false;
 
     static public float camX = 1.0f;
     static public float camY = 1.0f;
+
+    static public ParticleQuality particleQuality = ParticleQuality.High;
 
     static public void setup() {
         if (Global.isReady)

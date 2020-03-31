@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 315619116}
   - component: {fileID: 315619118}
   - component: {fileID: 315619117}
+  - component: {fileID: 315619119}
   m_Layer: 10
   m_Name: FloorParticles
   m_TagString: Untagged
@@ -4982,6 +4983,18 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &315619119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315619115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1c752251b533c9a390f5cbbcb099ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &405697415
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5565,6 +5578,7 @@ GameObject:
   - component: {fileID: 1391184357}
   - component: {fileID: 1391184356}
   - component: {fileID: 1391184358}
+  - component: {fileID: 1391184359}
   m_Layer: 10
   m_Name: clouds-right
   m_TagString: Untagged
@@ -10333,6 +10347,18 @@ MonoBehaviour:
   positionOffset: {x: 10, y: 0, z: 0}
   positionFactor: {x: 1, y: 1, z: 1}
   rotationFactor: {x: 0, y: 0, z: 0}
+--- !u!114 &1391184359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391184354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1c752251b533c9a390f5cbbcb099ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1441765845
 GameObject:
   m_ObjectHideFlags: 0
@@ -10345,6 +10371,7 @@ GameObject:
   - component: {fileID: 1441765848}
   - component: {fileID: 1441765847}
   - component: {fileID: 1441765846}
+  - component: {fileID: 1441765850}
   m_Layer: 10
   m_Name: clouds-left
   m_TagString: Untagged
@@ -15113,6 +15140,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &1441765850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441765845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1c752251b533c9a390f5cbbcb099ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1873437940
 PrefabInstance:
   m_ObjectHideFlags: 0
