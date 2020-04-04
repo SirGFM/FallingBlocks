@@ -25,7 +25,7 @@ public interface OnRelativeCollisionEvent : EvSys.IEventSystemHandler {
 public static class RelativePositionMethods {
     /** Retrieve how many itens are in this enumeration. */
     public static int count(this RelPos p) {
-        return 37;
+        return 38;
     }
 
     /** Convert the enumeration to a sequential integer. */
@@ -105,6 +105,8 @@ public static class RelativePositionMethods {
             return 35;
         case RelPos.Nearby:
             return 36;
+        case RelPos.BottomBottom:
+            return 37;
         default:
             return -1;
         }
@@ -192,6 +194,7 @@ public class RelativeCollision : BaseRemoteAction {
         FrontFrontBottom       = (Front << (Shift * 3)) | (Front << (Shift * 2)) | Bottom,
         FrontBottomFrontBottom = (Front << (Shift * 4)) | (Bottom << (Shift * 3)) | (Front << (Shift * 2)) | Bottom,
         Center                 = Top | Left | Right | Bottom | Front | Back,
+        BottomBottom           = BottomSomething | Bottom,
         Nearby                 = 0,
         None                   = 0x7fffffff,
     }

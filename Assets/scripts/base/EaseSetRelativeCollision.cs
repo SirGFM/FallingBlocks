@@ -51,6 +51,7 @@ public class EaseSetRelativeCollision : UnityEngine.MonoBehaviour {
     public bool FrontFrontTop = false;
     public bool FrontFrontBottom = false;
     public bool FrontBottomFrontBottom = false;
+    public bool BottomBottom = false;
     public bool Center = false;
 
     private GO dummy;

@@ -43,6 +43,9 @@ public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
         if (this.onLedge && this.anim == Animation.None &&
                 getBlockAt(RelPos.Front) == null)
             this.dropFromLedge();
+        else if (this.canLedge() && !this.onLedge &&
+                this.anim == Animation.Fall)
+            this.tryBreakFallOnLedge();
 
         base.updateState();
     }
@@ -215,5 +218,25 @@ public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
 
     public void Check(out bool isOnLedge) {
         isOnLedge = this.onLedge;
+    }
+
+    private System.Collections.IEnumerator delayedBreakFallOnLedge() {
+        while (getBlockAt(RelPos.Front) == null)
+            yield return null;
+        this.setOnLedge();
+        this.issueEvent<FallController>( (x, y) => x.Halt(this.gameObject) );
+        this.bgFunc = null;
+    }
+
+    /** Try to halt falling by grabbing onto a ledge. */
+    private UnityEngine.Coroutine bgFunc = null;
+    private void tryBreakFallOnLedge() {
+        if (this.bgFunc == null &&
+                getBlockAt(RelPos.BottomBottom) == null &&
+                getBlockAt(RelPos.Bottom) == null &&
+                getBlockAt(RelPos.Front) == null &&
+                getBlockAt(RelPos.FrontBottom) != null) {
+            this.bgFunc = this.StartCoroutine(this.delayedBreakFallOnLedge());
+        }
     }
 }
