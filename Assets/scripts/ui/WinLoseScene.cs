@@ -82,19 +82,21 @@ public class WinLoseScene : BaseRemoteAction {
         txt.color = Color.white;
 
         /* Run indefinitely waiting for input */
-        txt = this.pressToPlay.GetComponent<UiText>();
+        UiText[] txts = this.pressToPlay.GetComponentsInChildren<UiText>();
         this.waitingForInput = true;
         while (true) {
             float _inputDelay = this.inputDelay / 2.0f;
             for (dt = 0.0f; dt < _inputDelay; dt += Time.deltaTime) {
                 yield return null;
                 float alpha = dt / _inputDelay;
-                txt.color = new Color(1.0f, 1.0f, 1.0f, alpha);
+                foreach (UiText t in txts)
+                    t.color = new Color(1.0f, 1.0f, 1.0f, alpha);
             }
             for (; dt > 0.0f; dt -= Time.deltaTime) {
                 yield return null;
                 float alpha = dt / _inputDelay;
-                txt.color = new Color(1.0f, 1.0f, 1.0f, alpha);
+                foreach (UiText t in txts)
+                    t.color = new Color(1.0f, 1.0f, 1.0f, alpha);
             }
         }
     }
