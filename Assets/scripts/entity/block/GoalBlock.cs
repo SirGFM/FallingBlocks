@@ -2,6 +2,8 @@ using Animator = UnityEngine.Animator;
 using EvSys = UnityEngine.EventSystems;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
+using SceneMng = UnityEngine.SceneManagement.SceneManager;
+using SceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 using Type = GetType.Type;
 using Vec3 = UnityEngine.Vector3;
 
@@ -33,9 +35,7 @@ public class GoalBlock : BaseBlock, LedgeTracker, Goal {
     }
 
     private void showWinScreen() {
-        /* TODO:
-         *   - Play 'you win' fanfare or whatever
-         */
+        SceneMng.LoadSceneAsync("YouWin", SceneMode.Additive);
     }
 
     private void checkCondition(GO other) {
@@ -55,7 +55,8 @@ public class GoalBlock : BaseBlock, LedgeTracker, Goal {
     }
 
     public void AnimationFinished() {
-        this.rootEvent<LoaderEvents>( (x,y) => x.NextLevel() );
+        // XXX: Do nothing as we wait for the UI to finish and change levels
+        //this.rootEvent<LoaderEvents>( (x,y) => x.NextLevel() );
     }
 
     public void JustDropped(GO other) {
