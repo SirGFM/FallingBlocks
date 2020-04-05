@@ -2,6 +2,8 @@ using Animator = UnityEngine.Animator;
 using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
+using SceneMng = UnityEngine.SceneManagement.SceneManager;
+using SceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 using Type = GetType.Type;
 
 public class InputControlled : BaseAnimatedEntity {
@@ -26,8 +28,10 @@ public class InputControlled : BaseAnimatedEntity {
 
         this.issueEvent<RemoteGetType>(
                 (x,y) => x.Get(out otherType), other);
-        if (otherType != Type.Player && otherType != Type.Minion)
-            this.rootEvent<Loader>( (x,y) => x.ReloadLevel() );
+        if (otherType != Type.Player && otherType != Type.Minion) {
+            SceneMng.LoadSceneAsync("YouLose", SceneMode.Additive);
+            this.gameObject.SetActive(false);
+        }
     }
 
     override protected void start() {
