@@ -379,4 +379,46 @@ static public class Input {
     static public UnityEngine.Vector3 GetMousePosition() {
         return UnityEngine.Input.mousePosition;
     }
+
+    /* =======================================================================
+     *   Menu getters
+     * =======================================================================*/
+
+    static public bool MenuLeft() {
+        return DefInput.GetAxisRaw("joystick 0 axis 0") < -0.7f ||
+                DefInput.GetAxisRaw("joystick 0 axis 6") < -0.7f ||
+                DefInput.GetKey("left") ||
+                Input.GetHorizontalAxis() < -0.7f;
+    }
+
+    static public bool MenuRight() {
+        return DefInput.GetAxisRaw("joystick 0 axis 0") > 0.7f ||
+                DefInput.GetAxisRaw("joystick 0 axis 6") > 0.7f ||
+                DefInput.GetKey("right") ||
+                Input.GetHorizontalAxis() > 0.7f;
+    }
+
+    static public bool MenuUp() {
+        return DefInput.GetAxisRaw("joystick 0 axis 1") < -0.7f ||
+                DefInput.GetAxisRaw("joystick 0 axis 7") < -0.7f ||
+                DefInput.GetKey("up") ||
+                Input.GetHorizontalAxis() < -0.7f;
+    }
+
+    static public bool MenuDown() {
+        return DefInput.GetAxisRaw("joystick 0 axis 1") > 0.7f ||
+                DefInput.GetAxisRaw("joystick 0 axis 7") > 0.7f ||
+                DefInput.GetKey("down") ||
+                Input.GetHorizontalAxis() > 0.7f;
+    }
+
+    static public bool MenuSelect() {
+        return DefInput.GetAxisRaw("joystick 0 button 0") > 0.7f ||
+                DefInput.GetKey("return");
+    }
+
+    static public bool MenuCancel() {
+        return DefInput.GetAxisRaw("joystick 0 button 1") > 0.7f ||
+                DefInput.GetKey("escape");
+    }
 }
