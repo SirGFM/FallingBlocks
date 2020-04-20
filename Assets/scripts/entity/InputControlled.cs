@@ -17,6 +17,8 @@ public class InputControlled : BaseAnimatedEntity {
     public string verticalAxis = "Vertical";
     public string actionAxis = "Action";
 
+    static public string LevelSelectScene;
+
     /** How fast (in seconds) the entity walks over a block */
     public float MoveDelay = 0.4f;
 
@@ -29,7 +31,10 @@ public class InputControlled : BaseAnimatedEntity {
         this.issueEvent<RemoteGetType>(
                 (x,y) => x.Get(out otherType), other);
         if (otherType != Type.Player && otherType != Type.Minion) {
-            SceneMng.LoadSceneAsync("YouLose", SceneMode.Additive);
+            /* Avoid triggering the death scene while rendering the
+             * level thumbnails */
+            if (SceneMng.GetActiveScene().name != LevelSelectScene)
+                SceneMng.LoadSceneAsync("YouLose", SceneMode.Additive);
             this.gameObject.SetActive(false);
         }
     }

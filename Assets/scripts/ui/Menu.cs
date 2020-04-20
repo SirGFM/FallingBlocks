@@ -3,7 +3,7 @@ using SceneMng = UnityEngine.SceneManagement.SceneManager;
 using SceneMode = UnityEngine.SceneManagement.LoadSceneMode;
 using Time = UnityEngine.Time;
 
-public class Menu : UnityEngine.MonoBehaviour {
+public class Menu : BaseRemoteAction {
     public float waitRepeat = 0.5f;
     public float holdRepeat = 0.15f;
 
@@ -89,8 +89,8 @@ public class Menu : UnityEngine.MonoBehaviour {
         Loader.LoadLevel(idx);
     }
 
-    private System.Collections.IEnumerator load(string scene) {
-        yield return SceneMng.LoadSceneAsync(scene, SceneMode.Additive);
+    private System.Collections.IEnumerator load(string scene, SceneMode mode) {
+        yield return SceneMng.LoadSceneAsync(scene, mode);
         this.isLoading = false;
     }
 
@@ -99,6 +99,14 @@ public class Menu : UnityEngine.MonoBehaviour {
             return;
 
         this.isLoading = true;
-        this.StartCoroutine(this.load(scene));
+        this.StartCoroutine(this.load(scene, SceneMode.Additive));
+    }
+
+    protected void LoadScene(string scene) {
+        if (this.isLoading)
+            return;
+
+        this.isLoading = true;
+        this.StartCoroutine(this.load(scene, SceneMode.Single));
     }
 }

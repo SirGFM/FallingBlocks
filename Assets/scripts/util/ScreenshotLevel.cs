@@ -23,8 +23,8 @@ public interface ScreenshotLevelController : EvSys.IEventSystemHandler {
 }
 
 public class ScreenshotLevel : BaseRemoteAction, ScreenshotLevelEvents {
-    public int thumbWidth = 120;
-    public int thumbHeight = 120;
+    public int thumbWidth = 256;
+    public int thumbHeight = 256;
     public Shader shader;
 
     private const int depth = 16;
