@@ -14,7 +14,7 @@ public class MainMenu : VerticalTextMenu {
             this.LoadLevel(1);
             break;
         case 1:
-            this.CombinedLoadScene("scenes/000-game-controller/LevelSelect");
+            this.LoadScene("scenes/000-game-controller/LevelSelect");
             break;
         case 2:
             this.CombinedLoadScene("scenes/000-game-controller/Options");
