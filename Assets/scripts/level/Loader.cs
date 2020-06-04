@@ -265,6 +265,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     }
 
     private void onLoadPause(Scene scene, SceneMode mode) {
+        Pause.scene = scene;
         this.pauseUi = scene;
         this.loadingPause = false;
         SceneMng.sceneLoaded -= onLoadPause;
@@ -287,9 +288,6 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
             this.loadingPause = true;
             SceneMng.LoadSceneAsync(Loader.pauseUiScene,
                     SceneMode.Additive);
-        }
-        else if (this.pauseUi.isLoaded && Input.GetPauseJustPressed()) {
-            SceneMng.UnloadSceneAsync(this.pauseUi);
         }
     }
 

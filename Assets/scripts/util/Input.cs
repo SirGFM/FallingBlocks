@@ -418,6 +418,10 @@ static public class Input {
         return combineButtonJustPressed(Actions.Reset);
     }
 
+    static public bool GetPauseDown() {
+        return combineButton(Actions.Pause);
+    }
+
     static public bool GetPauseJustPressed() {
         return combineButtonJustPressed(Actions.Pause);
     }
