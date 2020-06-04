@@ -340,6 +340,64 @@ static public class Input {
         return "";
     }
 
+    static public void RevertMap(int column) {
+        switch (column) {
+        case 0:
+            axis[] _axis0 = {
+                new axis(KeyCode.A) /* Left */,
+                new axis(KeyCode.D) /* Right */,
+                new axis(KeyCode.W) /* Up */,
+                new axis(KeyCode.S) /* Down */,
+                new axis(KeyCode.Space) /* Action */,
+                new axis(KeyCode.R) /* Reset */,
+                new axis(KeyCode.Escape) /* Pause */,
+                new axis(KeyCode.Mouse1) /* MouseCamera */,
+                new axis(KeyCode.H) /* CameraLeft */,
+                new axis(KeyCode.K) /* CameraRight */,
+                new axis(KeyCode.U) /* CameraUp */,
+                new axis(KeyCode.J) /* CameraDown */,
+            };
+            axis0 = _axis0;
+            break;
+        case 1:
+            axis[] _axis1 = {
+                new axis("joystick 0 axis 0", axisType.negativeAxis) /* Left */,
+                new axis("joystick 0 axis 0", axisType.positiveAxis) /* Right */,
+                new axis("joystick 0 axis 1", axisType.negativeAxis) /* Up */,
+                new axis("joystick 0 axis 1", axisType.positiveAxis) /* Down */,
+                new axis("joystick 0 button 0", axisType.none) /* Action */,
+                new axis("joystick 0 button 3", axisType.none) /* Reset */,
+                new axis("joystick 0 button 7", axisType.none) /* Pause */,
+                null /* MouseCamera */,
+                new axis("joystick 0 axis 3", axisType.negativeAxis) /* CameraLeft */,
+                new axis("joystick 0 axis 3", axisType.positiveAxis) /* CameraRight */,
+                new axis("joystick 0 axis 4", axisType.negativeAxis) /* CameraUp */,
+                new axis("joystick 0 axis 4", axisType.positiveAxis) /* CameraDown */,
+            };
+            axis1 = _axis1;
+            break;
+        case 2:
+            axis[] _axis2 = {
+                null /* Left */,
+                null /* Right */,
+                null /* Up */,
+                null /* Down */,
+                null /* Action */,
+                null /* Reset */,
+                null /* Pause */,
+                null /* MouseCamera */,
+                null /* CameraLeft */,
+                null /* CameraRight */,
+                null /* CameraUp */,
+                null /* CameraDown */,
+            };
+            axis2 = _axis2;
+            break;
+        default:
+            throw new System.Exception("Invalid input map");
+        }
+    }
+
     /* =======================================================================
      *   Controller getters
      * =======================================================================*/
