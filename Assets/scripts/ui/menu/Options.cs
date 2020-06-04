@@ -193,8 +193,17 @@ public class Options : VerticalTextMenu {
                               "Off", "Low", "Mid", "High")),
 
         Option.SectionHeader("-- Rebind --"),
+        new Option("Reset",
+                   "Reset input bindings to their initial configurations.",
+                   null),
         new Option("Input A",
-                   "-- TODO --",
+                   "Configure 1 of 3 simultaneous control schemes. (Default: Keyboard)",
+                   null),
+        new Option("Input B",
+                   "Configure 1 of 3 simultaneous control schemes. (Default: Gamepad)",
+                   null),
+        new Option("Input C",
+                   "Configure 1 of 3 simultaneous control schemes. (Default: Empty)",
                    null),
 
         Option.SectionHeader("--"),
@@ -315,8 +324,26 @@ public class Options : VerticalTextMenu {
             this.updateGraphics();
         else if (cur == "Back")
             this.LoadScene("scenes/MainMenu");
+        else if (cur == "Reset") {
+            Input.RevertMap(0);
+            Input.RevertMap(1);
+            Input.RevertMap(2);
+        }
         else if (cur.StartsWith("Input")) {
-            /* TODO */
+            switch (cur[cur.Length - 1]) {
+            case 'A':
+                RebindInput.inputMap = 0;
+                break;
+            case 'B':
+                RebindInput.inputMap = 1;
+                break;
+            case 'C':
+                RebindInput.inputMap = 2;
+                break;
+            default:
+                throw new System.Exception($"Invalid rebindable input '{cur}'");
+            }
+            this.LoadScene("scenes/000-game-controller/RebindInputs");
         }
     }
 
