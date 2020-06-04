@@ -331,6 +331,7 @@ public class RebindInput : VerticalTextMenu {
         }
 
         this._ignoreInputs = false;
+        this.CombinedLoadScene("scenes/000-game-controller/bg-scenes/ControlsTester");
         base.start();
         this.topics.text = topicsTxt;
     }

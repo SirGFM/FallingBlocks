@@ -96,6 +96,9 @@ EditorBuildSettings:
     path: Assets/scenes/000-game-controller/RebindInputs.unity
     guid: 93ab5d03d473cebf1907acd3c16193f0
   - enabled: 1
+    path: Assets/scenes/000-game-controller/bg-scenes/ControlsTester.unity
+    guid: 8f2d916448cd4beadba6f501050e2cf9
+  - enabled: 1
     path: Assets/scenes/000-game-controller/YouWin.unity
     guid: 66bbec7d5f012af64a0d9cc01a04a7fa
   - enabled: 1
