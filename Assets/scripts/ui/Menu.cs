@@ -12,6 +12,10 @@ public class Menu : BaseRemoteAction {
                 Input.MenuDown();
     }
 
+    virtual protected bool ignoreInputs() {
+        return false;
+    }
+
     virtual protected void onLeft() {
     }
 
@@ -34,6 +38,11 @@ public class Menu : BaseRemoteAction {
         float delay = this.waitRepeat;
 
         while (true) {
+            if (this.ignoreInputs()) {
+                yield return null;
+                continue;
+            }
+
             if (Input.MenuSelect()) {
                 this.onSelect();
                 while (Input.MenuSelect())
