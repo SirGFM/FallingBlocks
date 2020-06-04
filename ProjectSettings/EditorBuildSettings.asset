@@ -90,6 +90,9 @@ EditorBuildSettings:
     path: Assets/scenes/000-game-controller/Options.unity
     guid: eca4280d888bbd302b7594dac049d73c
   - enabled: 1
+    path: Assets/scenes/000-game-controller/bg-scenes/CameraTester.unity
+    guid: f1b38b9bd0b493ab9b98f9c3a63984a7
+  - enabled: 1
     path: Assets/scenes/000-game-controller/RebindInputs.unity
     guid: 93ab5d03d473cebf1907acd3c16193f0
   - enabled: 1

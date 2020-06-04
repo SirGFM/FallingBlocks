@@ -379,6 +379,7 @@ public class Options : VerticalTextMenu {
 
         this.titles.text = highlighText;
 
+        this.CombinedLoadScene("scenes/000-game-controller/bg-scenes/CameraTester");
         base.start();
 
         this.updateValues();
