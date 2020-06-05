@@ -381,6 +381,8 @@ public class Options : VerticalTextMenu {
 
         this.CombinedLoadScene("scenes/000-game-controller/bg-scenes/CameraTester");
         base.start();
+        /* Forcefully starts from index 1 */
+        this.onDown();
 
         this.updateValues();
     }
