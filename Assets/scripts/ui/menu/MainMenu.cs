@@ -27,6 +27,7 @@ public class MainMenu : VerticalTextMenu {
 
     override protected void start() {
         this.options = this._opts;
+        this.CombinedLoadScene("scenes/000-game-controller/bg-scenes/MainMenu");
         base.start();
     }
 }
