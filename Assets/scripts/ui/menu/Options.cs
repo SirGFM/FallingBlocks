@@ -303,13 +303,15 @@ public class Options : VerticalTextMenu {
         /* Create a value with the list of resolution modes */
         this.resolutions = Screen.resolutions;
         string[] resList = new string[this.resolutions.Length];
-        int curRes = 0;
+        this.resMode = 0;
         for (int i = 0; i < this.resolutions.Length; i++) {
             ResMode mode = this.resolutions[i];
             if (Screen.height == mode.height && Screen.width == mode.width)
-                curRes = i;
+                this.resMode = i;
             resList[i] = $"{mode.width}x{mode.height}@{mode.refreshRate}";
         }
+
+        this.isFull = Screen.fullScreen;
 
         Option[] _opts = {
             Option.SectionHeader("-- General --"),
@@ -331,13 +333,13 @@ public class Options : VerticalTextMenu {
                        "Set the game's resolution.\n"+
                        "Only takes effect on \"Apply\"!",
                        (new Values(idx => this.resMode = idx,
-                                   resList)).setAt(curRes)),
+                                   resList)).setAt(this.resMode)),
             new Option("Fullscreen",
                        "Choose windowed or fullscreen mode.\n"+
                        "Only takes effect on \"Apply\"!",
                        (new Values(idx => this.isFull = (idx == 1),
                                    "Windowed",
-                                   "Fullscreen")).setAt(Screen.fullScreen ? 1 : 0)),
+                                   "Fullscreen")).setAt(this.isFull ? 1 : 0)),
             new Option("Apply",
                        "Apply the selected resolution and\n"+
                        "windowed mode.",
