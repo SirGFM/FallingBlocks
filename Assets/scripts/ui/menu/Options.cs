@@ -152,65 +152,7 @@ public class Options : VerticalTextMenu {
 
 
     /** List of options in the menu */
-    private Option[] new_opts = {
-        Option.SectionHeader("-- General --"),
-        new Option("Camera X",
-                   "Configure horizontal camera movement.\n"+
-                   "Try it out!",
-                   new Values(idx => Global.camX = 1.0f - 2.0f * idx,
-                              "Normal",
-                              "Inverted")),
-        new Option("Camera Y",
-                   "Configure vertical camera movement.\n"+
-                   "Try it out!",
-                   new Values(idx => Global.camY = 1.0f - 2.0f * idx,
-                              "Normal",
-                              "Inverted")),
-
-        Option.SectionHeader("-- Graphics --"),
-        new Option("Resolution",
-                   "Set the game's resolution.\n"+
-                   "Only takes effect on \"Apply\"!",
-                   null),
-        new Option("Fullscreen",
-                   "Choose windowed or fullscreen mode.\n"+
-                   "Only takes effect on \"Apply\"!",
-                   new Values(null,
-                              "Windowed",
-                              "Fullscreen")),
-        new Option("Apply",
-                   "Apply the selected resolution and\n"+
-                   "windowed mode.",
-                   null),
-        new Option("Particles",
-                   "Particle system quality. Controls\n"+
-                   "the quantity of particles spawned.",
-                   new Values(idx => {
-                                Global.ParticleQuality gpq;
-                                gpq = (Global.ParticleQuality) idx;
-                                Global.particleQuality = gpq;
-                              },
-                              "Off", "Low", "Mid", "High")),
-
-        Option.SectionHeader("-- Rebind --"),
-        new Option("Reset",
-                   "Reset input bindings to their initial configurations.",
-                   null),
-        new Option("Input A",
-                   "Configure 1 of 3 simultaneous control schemes. (Default: Keyboard)",
-                   null),
-        new Option("Input B",
-                   "Configure 1 of 3 simultaneous control schemes. (Default: Gamepad)",
-                   null),
-        new Option("Input C",
-                   "Configure 1 of 3 simultaneous control schemes. (Default: Empty)",
-                   null),
-
-        Option.SectionHeader("--"),
-        new Option("Back",
-                   "Go back to the previous menu.",
-                   null),
-    };
+    private Option[] opts;
 
     /** List of resolutions */
     private ResMode[] resolutions;
@@ -243,7 +185,7 @@ public class Options : VerticalTextMenu {
     /** Called whenever a new option is selected.
      * Overriden so headers may be skipped. */
     override protected void updateSelected() {
-        if (this.new_opts[this.getCurrentOpt()].isHeader()) {
+        if (this.opts[this.getCurrentOpt()].isHeader()) {
             if (this.wasDown)
                 this.onDown();
             else
@@ -271,8 +213,8 @@ public class Options : VerticalTextMenu {
     private void updateValues() {
         string txt = "";
 
-        for (int i = 0; i < this.new_opts.Length; i++) {
-            Option o = this.new_opts[i];
+        for (int i = 0; i < this.opts.Length; i++) {
+            Option o = this.opts[i];
             txt += $"{o.getOption()}\n";
         }
 
@@ -286,8 +228,8 @@ public class Options : VerticalTextMenu {
     private void updateSelectedValue() {
         string selected = "";
 
-        for (int i = 0; i < this.new_opts.Length; i++) {
-            Option o = this.new_opts[i];
+        for (int i = 0; i < this.opts.Length; i++) {
+            Option o = this.opts[i];
             if (i == this.getCurrentOpt())
                 selected += $"{o.getOption()}\n";
             else
@@ -296,17 +238,17 @@ public class Options : VerticalTextMenu {
 
         this.valueSelected.text = selected;
 
-        Option cur = this.new_opts[this.getCurrentOpt()];
+        Option cur = this.opts[this.getCurrentOpt()];
         this.help.text = cur.getDescription();
     }
 
     override protected void onLeft() {
-        this.new_opts[this.getCurrentOpt()].onLeft();
+        this.opts[this.getCurrentOpt()].onLeft();
         this.updateValues();
     }
 
     override protected void onRight() {
-        this.new_opts[this.getCurrentOpt()].onRight();
+        this.opts[this.getCurrentOpt()].onRight();
         this.updateValues();
     }
 
@@ -322,7 +264,7 @@ public class Options : VerticalTextMenu {
 
     /** Called whenever an option is selected */
     override protected void onSelect() {
-        string cur = this.new_opts[this.getCurrentOpt()].getTitle();
+        string cur = this.opts[this.getCurrentOpt()].getTitle();
 
         if (cur == "Apply")
             this.updateGraphics();
@@ -359,24 +301,75 @@ public class Options : VerticalTextMenu {
             ResMode mode = this.resolutions[i];
             resList[i] = $"{mode.width}x{mode.height}@{mode.refreshRate}";
         }
-        Values res = new Values(idx => this.resMode = idx, resList);
-        /* Bind this object to the window mode lambda */
-        Values wndMode = new Values(idx => this.isFull = (idx == 1),
-                                    "Windowed",
-                                    "Fullscreen");
+
+        Option[] _opts = {
+            Option.SectionHeader("-- General --"),
+            new Option("Camera X",
+                       "Configure horizontal camera movement.\n"+
+                       "Try it out!",
+                       new Values(idx => Global.camX = 1.0f - 2.0f * idx,
+                                  "Normal",
+                                  "Inverted")),
+            new Option("Camera Y",
+                       "Configure vertical camera movement.\n"+
+                       "Try it out!",
+                       new Values(idx => Global.camY = 1.0f - 2.0f * idx,
+                                  "Normal",
+                                  "Inverted")),
+
+            Option.SectionHeader("-- Graphics --"),
+            new Option("Resolution",
+                       "Set the game's resolution.\n"+
+                       "Only takes effect on \"Apply\"!",
+                       new Values(idx => this.resMode = idx,
+                                  resList)),
+            new Option("Fullscreen",
+                       "Choose windowed or fullscreen mode.\n"+
+                       "Only takes effect on \"Apply\"!",
+                       new Values(idx => this.isFull = (idx == 1),
+                                  "Windowed",
+                                  "Fullscreen")),
+            new Option("Apply",
+                       "Apply the selected resolution and\n"+
+                       "windowed mode.",
+                       null),
+            new Option("Particles",
+                       "Particle system quality. Controls\n"+
+                       "the quantity of particles spawned.",
+                       new Values(idx => {
+                                    Global.ParticleQuality gpq;
+                                    gpq = (Global.ParticleQuality) idx;
+                                    Global.particleQuality = gpq;
+                                  },
+                                  "Off", "Low", "Mid", "High")),
+
+            Option.SectionHeader("-- Rebind --"),
+            new Option("Reset",
+                       "Reset input bindings to their initial configurations.",
+                       null),
+            new Option("Input A",
+                       "Configure 1 of 3 simultaneous control schemes. (Default: Keyboard)",
+                       null),
+            new Option("Input B",
+                       "Configure 1 of 3 simultaneous control schemes. (Default: Gamepad)",
+                       null),
+            new Option("Input C",
+                       "Configure 1 of 3 simultaneous control schemes. (Default: Empty)",
+                       null),
+
+            Option.SectionHeader("--"),
+            new Option("Back",
+                       "Go back to the previous menu.",
+                       null),
+        };
+        this.opts = _opts;
 
         /* Create the list of options (left view) */
         string highlighText = "";
-        this.options = new string[this.new_opts.Length];
+        this.options = new string[this.opts.Length];
 
-        for (int i = 0; i < this.new_opts.Length; i++) {
-            Option o = this.new_opts[i];
-
-            if (o.getTitle() == "Fullscreen")
-                o.setOptions(wndMode);
-            else if (o.getTitle() == "Resolution")
-                o.setOptions(res);
-
+        for (int i = 0; i < this.opts.Length; i++) {
+            Option o = this.opts[i];
             highlighText += $"{o.getHeader()}\n";
             this.options[i] = o.getTitle();
         }
