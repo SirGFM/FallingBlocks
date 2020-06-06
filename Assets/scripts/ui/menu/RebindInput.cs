@@ -14,7 +14,7 @@ public class RebindInput : VerticalTextMenu {
     public UiText topics;
     public UiText description;
 
-    private bool _ignoreInputs;
+    private int _ignoreInputs;
 
     private interface Value {
         string getText();
@@ -93,6 +93,7 @@ public class RebindInput : VerticalTextMenu {
 
     private CoroutineRet WaitInput(Action act) {
         bool done = false;
+        this._ignoreInputs++;
 
         /* Gotta wait until the 'Input.Actions' that started this event
          * is over before the new press can be polled. */
@@ -118,6 +119,8 @@ public class RebindInput : VerticalTextMenu {
         }
         act.setTimeoutText("");
         this.updateSelected();
+
+        this._ignoreInputs--;
     }
 
     private class Action : Value {
@@ -179,7 +182,7 @@ public class RebindInput : VerticalTextMenu {
     }
 
     override protected bool ignoreInputs() {
-        return this._ignoreInputs;
+        return this._ignoreInputs > 0;
     }
 
     override protected void onDown() {
@@ -248,7 +251,7 @@ public class RebindInput : VerticalTextMenu {
     }
 
     private CoroutineRet SetAll() {
-        this._ignoreInputs = true;
+        this._ignoreInputs++;
 
         int idx = this.getCurrentOpt();
 
@@ -260,7 +263,22 @@ public class RebindInput : VerticalTextMenu {
             }
         } while (idx != this.getCurrentOpt());
 
-        this._ignoreInputs = false;
+        this._ignoreInputs--;
+    }
+
+    private void back() {
+        this.LoadScene("scenes/000-game-controller/Options");
+    }
+
+    private CoroutineRet handleBack() {
+        while (true) {
+            while (this.ignoreInputs())
+                yield return new UnityEngine.WaitForSeconds(0.3f);
+
+            yield return null;
+            if (Input.MenuCancel())
+                this.back();
+        }
     }
 
     override protected void start() {
@@ -316,7 +334,7 @@ public class RebindInput : VerticalTextMenu {
                         },
                         "Reverts this scheme to its default configuration"),
             new Command("Back",
-                        () => this.LoadScene("scenes/000-game-controller/Options"),
+                        () => this.back(),
                         "Go back to the Options menu"),
         };
         this.vals = _vals;
@@ -330,9 +348,12 @@ public class RebindInput : VerticalTextMenu {
             topicsTxt += $"{val.getHeader()}\n";
         }
 
-        this._ignoreInputs = false;
+        this._ignoreInputs = 0;
+
         this.CombinedLoadScene("scenes/000-game-controller/bg-scenes/ControlsTester");
         base.start();
         this.topics.text = topicsTxt;
+
+        this.StartCoroutine(this.handleBack());
     }
 }
