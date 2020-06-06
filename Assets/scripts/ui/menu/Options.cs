@@ -261,6 +261,7 @@ public class Options : VerticalTextMenu {
     private void updateGraphics() {
         ResMode res = this.resolutions[this.resMode];
         Screen.SetResolution(res.width, res.height, this.isFull, res.refreshRate);
+        LevelSelectMenu.evictCache();
     }
 
     private void back() {

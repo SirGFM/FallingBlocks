@@ -22,6 +22,10 @@ public class LevelSelectMenu : Menu, ScreenshotLevelController {
     };
     static private CachedLevel[] cache = null;
 
+    static public void evictCache() {
+        cache = null;
+    }
+
     public UiText LevelTitle = null;
     public RawImage LevelPortrait = null;
     public UiTransform Content = null;
