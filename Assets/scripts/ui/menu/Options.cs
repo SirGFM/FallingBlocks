@@ -316,6 +316,10 @@ public class Options : VerticalTextMenu {
         Screen.SetResolution(res.width, res.height, this.isFull, res.refreshRate);
     }
 
+    private void back() {
+        this.LoadScene("scenes/MainMenu");
+    }
+
     /** Called whenever an option is selected */
     override protected void onSelect() {
         string cur = this.new_opts[this.getCurrentOpt()].getTitle();
@@ -323,7 +327,7 @@ public class Options : VerticalTextMenu {
         if (cur == "Apply")
             this.updateGraphics();
         else if (cur == "Back")
-            this.LoadScene("scenes/MainMenu");
+            this.back();
         else if (cur == "Reset") {
             Input.RevertMap(0);
             Input.RevertMap(1);
@@ -385,5 +389,11 @@ public class Options : VerticalTextMenu {
         this.onDown();
 
         this.updateValues();
+    }
+
+    void Update() {
+        if (Input.MenuCancel()) {
+            this.back();
+        }
     }
 }
