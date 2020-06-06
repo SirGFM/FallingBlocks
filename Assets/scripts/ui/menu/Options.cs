@@ -35,6 +35,11 @@ public class Options : VerticalTextMenu {
             this.onMove = onMove;
         }
 
+        public Values setAt(int initialIdx) {
+            this.idx = initialIdx;
+            return this;
+        }
+
         public string getText() {
             if (this.idx == 0 && this.values.Length > 1)
                 return $"{this.values[this.idx]} >";
@@ -297,8 +302,11 @@ public class Options : VerticalTextMenu {
         /* Create a value with the list of resolution modes */
         this.resolutions = Screen.resolutions;
         string[] resList = new string[this.resolutions.Length];
+        int curRes = 0;
         for (int i = 0; i < this.resolutions.Length; i++) {
             ResMode mode = this.resolutions[i];
+            if (Screen.height == mode.height && Screen.width == mode.width)
+                curRes = i;
             resList[i] = $"{mode.width}x{mode.height}@{mode.refreshRate}";
         }
 
@@ -307,28 +315,28 @@ public class Options : VerticalTextMenu {
             new Option("Camera X",
                        "Configure horizontal camera movement.\n"+
                        "Try it out!",
-                       new Values(idx => Global.camX = 1.0f - 2.0f * idx,
-                                  "Normal",
-                                  "Inverted")),
+                       (new Values(idx => Global.camX = 1.0f - 2.0f * idx,
+                                   "Normal",
+                                   "Inverted")).setAt((Global.camX == 1.0f) ? 0 : 1)),
             new Option("Camera Y",
                        "Configure vertical camera movement.\n"+
                        "Try it out!",
-                       new Values(idx => Global.camY = 1.0f - 2.0f * idx,
-                                  "Normal",
-                                  "Inverted")),
+                       (new Values(idx => Global.camY = 1.0f - 2.0f * idx,
+                                   "Normal",
+                                   "Inverted")).setAt((Global.camY == 1.0f) ? 0 : 1)),
 
             Option.SectionHeader("-- Graphics --"),
             new Option("Resolution",
                        "Set the game's resolution.\n"+
                        "Only takes effect on \"Apply\"!",
-                       new Values(idx => this.resMode = idx,
-                                  resList)),
+                       (new Values(idx => this.resMode = idx,
+                                   resList)).setAt(curRes)),
             new Option("Fullscreen",
                        "Choose windowed or fullscreen mode.\n"+
                        "Only takes effect on \"Apply\"!",
-                       new Values(idx => this.isFull = (idx == 1),
-                                  "Windowed",
-                                  "Fullscreen")),
+                       (new Values(idx => this.isFull = (idx == 1),
+                                   "Windowed",
+                                   "Fullscreen")).setAt(Screen.fullScreen ? 1 : 0)),
             new Option("Apply",
                        "Apply the selected resolution and\n"+
                        "windowed mode.",
@@ -336,12 +344,12 @@ public class Options : VerticalTextMenu {
             new Option("Particles",
                        "Particle system quality. Controls\n"+
                        "the quantity of particles spawned.",
-                       new Values(idx => {
-                                    Global.ParticleQuality gpq;
-                                    gpq = (Global.ParticleQuality) idx;
-                                    Global.particleQuality = gpq;
-                                  },
-                                  "Off", "Low", "Mid", "High")),
+                       (new Values(idx => {
+                                       Global.ParticleQuality gpq;
+                                       gpq = (Global.ParticleQuality) idx;
+                                       Global.particleQuality = gpq;
+                                   },
+                                   "Off", "Low", "Mid", "High")).setAt((int)Global.particleQuality)),
 
             Option.SectionHeader("-- Rebind --"),
             new Option("Reset",
