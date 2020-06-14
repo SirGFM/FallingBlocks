@@ -29,5 +29,7 @@ public class MainMenu : VerticalTextMenu {
         this.options = this._opts;
         this.CombinedLoadScene("scenes/000-game-controller/bg-scenes/MainMenu");
         base.start();
+
+        Global.setup();
     }
 }

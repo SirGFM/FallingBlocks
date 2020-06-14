@@ -44,16 +44,20 @@ public class Menu : BaseRemoteAction {
             }
 
             if (Input.MenuSelect()) {
+                Global.Sfx.playEnterMenu();
                 this.onSelect();
                 while (Input.MenuSelect())
                     yield return null;
             }
             else if (Input.MenuCancel()) {
+                Global.Sfx.playCancelMenu();
                 this.onCancel();
                 while (Input.MenuCancel())
                     yield return null;
             }
             else if (anyDirDown()) {
+                bool playSound = true;
+
                 if (Input.MenuLeft())
                     this.onLeft();
                 else if (Input.MenuRight())
@@ -62,6 +66,12 @@ public class Menu : BaseRemoteAction {
                     this.onUp();
                 else if (Input.MenuDown())
                     this.onDown();
+                else
+                    playSound = false;
+
+                /* Should never be false, but... */
+                if (playSound)
+                    Global.Sfx.playMoveMenu();
 
                 for (float t = 0; t < delay && this.anyDirDown();
                         t += Time.deltaTime) {
