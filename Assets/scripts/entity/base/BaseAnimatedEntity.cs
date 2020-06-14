@@ -130,9 +130,9 @@ public class BaseAnimatedEntity : BaseEntity, OnLedgeDetector {
                 /* Fall to the ledge! */
                 Dir newDir = this.facing.toLocal(Dir.Back);
                 Dir d = this.facing | Dir.Bottom;
+                this.setOnLedge();
                 this.move(d, moveDelay);
                 this.turn(newDir);
-                this.setOnLedge();
             }
         }
     }
