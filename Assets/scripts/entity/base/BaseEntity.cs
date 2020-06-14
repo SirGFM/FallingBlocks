@@ -199,14 +199,22 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
     virtual protected void onGoal() {
     }
 
+    virtual protected void onFall() {
+    }
+
+    virtual protected void onLand() {
+    }
+
     /* == Custom Events ===================================================== */
 
     public void OnStartFalling(GO callee) {
         this.anim |= Animation.Fall;
+        this.onFall();
     }
 
     public void OnFinishFalling(GO callee) {
         this.anim &= ~Animation.Fall;
+        this.onLand();
     }
 
     public void OnStartMovement(Dir d, float moveDelay) {
@@ -287,7 +295,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
      *
      * @param to The new orientation
      */
-    protected void turn(Dir to) {
+    virtual protected void turn(Dir to) {
         if ((this.anim & Animation.Turn) != 0)
             return;
         else if (this.turner != null)
@@ -305,7 +313,7 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
      * @param to The movement direction
      * @param delay How long the movement shall take
      */
-    protected void move(Dir to, float delay) {
+    virtual protected void move(Dir to, float delay) {
         if ((this.anim & Animation.Move) != 0)
             return;
         this.uncheckedMove(to, delay);
