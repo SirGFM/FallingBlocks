@@ -1,4 +1,6 @@
 using Animator = UnityEngine.Animator;
+using Coroutine = UnityEngine.Coroutine;
+using CoroutineRet = System.Collections.IEnumerator;
 using Dir = Movement.Direction;
 using GO = UnityEngine.GameObject;
 using RelPos = RelativeCollision.RelativePosition;
@@ -33,8 +35,10 @@ public class InputControlled : BaseAnimatedEntity {
         if (otherType != Type.Player && otherType != Type.Minion) {
             /* Avoid triggering the death scene while rendering the
              * level thumbnails */
-            if (SceneMng.GetActiveScene().name != LevelSelectScene)
+            if (SceneMng.GetActiveScene().name != LevelSelectScene) {
+                Global.Sfx.playPlayerCrushed();
                 SceneMng.LoadSceneAsync("YouLose", SceneMode.Additive);
+            }
             this.gameObject.SetActive(false);
         }
     }
@@ -105,8 +109,10 @@ public class InputControlled : BaseAnimatedEntity {
                 this.issueEvent<PushController>(
                         (x,y) => x.TryPush(ref delay, ref didPush, pushDir),
                         block);
-                if (didPush)
+                if (didPush) {
+                    Global.Sfx.playPushBlock(delay);
                     this.StartCoroutine(this.doPush(delay));
+                }
             }
             else if (pushDir == this.facing.toLocal(Dir.Back) &&
                     getObjectAt(RelPos.Back) == null) {
@@ -115,6 +121,8 @@ public class InputControlled : BaseAnimatedEntity {
                                 this.gameObject),
                         block);
                 if (didPush) {
+                    Global.Sfx.playPullBlock(delay);
+
                     /* Make sure any block bellow becomes cracked */
                     if (this.isOnLedge())
                         this.dropFromLedge();
@@ -214,5 +222,55 @@ public class InputControlled : BaseAnimatedEntity {
             /* Set the falling animation for moving down a floor */
             this.setAnimBool(fallAnim, true);
         }
+    }
+
+    override protected void move(Dir to, float delay) {
+        if ((this.anim & Animation.Move) == 0) {
+            /* Starting to move: play walking sound */
+            if (to == this.facing)
+                Global.Sfx.playPlayerMoving();
+            else if ((to & Dir.Top) == Dir.Top)
+                if (!this.isOnLedge())
+                    Global.Sfx.playPlayerClimbBlock();
+                else
+                    Global.Sfx.playPlayerClimbLedge();
+            else if ((to & Dir.Bottom) == Dir.Bottom)
+                if (!this.isOnLedge())
+                    Global.Sfx.playPlayerWalkDownBlock();
+                else
+                    Global.Sfx.playPlayerDropToLedge();
+            else if ((to & (Dir.Left | Dir.Right)) != 0)
+                Global.Sfx.playPlayerMoveLedge();
+        }
+        base.move(to, delay);
+    }
+
+    override protected void turn(Dir to) {
+        if (!this.isOnLedge() && (this.anim & Animation.Turn) == 0)
+            Global.Sfx.playPlayerTurning();
+        base.turn(to);
+    }
+
+    private Coroutine _playFallSfx = null;
+    private CoroutineRet playFallSfx() {
+        while ((this.anim & Animation.Fall) != 0) {
+            Global.Sfx.playPlayerFalling();
+            yield return new UnityEngine.WaitForSeconds(0.6f);
+        }
+
+        this._playFallSfx = null;
+    }
+
+    override protected void onFall() {
+        if (this._playFallSfx == null)
+            this._playFallSfx = this.StartCoroutine(this.playFallSfx());
+    }
+
+    override protected void onLand() {
+        if (this._playFallSfx != null) {
+            this.StopCoroutine(this._playFallSfx);
+            this._playFallSfx = null;
+        }
+        Global.Sfx.playPlayerLand();
     }
 }

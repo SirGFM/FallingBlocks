@@ -173,5 +173,41 @@ static public class Global {
         static public void playCancelMenu() {
             cancelMenu.play(globalTarget);
         }
+        static public void playPushBlock(float delay) {
+            UnityEngine.Debug.Log($"playPushBlock (delay: {delay}");
+        }
+        static public void playPullBlock(float delay) {
+            UnityEngine.Debug.Log($"playPullBlock (delay: {delay}");
+        }
+        static public void playPlayerTurning() {
+            UnityEngine.Debug.Log("playPlayerTurning");
+        }
+        static public void playPlayerCrushed() {
+            UnityEngine.Debug.Log("playPlayerCrushed");
+        }
+        static public void playPlayerMoving() {
+            UnityEngine.Debug.Log("playPlayerMoving");
+        }
+        static public void playPlayerClimbBlock() {
+            UnityEngine.Debug.Log("playPlayerClimbBlock");
+        }
+        static public void playPlayerWalkDownBlock() {
+            UnityEngine.Debug.Log("playPlayerWalkDownBlock");
+        }
+        static public void playPlayerClimbLedge() {
+            UnityEngine.Debug.Log("playPlayerClimbLedge");
+        }
+        static public void playPlayerDropToLedge() {
+            UnityEngine.Debug.Log("playPlayerDropToLedge");
+        }
+        static public void playPlayerMoveLedge() {
+            UnityEngine.Debug.Log("playPlayerMoveLedge");
+        }
+        static public void playPlayerFalling() {
+            UnityEngine.Debug.Log("playPlayerFalling");
+        }
+        static public void playPlayerLand() {
+            UnityEngine.Debug.Log("playPlayerLand");
+        }
     }
 }
