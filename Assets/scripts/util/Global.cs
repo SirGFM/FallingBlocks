@@ -209,5 +209,20 @@ static public class Global {
         static public void playPlayerLand() {
             UnityEngine.Debug.Log("playPlayerLand");
         }
+        static public void playEnterCrackedBlock() {
+            UnityEngine.Debug.Log("playEnterCrackedBlock");
+        }
+        static public void playExitCrackedBlock() {
+            UnityEngine.Debug.Log("playExitCrackedBlock");
+        }
+        static public void playBreakCrackedBlock() {
+            UnityEngine.Debug.Log("playBreakCrackedBlock");
+        }
+        static public void playBlockLanded() {
+            UnityEngine.Debug.Log("playBlockLanded");
+        }
+        static public void playBlockShaking() {
+            UnityEngine.Debug.Log("playBlockShaking");
+        }
     }
 }

@@ -57,6 +57,7 @@ public class BaseBlock : BaseEntity, IsShaking {
         this.issueEvent<FallController>( (x, y) => x.Block() );
         this.issueEvent<ShakeController>(
                 (x, y) => x.StartShaking(), this.shaker);
+        Global.Sfx.playBlockShaking();
         this.isShaking = true;
         yield return new UnityEngine.WaitForSeconds(BaseBlock.fallWait);
         this.issueEvent<ShakeController>(
@@ -76,5 +77,9 @@ public class BaseBlock : BaseEntity, IsShaking {
 
     public void Check(out bool val) {
         val = (this.isShaking || (this.anim & Animation.Shake) != 0);
+    }
+
+    override protected void onLand() {
+        Global.Sfx.playBlockLanded();
     }
 }
