@@ -112,6 +112,10 @@ static public class Global {
                 this.ctor(src, var, null);
             }
 
+            public Sound(string src) {
+                this.ctor(src, Variability.None, null);
+            }
+
             public void load() {
                 if (this.sfx == null) {
                     this.sfx = new SfxrSynth();
@@ -143,6 +147,14 @@ static public class Global {
                                                   Sound.Variability.Medium);
         static private Sound cancelMenu = new Sound(",0.5,,0.1696,,0.1923,0.3,0.3811,,-0.1949,,0.25,0.505,,,,,,,,0.4415,,,,,1,,,0.1,,,,masterVolume",
                                                   Sound.Variability.Medium);
+        static private Sound pushBlock = new Sound("3,0.5,,0.495,0.7592,0.2271,,0.02,,0.0449,-0.0999,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
+        static private Sound longPushBlock = new Sound("3,0.5,,0.69,0.7592,0.305,,0.02,,-0.045,-0.14,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
+        static private Sound playerTurning = new Sound(",0.23,,0.1,0.7392,0.21,0.2,0.22,,0.3049,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
+        static private Sound playerMoving = new Sound(",0.23,,0.12,0.715,0.295,0.2,0.2,,-0.305,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
+        static private Sound playerClimbBlock = new Sound(",0.23,,0.2,0.7392,0.21,0.2,0.12,,0.3049,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
+        static private Sound playerWalkDownBlock = new Sound(",0.23,,0.22,0.7392,0.21,0.2,0.255,,-0.175,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
+        static private Sound playerLand = new Sound("5,0.23,,0.12,0.2354,0.195,0.3,0.11,,-0.2099,,,,,,,0.1566,0.6301,,,,,,0.5037,-0.0249,1,,,,,,,masterVolume");
+        static private Sound blockLand = new Sound("3,0.23,,0.12,0.2354,0.305,0.3,0.11,,-0.2099,,,,,,,0.1566,0.6301,,,,,,0.5037,-0.0249,1,,,,,,,masterVolume");
 
         static private bool init = false;
         static private GO globalTargetObject = null;
@@ -162,6 +174,14 @@ static public class Global {
             moveMenu.load();
             enterMenu.load();
             cancelMenu.load();
+            pushBlock.load();
+            longPushBlock.load();
+            playerTurning.load();
+            playerMoving.load();
+            playerClimbBlock.load();
+            playerWalkDownBlock.load();
+            playerLand.load();
+            blockLand.load();
         }
 
         static public void playMoveMenu() {
@@ -174,31 +194,37 @@ static public class Global {
             cancelMenu.play(globalTarget);
         }
         static public void playPushBlock(float delay) {
-            UnityEngine.Debug.Log($"playPushBlock (delay: {delay}");
+            if (delay < 1.0f)
+                pushBlock.play(globalTarget);
+            else
+                longPushBlock.play(globalTarget);
         }
         static public void playPullBlock(float delay) {
-            UnityEngine.Debug.Log($"playPullBlock (delay: {delay}");
+            if (delay < 1.0f)
+                pushBlock.play(globalTarget);
+            else
+                longPushBlock.play(globalTarget);
         }
         static public void playPlayerTurning() {
-            UnityEngine.Debug.Log("playPlayerTurning");
+            playerTurning.play(globalTarget);
         }
         static public void playPlayerCrushed() {
             UnityEngine.Debug.Log("playPlayerCrushed");
         }
         static public void playPlayerMoving() {
-            UnityEngine.Debug.Log("playPlayerMoving");
+            playerMoving.play(globalTarget);
         }
         static public void playPlayerClimbBlock() {
-            UnityEngine.Debug.Log("playPlayerClimbBlock");
+            playerClimbBlock.play(globalTarget);
         }
         static public void playPlayerWalkDownBlock() {
-            UnityEngine.Debug.Log("playPlayerWalkDownBlock");
+            playerWalkDownBlock.play(globalTarget);
         }
         static public void playPlayerClimbLedge() {
-            UnityEngine.Debug.Log("playPlayerClimbLedge");
+            playerClimbBlock.play(globalTarget);
         }
         static public void playPlayerDropToLedge() {
-            UnityEngine.Debug.Log("playPlayerDropToLedge");
+            playerWalkDownBlock.play(globalTarget);
         }
         static public void playPlayerMoveLedge() {
             UnityEngine.Debug.Log("playPlayerMoveLedge");
@@ -207,7 +233,7 @@ static public class Global {
             UnityEngine.Debug.Log("playPlayerFalling");
         }
         static public void playPlayerLand() {
-            UnityEngine.Debug.Log("playPlayerLand");
+            playerLand.play(globalTarget);
         }
         static public void playEnterCrackedBlock() {
             UnityEngine.Debug.Log("playEnterCrackedBlock");
@@ -219,7 +245,7 @@ static public class Global {
             UnityEngine.Debug.Log("playBreakCrackedBlock");
         }
         static public void playBlockLanded() {
-            UnityEngine.Debug.Log("playBlockLanded");
+            blockLand.play(globalTarget);
         }
         static public void playBlockShaking() {
             UnityEngine.Debug.Log("playBlockShaking");
