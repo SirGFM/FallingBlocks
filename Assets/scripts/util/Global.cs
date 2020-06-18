@@ -141,20 +141,24 @@ static public class Global {
             }
         }
 
-        static private Sound moveMenu = new Sound(",0.5,,0.1307,,0.0713,0.3,0.5174,,,,,,,,,,,,,0.5394,,,,,1,,,0.1,,,,masterVolume",
+        static private Sound moveMenu = new Sound(",0.3,,0.1307,,0.0713,0.3,0.5174,,,,,,,,,,,,,0.5394,,,,,1,,,0.1,,,,masterVolume",
                                                   Sound.Variability.Low);
-        static private Sound enterMenu = new Sound(",0.5,,0.1696,,0.1923,0.3,0.3811,,,,0.1,0.505,,,,,,,,0.4415,,,,,1,,,0.1,,,,masterVolume",
+        static private Sound enterMenu = new Sound(",0.3,,0.1696,,0.1923,0.3,0.3811,,,,0.1,0.505,,,,,,,,0.4415,,,,,1,,,0.1,,,,masterVolume",
                                                   Sound.Variability.Medium);
-        static private Sound cancelMenu = new Sound(",0.5,,0.1696,,0.1923,0.3,0.3811,,-0.1949,,0.25,0.505,,,,,,,,0.4415,,,,,1,,,0.1,,,,masterVolume",
+        static private Sound cancelMenu = new Sound(",0.3,,0.1696,,0.1923,0.3,0.3811,,-0.1949,,0.25,0.505,,,,,,,,0.4415,,,,,1,,,0.1,,,,masterVolume",
                                                   Sound.Variability.Medium);
-        static private Sound pushBlock = new Sound("3,0.5,,0.495,0.7592,0.2271,,0.02,,0.0449,-0.0999,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
-        static private Sound longPushBlock = new Sound("3,0.5,,0.69,0.7592,0.305,,0.02,,-0.045,-0.14,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
+        static private Sound pushBlock = new Sound("3,0.3,,0.495,0.7592,0.2271,,0.02,,0.0449,-0.0999,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
+        static private Sound longPushBlock = new Sound("3,0.3,,0.69,0.7592,0.305,,0.02,,-0.045,-0.14,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
+        static private Sound blockLand = new Sound("3,0.23,,0.12,0.2354,0.305,0.3,0.11,,-0.2099,,,,,,,0.1566,0.6301,,,,,,0.5037,-0.0249,1,,,,,,,masterVolume");
+        static private Sound blockShake = new Sound("3,0.3,,0.405,0.7592,0.33,0.045,0.055,,0.1,-0.0999,0.22,0.525,,,,,,,,,,,0.5049,,1,,,,,,,masterVolume");
         static private Sound playerTurning = new Sound(",0.23,,0.1,0.7392,0.21,0.2,0.22,,0.3049,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
         static private Sound playerMoving = new Sound(",0.23,,0.12,0.715,0.295,0.2,0.2,,-0.305,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
         static private Sound playerClimbBlock = new Sound(",0.23,,0.2,0.7392,0.21,0.2,0.12,,0.3049,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
         static private Sound playerWalkDownBlock = new Sound(",0.23,,0.22,0.7392,0.21,0.2,0.255,,-0.175,,,,,,,-0.4399,0.6068,,,,,0.3975,,,1,,,,,,,masterVolume");
         static private Sound playerLand = new Sound("5,0.23,,0.12,0.2354,0.195,0.3,0.11,,-0.2099,,,,,,,0.1566,0.6301,,,,,,0.5037,-0.0249,1,,,,,,,masterVolume");
-        static private Sound blockLand = new Sound("3,0.23,,0.12,0.2354,0.305,0.3,0.11,,-0.2099,,,,,,,0.1566,0.6301,,,,,,0.5037,-0.0249,1,,,,,,,masterVolume");
+        static private Sound playerDeath = new Sound("3,0.3,,0.405,,0.305,0.3,0.737,,-0.4705,0.36,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
+        static private Sound playerFalling = new Sound("11,0.1,,0.305,0.2188,0.405,0.3,0.745,0.2,0.12,-0.155,,,,,,,,,,0.4018,-0.6769,,,,1,,,0.2596,,,,masterVolume");
+        static private Sound playerMoveLedge = new Sound("1,0.2,,0.1565,,0.195,0.3,0.32,,0.1399,0.2299,,,,,,,,,,0.3241,,,,,1,,,0.0421,,,,masterVolume");
 
         static private bool init = false;
         static private GO globalTargetObject = null;
@@ -176,12 +180,16 @@ static public class Global {
             cancelMenu.load();
             pushBlock.load();
             longPushBlock.load();
+            blockLand.load();
+            blockShake.load();
             playerTurning.load();
             playerMoving.load();
             playerClimbBlock.load();
             playerWalkDownBlock.load();
             playerLand.load();
-            blockLand.load();
+            playerDeath.load();
+            playerFalling.load();
+            playerMoveLedge.load();
         }
 
         static public void playMoveMenu() {
@@ -209,7 +217,7 @@ static public class Global {
             playerTurning.play(globalTarget);
         }
         static public void playPlayerCrushed() {
-            UnityEngine.Debug.Log("playPlayerCrushed");
+            playerDeath.play(globalTarget);
         }
         static public void playPlayerMoving() {
             playerMoving.play(globalTarget);
@@ -227,10 +235,10 @@ static public class Global {
             playerWalkDownBlock.play(globalTarget);
         }
         static public void playPlayerMoveLedge() {
-            UnityEngine.Debug.Log("playPlayerMoveLedge");
+            playerMoveLedge.play(globalTarget);
         }
         static public void playPlayerFalling() {
-            UnityEngine.Debug.Log("playPlayerFalling");
+            playerFalling.play(globalTarget);
         }
         static public void playPlayerLand() {
             playerLand.play(globalTarget);
@@ -248,7 +256,7 @@ static public class Global {
             blockLand.play(globalTarget);
         }
         static public void playBlockShaking() {
-            UnityEngine.Debug.Log("playBlockShaking");
+            blockShake.play(globalTarget);
         }
     }
 }

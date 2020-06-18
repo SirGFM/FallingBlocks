@@ -239,7 +239,7 @@ public class InputControlled : BaseAnimatedEntity {
                     Global.Sfx.playPlayerWalkDownBlock();
                 else
                     Global.Sfx.playPlayerDropToLedge();
-            else if ((to & (Dir.Left | Dir.Right)) != 0)
+            else if (this.isOnLedge())
                 Global.Sfx.playPlayerMoveLedge();
         }
         base.move(to, delay);
