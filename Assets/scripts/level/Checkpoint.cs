@@ -30,6 +30,7 @@ public class Checkpoint : InitialPlayerPosition {
 
         this.issueEvent<RemoteGetType>( (x,y) => x.Get(out type), other);
         if (enter && type == Type.Player) {
+            Global.Sfx.playCheckpoint();
             this.rootEvent<LoaderEvents>(
                     (x,y) => x.SetActiveCheckpoint(this.checkPointIdx) );
             this.destroy();

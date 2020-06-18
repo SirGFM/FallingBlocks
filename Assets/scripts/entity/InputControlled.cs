@@ -99,6 +99,16 @@ public class InputControlled : BaseAnimatedEntity {
         this.setOnLedge();
     }
 
+    private bool isPlayingCantPushSfx = false;
+    private System.Collections.IEnumerator playCantPushSfx() {
+        if (!this.isPlayingCantPushSfx) {
+            this.isPlayingCantPushSfx = true;
+            Global.Sfx.playPlayerCantPush();
+            yield return new UnityEngine.WaitForSeconds(0.5f);
+            this.isPlayingCantPushSfx = false;
+        }
+    }
+
     private void tryPushBlock(Dir pushDir) {
         GO block = null;
         float delay = 0.0f;
@@ -112,6 +122,9 @@ public class InputControlled : BaseAnimatedEntity {
                 if (didPush) {
                     Global.Sfx.playPushBlock(delay);
                     this.StartCoroutine(this.doPush(delay));
+                }
+                else {
+                    this.StartCoroutine(this.playCantPushSfx());
                 }
             }
             else if (pushDir == this.facing.toLocal(Dir.Back) &&
@@ -134,6 +147,9 @@ public class InputControlled : BaseAnimatedEntity {
                     else {
                         this.move(pushDir, delay);
                     }
+                }
+                else {
+                    this.StartCoroutine(this.playCantPushSfx());
                 }
             }
         }

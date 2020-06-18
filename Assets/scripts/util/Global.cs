@@ -159,6 +159,14 @@ static public class Global {
         static private Sound playerDeath = new Sound("3,0.3,,0.405,,0.305,0.3,0.737,,-0.4705,0.36,,,,,,,,,,,,,,,1,,,,,,,masterVolume");
         static private Sound playerFalling = new Sound("11,0.1,,0.305,0.2188,0.405,0.3,0.745,0.2,0.12,-0.155,,,,,,,,,,0.4018,-0.6769,,,,1,,,0.2596,,,,masterVolume");
         static private Sound playerMoveLedge = new Sound("1,0.2,,0.1565,,0.195,0.3,0.32,,0.1399,0.2299,,,,,,,,,,0.3241,,,,,1,,,0.0421,,,,masterVolume");
+        static private Sound playerCantPush = new Sound("1,0.22,,0.415,,0.0142,0.3,0.24,,,,0.1,0.255,,,,,,,,,,,,,1,,,0.1,,,,masterVolume");
+        static private Sound crackedBlockCrack = new Sound("3,0.22,,0.1636,0.4881,0.25,0.155,0.1631,,0.2564,,,,,,,0.4452,0.761,,,,,0.7005,0.0847,-0.146,1,,,,,,,masterVolume");
+        static private Sound crackedBlockBreak = new Sound("9,0.3,,0.065,0.255,0.58,0.155,0.7245,,-0.3572,,,,,,,,,,,,,0.7329,,,1,,,,,,,masterVolume");
+        static private Sound checkpoint = new Sound("2,0.22,,0.0875,,0.4398,0.3,0.4003,,0.1399,,0.5356,0.4473,,,,,,,,0.0057,,,,,1,,,,,,,masterVolume");
+        static private Sound victoryStart = new Sound("2,0.22,,0.24,,0.2,0.3,0.35,,0.2299,,0.5356,0.4473,,,,,,,,0.0057,,,,,1,,,,,,,masterVolume");
+        static private Sound victory = new Sound("2,0.22,,0.155,,0.525,0.3,0.4003,,0.195,,0.5356,0.4473,,,,,,,,0.0057,,,,,1,,,,,,,masterVolume");
+        static private Sound defeatStart = new Sound("2,0.22,,0.24,,0.2,0.3,0.35,,-0.265,0.155,0.5356,0.4473,,,,,,,,0.0057,,,,,1,,,,,,,masterVolume");
+        static private Sound defeat = new Sound("2,0.22,,0.155,,0.525,0.3,0.4003,,-0.1949,,0.5356,0.4473,,,,,,,,0.0057,,,,,1,,,,,,,masterVolume");
 
         static private bool init = false;
         static private GO globalTargetObject = null;
@@ -190,6 +198,14 @@ static public class Global {
             playerDeath.load();
             playerFalling.load();
             playerMoveLedge.load();
+            playerCantPush.load();
+            crackedBlockCrack.load();
+            crackedBlockBreak.load();
+            checkpoint.load();
+            victoryStart.load();
+            victory.load();
+            defeatStart.load();
+            defeat.load();
         }
 
         static public void playMoveMenu() {
@@ -244,19 +260,37 @@ static public class Global {
             playerLand.play(globalTarget);
         }
         static public void playEnterCrackedBlock() {
-            UnityEngine.Debug.Log("playEnterCrackedBlock");
+            crackedBlockCrack.play(globalTarget);
         }
         static public void playExitCrackedBlock() {
-            UnityEngine.Debug.Log("playExitCrackedBlock");
+            crackedBlockCrack.play(globalTarget);
         }
         static public void playBreakCrackedBlock() {
-            UnityEngine.Debug.Log("playBreakCrackedBlock");
+            crackedBlockBreak.play(globalTarget);
         }
         static public void playBlockLanded() {
             blockLand.play(globalTarget);
         }
         static public void playBlockShaking() {
             blockShake.play(globalTarget);
+        }
+        static public void playPlayerCantPush() {
+            playerCantPush.play(globalTarget);
+        }
+        static public void playCheckpoint() {
+            checkpoint.play(globalTarget);
+        }
+        static public void playVictoryOpening() {
+            victoryStart.play(globalTarget);
+        }
+        static public void playVictory() {
+            victory.play(globalTarget);
+        }
+        static public void playDefeatOpening() {
+            defeatStart.play(globalTarget);
+        }
+        static public void playDefeat() {
+            defeat.play(globalTarget);
         }
     }
 }

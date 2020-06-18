@@ -27,10 +27,18 @@ public class WinLoseScene : BaseRemoteAction {
     protected virtual void onJustPressed() {
     }
 
+    protected virtual void playOpeningSfx() {
+    }
+
+    protected virtual void playSfx() {
+    }
+
     private System.Collections.IEnumerator run() {
         float dt;
 
         RawImage rimg = this.bgColor.GetComponent<RawImage>();
+
+        this.playOpeningSfx();
 
         /* Drop the "You Win" image and upscale it */
         for (dt = 0.0f; dt < this.scaleDelay; dt += Time.deltaTime) {
@@ -50,6 +58,8 @@ public class WinLoseScene : BaseRemoteAction {
         /* Show and hide the effect over the "You Win" image */
         this.imageFx.gameObject.SetActive(true);
         Image img = this.imageFx.GetComponent<Image>();
+
+        this.playSfx();
 
         float _fxDelay = this.fxDelay / 2.0f;
         for (dt = 0.0f; dt < _fxDelay; dt += Time.deltaTime) {
