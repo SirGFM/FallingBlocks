@@ -74,7 +74,10 @@ public class Shadow : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
             this.shadowModel.gameObject.SetActive(true);
             Vec3 pos = self.position;
 
-            float scale = pos.y - this.touchingList.block.position.y;
+            Tr block = this.touchingList.block;
+            if (block == null)
+                return;
+            float scale = pos.y - block.position.y;
             shadowModel.localScale = new Vec3(1.0f / scale, 1.0f, 1.0f / scale);
 
             shadowModel.position = new Vec3(pos.x, pos.y - scale + 1.01f, pos.z);
@@ -83,7 +86,7 @@ public class Shadow : UnityEngine.MonoBehaviour, OnRelativeCollisionEvent {
 
     public void OnEnterRelativeCollision(RelCol rc, UnityEngine.Collider c) {
         GO other = c.gameObject;
-        if (!isBlock(other))
+        if (!isBlock(other) || this.emptyList == null)
             return;
 
         List node = this.emptyList;
