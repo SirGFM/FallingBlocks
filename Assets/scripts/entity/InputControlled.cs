@@ -27,6 +27,8 @@ public class InputControlled : BaseAnimatedEntity {
     /** The animation handler */
     private Animator unityAnimator;
 
+    private bool skipFallSfx = false;
+
     private void onCenter(bool enter, RelPos p, GO other) {
         Type otherType = Type.Error;
 
@@ -143,6 +145,7 @@ public class InputControlled : BaseAnimatedEntity {
                     if (!getBlockAt(RelPos.BackBottom)) {
                         this.move(pushDir, delay);
                         this.StartCoroutine(this.delayedFall(delay));
+                        this.skipFallSfx = true;
                     }
                     else {
                         this.move(pushDir, delay);
@@ -269,12 +272,13 @@ public class InputControlled : BaseAnimatedEntity {
 
     private Coroutine _playFallSfx = null;
     private CoroutineRet playFallSfx() {
-        while ((this.anim & Animation.Fall) != 0) {
+        while (!this.skipFallSfx && (this.anim & Animation.Fall) != 0) {
             Global.Sfx.playPlayerFalling(this.fastGetTr());
             yield return new UnityEngine.WaitForSeconds(0.6f);
         }
 
         this._playFallSfx = null;
+        this.skipFallSfx = false;
     }
 
     override protected void onFall() {
