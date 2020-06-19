@@ -309,7 +309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   positionOffset: {x: 0, y: 0, z: 0}
-  positionFactor: {x: 1, y: 1, z: 1}
+  positionFactor: {x: 0.1, y: 1, z: 0.5}
   rotationFactor: {x: 1, y: 1, z: 1}
 --- !u!81 &464878935
 AudioListener:
@@ -501,6 +501,72 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &848679462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 848679464}
+  - component: {fileID: 848679463}
+  m_Layer: 0
+  m_Name: SFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &848679463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848679462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3225c4bf8528b55a592791a8395858d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveMenu: {fileID: 8300000, guid: f36705cf872cf65d5bc9d9ef56ed8f4e, type: 3}
+  enterMenu: {fileID: 8300000, guid: 438de555ffd6f58f5bf0a88213b62f06, type: 3}
+  cancelMenu: {fileID: 8300000, guid: c5ed7141411e2fba89901369193b352a, type: 3}
+  pushBlock: {fileID: 8300000, guid: c8b00d2997aeb3fd3ad8fac0d5328e8d, type: 3}
+  longPushBlock: {fileID: 8300000, guid: 3608ec3c07d3df0cdb57278b1aa2a2b4, type: 3}
+  blockLand: {fileID: 8300000, guid: f37d1e8ce35d5c8ce86c01025792337a, type: 3}
+  blockShake: {fileID: 8300000, guid: 38a4da16daf072781bb83a1217675ef1, type: 3}
+  playerTurning: {fileID: 8300000, guid: 29185578270943ecfbacbe4756f76204, type: 3}
+  playerMoving: {fileID: 8300000, guid: 2d0601b632131a04dae4618054a6baf6, type: 3}
+  playerClimbBlock: {fileID: 8300000, guid: 22e845ead90095012817a2ec22543dd7, type: 3}
+  playerWalkDownBlock: {fileID: 8300000, guid: 2ef345b6af58981068b0f1b275481b85, type: 3}
+  playerLand: {fileID: 8300000, guid: f52ecfb95d83c3708928f2497cff662f, type: 3}
+  playerDeath: {fileID: 8300000, guid: 421fcf77eaa497fa2ac96423d153b55d, type: 3}
+  playerFalling: {fileID: 8300000, guid: 34b8eb5406597f0209ab6562ad099aa2, type: 3}
+  playerMoveLedge: {fileID: 8300000, guid: ec514fe855e68e86298193085d754654, type: 3}
+  playerCantPush: {fileID: 8300000, guid: b4da66b9d50c1b03a8e8fd2228776f00, type: 3}
+  crackedBlockCrack: {fileID: 8300000, guid: bf8d9b49e7d026c3c8446dfaf173f848, type: 3}
+  crackedBlockBreak: {fileID: 8300000, guid: c38c95ef6a4865c1791dfaded7cf194a, type: 3}
+  checkpoint: {fileID: 8300000, guid: 9bc7c180fe6cad435a67bba28978b451, type: 3}
+  victoryStart: {fileID: 8300000, guid: c34803f5478e57167a4a31dbd08d8a1a, type: 3}
+  victory: {fileID: 8300000, guid: 7afd67ac2bc8e1ac782ccaab40ce7c32, type: 3}
+  defeatStart: {fileID: 8300000, guid: 7380f46937b87f119b0b485f4c17ebbb, type: 3}
+  defeat: {fileID: 8300000, guid: 5795baed326be82fa9e716fe6eb9ba21, type: 3}
+--- !u!4 &848679464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848679462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &913299633
 GameObject:
   m_ObjectHideFlags: 0
