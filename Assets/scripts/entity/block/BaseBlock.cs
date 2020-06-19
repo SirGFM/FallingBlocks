@@ -57,7 +57,7 @@ public class BaseBlock : BaseEntity, IsShaking {
         this.issueEvent<FallController>( (x, y) => x.Block() );
         this.issueEvent<ShakeController>(
                 (x, y) => x.StartShaking(), this.shaker);
-        Global.Sfx.playBlockShaking();
+        Global.Sfx.playBlockShaking(this.fastGetTr());
         this.isShaking = true;
         yield return new UnityEngine.WaitForSeconds(BaseBlock.fallWait);
         this.issueEvent<ShakeController>(

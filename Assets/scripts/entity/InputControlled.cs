@@ -36,7 +36,7 @@ public class InputControlled : BaseAnimatedEntity {
             /* Avoid triggering the death scene while rendering the
              * level thumbnails */
             if (SceneMng.GetActiveScene().name != LevelSelectScene) {
-                Global.Sfx.playPlayerCrushed();
+                Global.Sfx.playPlayerCrushed(this.fastGetTr());
                 SceneMng.LoadSceneAsync("YouLose", SceneMode.Additive);
             }
             this.gameObject.SetActive(false);
@@ -103,7 +103,7 @@ public class InputControlled : BaseAnimatedEntity {
     private System.Collections.IEnumerator playCantPushSfx() {
         if (!this.isPlayingCantPushSfx) {
             this.isPlayingCantPushSfx = true;
-            Global.Sfx.playPlayerCantPush();
+            Global.Sfx.playPlayerCantPush(this.fastGetTr());
             yield return new UnityEngine.WaitForSeconds(0.5f);
             this.isPlayingCantPushSfx = false;
         }
@@ -120,7 +120,7 @@ public class InputControlled : BaseAnimatedEntity {
                         (x,y) => x.TryPush(ref delay, ref didPush, pushDir),
                         block);
                 if (didPush) {
-                    Global.Sfx.playPushBlock(delay);
+                    Global.Sfx.playPushBlock(delay, this.fastGetTr());
                     this.StartCoroutine(this.doPush(delay));
                 }
                 else {
@@ -134,7 +134,7 @@ public class InputControlled : BaseAnimatedEntity {
                                 this.gameObject),
                         block);
                 if (didPush) {
-                    Global.Sfx.playPullBlock(delay);
+                    Global.Sfx.playPullBlock(delay, this.fastGetTr());
 
                     /* Make sure any block bellow becomes cracked */
                     if (this.isOnLedge())
@@ -244,33 +244,33 @@ public class InputControlled : BaseAnimatedEntity {
         if ((this.anim & Animation.Move) == 0) {
             /* Starting to move: play walking sound */
             if (to == this.facing)
-                Global.Sfx.playPlayerMoving();
+                Global.Sfx.playPlayerMoving(this.fastGetTr());
             else if ((to & Dir.Top) == Dir.Top)
                 if (!this.isOnLedge())
-                    Global.Sfx.playPlayerClimbBlock();
+                    Global.Sfx.playPlayerClimbBlock(this.fastGetTr());
                 else
-                    Global.Sfx.playPlayerClimbLedge();
+                    Global.Sfx.playPlayerClimbLedge(this.fastGetTr());
             else if ((to & Dir.Bottom) == Dir.Bottom)
                 if (!this.isOnLedge())
-                    Global.Sfx.playPlayerWalkDownBlock();
+                    Global.Sfx.playPlayerWalkDownBlock(this.fastGetTr());
                 else
-                    Global.Sfx.playPlayerDropToLedge();
+                    Global.Sfx.playPlayerDropToLedge(this.fastGetTr());
             else if (this.isOnLedge())
-                Global.Sfx.playPlayerMoveLedge();
+                Global.Sfx.playPlayerMoveLedge(this.fastGetTr());
         }
         base.move(to, delay);
     }
 
     override protected void turn(Dir to) {
         if (!this.isOnLedge() && (this.anim & Animation.Turn) == 0)
-            Global.Sfx.playPlayerTurning();
+            Global.Sfx.playPlayerTurning(this.fastGetTr());
         base.turn(to);
     }
 
     private Coroutine _playFallSfx = null;
     private CoroutineRet playFallSfx() {
         while ((this.anim & Animation.Fall) != 0) {
-            Global.Sfx.playPlayerFalling();
+            Global.Sfx.playPlayerFalling(this.fastGetTr());
             yield return new UnityEngine.WaitForSeconds(0.6f);
         }
 
@@ -287,6 +287,6 @@ public class InputControlled : BaseAnimatedEntity {
             this.StopCoroutine(this._playFallSfx);
             this._playFallSfx = null;
         }
-        Global.Sfx.playPlayerLand();
+        Global.Sfx.playPlayerLand(this.fastGetTr());
     }
 }

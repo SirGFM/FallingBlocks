@@ -231,7 +231,7 @@ static public class Global {
             if (cancelMenu != null)
                 cancelMenu.play(globalTarget);
         }
-        static public void playPushBlock(float delay, Transform target = null) {
+        static public void playPushBlock(float delay, Transform target) {
             if (target == null)
                 target = globalTarget;
 
@@ -244,7 +244,7 @@ static public class Global {
                     longPushBlock.play(target);
             }
         }
-        static public void playPullBlock(float delay, Transform target = null) {
+        static public void playPullBlock(float delay, Transform target) {
             if (target == null)
                 target = globalTarget;
 
@@ -257,79 +257,79 @@ static public class Global {
                     longPushBlock.play(target);
             }
         }
-        static public void playPlayerTurning(Transform target = null) {
+        static public void playPlayerTurning(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerTurning != null)
                 playerTurning.play(target);
         }
-        static public void playPlayerCrushed(Transform target = null) {
+        static public void playPlayerCrushed(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerDeath != null)
                 playerDeath.play(target);
         }
-        static public void playPlayerMoving(Transform target = null) {
+        static public void playPlayerMoving(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerMoving != null)
                 playerMoving.play(target);
         }
-        static public void playPlayerClimbBlock(Transform target = null) {
+        static public void playPlayerClimbBlock(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerClimbBlock != null)
                 playerClimbBlock.play(target);
         }
-        static public void playPlayerWalkDownBlock(Transform target = null) {
+        static public void playPlayerWalkDownBlock(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerWalkDownBlock != null)
                 playerWalkDownBlock.play(target);
         }
-        static public void playPlayerClimbLedge(Transform target = null) {
+        static public void playPlayerClimbLedge(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerClimbBlock != null)
                 playerClimbBlock.play(target);
         }
-        static public void playPlayerDropToLedge(Transform target = null) {
+        static public void playPlayerDropToLedge(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerWalkDownBlock != null)
                 playerWalkDownBlock.play(target);
         }
-        static public void playPlayerMoveLedge(Transform target = null) {
+        static public void playPlayerMoveLedge(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerMoveLedge != null)
                 playerMoveLedge.play(target);
         }
-        static public void playPlayerFalling(Transform target = null) {
+        static public void playPlayerFalling(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerFalling != null)
                 playerFalling.play(target);
         }
-        static public void playPlayerLand(Transform target = null) {
+        static public void playPlayerLand(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerLand != null)
                 playerLand.play(target);
         }
-        static public void playEnterCrackedBlock(Transform target = null) {
+        static public void playEnterCrackedBlock(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (crackedBlockCrack != null)
                 crackedBlockCrack.play(target);
         }
-        static public void playExitCrackedBlock(Transform target = null) {
+        static public void playExitCrackedBlock(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (crackedBlockCrack != null)
                 crackedBlockCrack.play(target);
         }
-        static public void playBreakCrackedBlock(Transform target = null) {
+        static public void playBreakCrackedBlock(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (crackedBlockBreak != null)
@@ -341,19 +341,19 @@ static public class Global {
             if (blockLand != null)
                 blockLand.play(target);
         }
-        static public void playBlockShaking(Transform target = null) {
+        static public void playBlockShaking(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (blockShake != null)
                 blockShake.play(target);
         }
-        static public void playPlayerCantPush(Transform target = null) {
+        static public void playPlayerCantPush(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (playerCantPush != null)
                 playerCantPush.play(target);
         }
-        static public void playCheckpoint(Transform target = null) {
+        static public void playCheckpoint(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (checkpoint != null)

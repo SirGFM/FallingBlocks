@@ -58,19 +58,19 @@ public class CrackedBlock : BaseBlock, LedgeTracker {
             newModel = this.IntactModel;
             break;
         case State.PreCracked:
-            Global.Sfx.playEnterCrackedBlock();
+            Global.Sfx.playEnterCrackedBlock(this.fastGetTr());
             newModel = this.PreCrackedModel;
             break;
         case State.Cracked:
-            Global.Sfx.playExitCrackedBlock();
+            Global.Sfx.playExitCrackedBlock(this.fastGetTr());
             newModel = this.CrackedModel;
             break;
         case State.PreBreaking:
-            Global.Sfx.playEnterCrackedBlock();
+            Global.Sfx.playEnterCrackedBlock(this.fastGetTr());
             newModel = this.PreBreakingModel;
             break;
         case State.Breaking:
-            Global.Sfx.playBreakCrackedBlock();
+            Global.Sfx.playBreakCrackedBlock(this.fastGetTr());
             newModel = this.BreakingModel;
             this.StartCoroutine(this.Break());
             break;
