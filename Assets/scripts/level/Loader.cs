@@ -236,6 +236,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
     }
 
     private void reload() {
+        Loader.onLoadLevel.exec(Loader.currentLevel);
         SceneMng.LoadSceneAsync(this.loaderScene, SceneMode.Single);
         this.resetting = true;
     }
@@ -291,9 +292,23 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         }
     }
 
+    public delegate void LoadLevelCallback(int idx);
+    private class LoadLevelDelegate {
+        public LoadLevelCallback func;
+
+        public void exec(int idx) {
+            this.func(idx);
+        }
+    }
+    static private LoadLevelDelegate onLoadLevel = new LoadLevelDelegate();
+    static public void addOnLoadLevel(LoadLevelCallback callback) {
+        onLoadLevel.func += callback;
+    }
+
     static public void LoadLevel(int idx) {
         Loader.currentLevel = idx;
         Loader.checkpoint = 0;
+        Loader.onLoadLevel.exec(idx);
         SceneMng.LoadSceneAsync("Loader", SceneMode.Single);
     }
 }

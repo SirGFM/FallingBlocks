@@ -258,7 +258,6 @@ GameObject:
   - component: {fileID: 464878933}
   - component: {fileID: 464878932}
   - component: {fileID: 464878934}
-  - component: {fileID: 464878935}
   m_Layer: 0
   m_Name: Song
   m_TagString: Untagged
@@ -305,20 +304,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 464878931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ffebde3048f0ef3989bcfbee25c06ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a9d6de5f643ec10fbf84e766fa09cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   positionOffset: {x: 0, y: 0, z: 0}
-  positionFactor: {x: 0.1, y: 1, z: 0.5}
+  positionFactor: {x: 1, y: 1, z: 1}
   rotationFactor: {x: 1, y: 1, z: 1}
---- !u!81 &464878935
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464878931}
-  m_Enabled: 1
 --- !u!1 &491092747
 GameObject:
   m_ObjectHideFlags: 0

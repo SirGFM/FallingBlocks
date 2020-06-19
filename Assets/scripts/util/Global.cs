@@ -190,6 +190,8 @@ static public class Global {
 
             globalTargetObject = new GO();
             globalTargetObject.name = "Global Audio Player";
+            globalTargetObject.AddComponent<UnityEngine.AudioListener>();
+            globalTargetObject.AddComponent<AudioSourcePosition>();
             GO.DontDestroyOnLoad(globalTargetObject);
             globalTarget = globalTargetObject.transform;
 
