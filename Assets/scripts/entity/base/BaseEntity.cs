@@ -318,4 +318,11 @@ public class BaseEntity : BaseRemoteAction, FallDetector, MovementDetector,
             return;
         this.uncheckedMove(to, delay);
     }
+
+    private UnityEngine.Transform _t = null;
+    protected UnityEngine.Transform fastGetTr() {
+        if (this._t == null)
+            this._t = this.transform;
+        return this._t;
+    }
 }

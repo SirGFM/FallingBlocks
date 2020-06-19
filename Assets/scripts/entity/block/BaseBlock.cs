@@ -80,6 +80,6 @@ public class BaseBlock : BaseEntity, IsShaking {
     }
 
     override protected void onLand() {
-        Global.Sfx.playBlockLanded();
+        Global.Sfx.playBlockLanded(this.fastGetTr());
     }
 }

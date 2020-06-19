@@ -335,7 +335,7 @@ static public class Global {
             if (crackedBlockBreak != null)
                 crackedBlockBreak.play(target);
         }
-        static public void playBlockLanded(Transform target = null) {
+        static public void playBlockLanded(Transform target) {
             if (target == null)
                 target = globalTarget;
             if (blockLand != null)
