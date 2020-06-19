@@ -2,6 +2,7 @@
 using AudioSource = UnityEngine.AudioSource;
 using GO = UnityEngine.GameObject;
 using Transform = UnityEngine.Transform;
+using Vec3 = UnityEngine.Vector3;
 
 static public class Global {
     public enum ParticleQuality {
@@ -72,8 +73,24 @@ static public class Global {
                 this.src = _src;
             }
 
+            public void playGlobal(Vec3 position, Transform parent) {
+                GO obj = new GO();
+
+                // Center in parent
+                obj.transform.parent = parent;
+                obj.transform.position = position;
+
+                AudioSource player = obj.AddComponent<AudioSource>();
+                player.clip = this.src;
+                player.spatialBlend = 1.0f; // full-3D
+                player.minDistance = 0.5f;
+                player.maxDistance = 10.0f;
+                player.Play();
+                obj.AddComponent<DestroyOnAudioDone>();
+            }
+
             public void play(Transform target) {
-                AudioSource.PlayClipAtPoint(this.src, target.position);
+                playGlobal(target.position, target);
             }
         }
 
@@ -335,7 +352,7 @@ static public class Global {
             if (target == null)
                 target = globalTarget;
             if (crackedBlockBreak != null)
-                crackedBlockBreak.play(target);
+                crackedBlockBreak.playGlobal(target.position, globalTarget);
         }
         static public void playBlockLanded(Transform target) {
             if (target == null)
@@ -359,7 +376,7 @@ static public class Global {
             if (target == null)
                 target = globalTarget;
             if (checkpoint != null)
-                checkpoint.play(target);
+                checkpoint.playGlobal(target.position, globalTarget);
         }
         static public void playVictoryOpening() {
             if (victoryStart != null)
