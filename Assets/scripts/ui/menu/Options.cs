@@ -1,3 +1,4 @@
+using AudioListener = UnityEngine.AudioListener;
 using ResMode = UnityEngine.Resolution;
 using Screen = UnityEngine.Screen;
 using UiText = UnityEngine.UI.Text;
@@ -313,7 +314,27 @@ public class Options : VerticalTextMenu {
 
         this.isFull = Screen.fullScreen;
 
+        string[] audioModes = new string[11];
+        for (int i = 1; i < audioModes.Length; i++) {
+            audioModes[i] = $"{i*10}%";
+        }
+        audioModes[0] = "Off";
+        float audioRatio = (float)audioModes.Length - 1.0f;
+
         Option[] _opts = {
+            Option.SectionHeader("-- Audio --"),
+            new Option("Global",
+                       "Adjusted game-audio globally (both music and sound effects).",
+                       (new Values(idx => AudioListener.volume = (idx / audioRatio),
+                                   audioModes).setAt((int)(AudioListener.volume * audioRatio)))),
+            new Option("Music",
+                       "Music volume.",
+                       (new Values(idx => Global.Sfx.setMusicVolume(idx / audioRatio),
+                                   audioModes).setAt((int)(Global.Sfx.getMusicVolume() * audioRatio)))),
+            new Option("Sounds",
+                       "Sound effects volume.",
+                       (new Values(idx => Global.Sfx.sfxVolume = (idx / audioRatio),
+                                   audioModes).setAt((int)(Global.Sfx.sfxVolume * audioRatio)))),
             Option.SectionHeader("-- General --"),
             new Option("Camera X",
                        "Configure horizontal camera movement.\n"+

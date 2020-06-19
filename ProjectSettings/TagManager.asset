@@ -9,6 +9,7 @@ TagManager:
   - Checkpoint
   - Title
   - KillPlane
+  - Music
   layers:
   - Default
   - TransparentFX

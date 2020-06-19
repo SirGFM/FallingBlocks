@@ -66,6 +66,25 @@ static public class Global {
 
     /* Store SFX objects through scenes */
     static public class Sfx {
+        static private float _musicVolume = 0.6f;
+        static public float sfxVolume = 0.4f;
+
+        static public void setMusicVolume(float val) {
+            Global.Sfx._musicVolume = val;
+
+            GO music = GO.FindWithTag("Music");
+            if (music != null) {
+                foreach (AudioSource src in music.GetComponentsInChildren<AudioSource>()) {
+                    if (src.isPlaying)
+                        src.volume = Global.Sfx._musicVolume * 0.5f;
+                }
+            }
+        }
+
+        static public float getMusicVolume() {
+            return Global.Sfx._musicVolume;
+        }
+
         private class SoundClip {
             private AudioClip src;
 
@@ -74,6 +93,9 @@ static public class Global {
             }
 
             public void playGlobal(Vec3 position, Transform parent) {
+                if (Global.Sfx.sfxVolume <= 0.0f)
+                    return;
+
                 GO obj = new GO();
 
                 // Center in parent
@@ -85,6 +107,7 @@ static public class Global {
                 player.spatialBlend = 1.0f; // full-3D
                 player.minDistance = 0.5f;
                 player.maxDistance = 10.0f;
+                player.volume = Global.Sfx.sfxVolume;
                 player.Play();
                 obj.AddComponent<DestroyOnAudioDone>();
             }
