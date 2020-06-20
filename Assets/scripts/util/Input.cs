@@ -464,14 +464,14 @@ static public class Input {
         return DefInput.GetAxisRaw("joystick 0 axis 1") < -0.7f ||
                 DefInput.GetAxisRaw("joystick 0 axis 7") < -0.7f ||
                 DefInput.GetKey("up") ||
-                Input.GetHorizontalAxis() < -0.7f;
+                Input.GetVerticalAxis() > 0.7f;
     }
 
     static public bool MenuDown() {
         return DefInput.GetAxisRaw("joystick 0 axis 1") > 0.7f ||
                 DefInput.GetAxisRaw("joystick 0 axis 7") > 0.7f ||
                 DefInput.GetKey("down") ||
-                Input.GetHorizontalAxis() > 0.7f;
+                Input.GetVerticalAxis() < -0.7f;
     }
 
     static public bool MenuSelect() {
