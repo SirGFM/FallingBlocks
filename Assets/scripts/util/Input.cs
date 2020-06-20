@@ -146,10 +146,10 @@ static public class Input {
     };
 
     static private axis[] axis2 = {
-        null /* Left */,
-        null /* Right */,
-        null /* Up */,
-        null /* Down */,
+        new axis("joystick 0 axis 6", axisType.negativeAxis) /* Left */,
+        new axis("joystick 0 axis 6", axisType.positiveAxis) /* Right */,
+        new axis("joystick 0 axis 7", axisType.negativeAxis) /* Up */,
+        new axis("joystick 0 axis 7", axisType.positiveAxis) /* Down */,
         null /* Action */,
         null /* Reset */,
         null /* Pause */,
@@ -378,10 +378,10 @@ static public class Input {
             break;
         case 2:
             axis[] _axis2 = {
-                null /* Left */,
-                null /* Right */,
-                null /* Up */,
-                null /* Down */,
+                new axis("joystick 0 axis 6", axisType.negativeAxis) /* Left */,
+                new axis("joystick 0 axis 6", axisType.positiveAxis) /* Right */,
+                new axis("joystick 0 axis 7", axisType.negativeAxis) /* Up */,
+                new axis("joystick 0 axis 7", axisType.positiveAxis) /* Down */,
                 null /* Action */,
                 null /* Reset */,
                 null /* Pause */,
