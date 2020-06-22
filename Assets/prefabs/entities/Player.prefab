@@ -1105,6 +1105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6536220311716283467}
   - component: {fileID: 9117827115796294334}
+  - component: {fileID: 5287993718785313120}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -1139,6 +1140,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0895edae864c2e94aab0065f4f2404ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5287993718785313120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5035257524178582496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fefc16b63853d84158ed331bb67d690d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Models:
+  - {fileID: -8678823145569952518, guid: ed311f10fb95fb858ac31774640a4e3a, type: 3}
+  - {fileID: -8678823145569952518, guid: 951b5f98ff77c8f29a26290da51ca7b0, type: 3}
+  - {fileID: -8678823145569952518, guid: 8a1b0f56507cffd889d81e3f03032b9e, type: 3}
+  - {fileID: -8678823145569952518, guid: f51af2900988b9a76914fe58be2d4adf, type: 3}
+  - {fileID: -8678823145569952518, guid: 7a17a383b7e074cffab5a10115998abe, type: 3}
+  - {fileID: -8678823145569952518, guid: c6fd30cda11113c47a3ceaa9439200af, type: 3}
+  - {fileID: -8678823145569952518, guid: aca74f009789404c5b6630605b51ec9a, type: 3}
+  - {fileID: -8678823145569952518, guid: 516c12f218f7e5369aade9021bfb33df, type: 3}
 --- !u!1 &5141217488976951132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1471,6 +1493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxDepth: 5
   shadowModel: {fileID: 3008227506279629148}
+  self: {fileID: 0}
 --- !u!1 &7179203609437283682
 GameObject:
   m_ObjectHideFlags: 0
@@ -2005,6 +2028,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6536220311716283467}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: ed311f10fb95fb858ac31774640a4e3a,
+        type: 3}
+      propertyPath: m_Name
+      value: player
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: ed311f10fb95fb858ac31774640a4e3a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2074,11 +2102,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: ed311f10fb95fb858ac31774640a4e3a,
-        type: 3}
-      propertyPath: m_Name
-      value: player
       objectReference: {fileID: 0}
     - target: {fileID: -6057140222963153312, guid: ed311f10fb95fb858ac31774640a4e3a,
         type: 3}
