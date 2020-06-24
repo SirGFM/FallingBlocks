@@ -37,13 +37,19 @@ echo "Updating the game's version..." &&
     ${UNITY} -quit -batchmode -buildWindows64Player ${WS}/win64/${APP}.exe &&
     echo 'Deploying Linux 64 version...' &&
     echo ${VERSION} > VERSION.new &&
-    cp deploy/itch.manifest ${WS}/linux64
+    cp deploy/open-manual.sh ${WS}/linux64 &&
+    cp deploy/mystery-tower.pdf ${WS}/linux64 &&
+    cp deploy/itch.manifest ${WS}/linux64 &&
     butler push --userversion-file=VERSION.new ${WS}/linux64 "GFM/mystery-tower:linux64" &&
     echo 'Deploying Windows 32 version...' &&
-    cp deploy/itch.manifest ${WS}/win32
+    cp deploy/open-manual.bat ${WS}/win32 &&
+    cp deploy/mystery-tower.pdf ${WS}/win32 &&
+    cp deploy/itch.manifest ${WS}/win32 &&
     butler push --userversion-file=VERSION.new ${WS}/win32 "GFM/mystery-tower:win32" &&
     echo 'Deploying Windows 64 version...' &&
-    cp deploy/itch.manifest ${WS}/win64
+    cp deploy/open-manual.bat ${WS}/win64 &&
+    cp deploy/mystery-tower.pdf ${WS}/win64 &&
+    cp deploy/itch.manifest ${WS}/win64 &&
     butler push --userversion-file=VERSION.new ${WS}/win64 "GFM/mystery-tower:win64"
     rm -f VERSION.new &&
     echo 'Tagging the version...' &&

@@ -1,0 +1,924 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize custom
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date true
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\paperwidth 10.5cm
+\paperheight 10.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip smallskip
+\quotes_language english
+\papercolumns 1
+\papersides 2
+\paperpagestyle empty
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{picture}(0,0)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+put(-146,-156.5){
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+includegraphics[width=10.5cm,keepaspectratio]{imgs/cover.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{picture}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage cleardoublepage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+The...
+ story?
+\end_layout
+
+\begin_layout Standard
+You find yourself trapped in a tower.
+\end_layout
+
+\begin_layout Standard
+Who trapped you there?
+\end_layout
+
+\begin_layout Standard
+Why?
+\end_layout
+
+\begin_layout Standard
+Where is this tower?
+\end_layout
+
+\begin_layout Standard
+Did the dev just made all this up to pretend the game has some sort of story?
+\end_layout
+
+\begin_layout Standard
+It's a mystery...
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage cleardoublepage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Legal disclaimer
+\end_layout
+
+\begin_layout Standard
+This game is based on Catherine, developed by Atlus.
+ This game is not affiliated with, endorsed by, sponsored by or specifically
+ approved by Atlus, SEGA, or their partners.
+\end_layout
+
+\begin_layout Standard
+This is a homage made by a fan who has spent too much time playing that
+ game.
+ If you enjoyed this game, please consider supporting Atlus and SEGA by
+ purchasing Catherine Classic, for PC, or Catherine: Full Body, for consoles.
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+About the game
+\end_layout
+
+\begin_layout Standard
+Mystery Tower is a puzzle game in which the player is tasked with climbing
+ towers.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename imgs/000-climb-to-goal.png
+	width 75page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You control a nameless character able to climb, push and pull blocks.
+ Use these actions to build stairways and bridges, and even to demolish
+ part of the tower, creating paths toward the goal at the top.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename imgs/000-game-example.png
+	width 75page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Controls
+\end_layout
+
+\begin_layout Standard
+These are the default game controls, which can be remaped from the Options
+ menu.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="4">
+<features booktabs="true" tabularvalignment="middle" tabularwidth="75page%">
+<column alignment="center" valignment="middle" width="17.5text%">
+<column alignment="center" valignment="middle" width="17.5text%">
+<column alignment="center" valignment="middle" width="17.5text%">
+<column alignment="center" valignment="middle" width="17.5text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Action
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Keyboard
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Gamepad
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Alt.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Movement
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+WASD
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Left analog
+\end_layout
+
+\begin_layout Plain Layout
+stick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Gamepad
+\end_layout
+
+\begin_layout Plain Layout
+D-Pad
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Push/Pull
+\end_layout
+
+\begin_layout Plain Layout
+block
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Spacebar
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Action button
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Camera
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+UHJK
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Right analog stick
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Right mouse button
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reset
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+R
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pause
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Escape
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Start
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Block types
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Graphics
+	filename imgs/002-default-block.png
+	width 20line%
+	BoundingBox 0bp 30bp 82bp 82bp
+
+\end_inset
+
+ A regular block with no special traits
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Graphics
+	filename imgs/003-heavy-block.png
+	width 20line%
+	BoundingBox 0bp 41bp 82bp 82bp
+
+\end_inset
+
+ A heavy block that takes longer to push
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Graphics
+	filename imgs/004-breakable-block.png
+	width 20line%
+	BoundingBox 0bp 41bp 82bp 82bp
+
+\end_inset
+
+ A fragile block that breaks if you walk over it twice
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Graphics
+	filename imgs/005-imovable-block.png
+	width 20line%
+	BoundingBox 0bp 41bp 82bp 82bp
+
+\end_inset
+
+ An imovable block.
+ It won't budge, but you could cause it to fall...
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset Graphics
+	filename imgs/006-goal-block.png
+	width 20line%
+	BoundingBox 0bp 41bp 82bp 82bp
+
+\end_inset
+
+ The goal block.
+ Reach this to end a level
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Climbing tips
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="2">
+<features tabularvalignment="middle" tabularwidth="80text%">
+<column alignment="center" valignment="middle" width="40text%">
+<column alignment="center" valignment="middle" width="40text%">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename imgs/007-ledge.png
+	width 38text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+You can drop to, and move around ledges
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="2">
+<features tabularvalignment="middle" tabularwidth="80text%">
+<column alignment="center" valignment="middle" width="40text%">
+<column alignment="center" valignment="middle" width="40text%">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+You can push multiple blocks at once.
+ The speed will be limited by the heaviest block, though
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename imgs/010-push-many.png
+	width 38text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace 12pheight%
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="2">
+<features tabularvalignment="middle" tabularwidth="80text%">
+<column alignment="center" valignment="middle" width="40text%">
+<column alignment="center" valignment="middle" width="40text%">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Blocks will start falling if there's no block supporting it
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename imgs/008-dropping-blocks.png
+	width 38text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace 10pheight%
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="2">
+<features tabularvalignment="middle" tabularwidth="80text%">
+<column alignment="center" valignment="middle" width="40text%">
+<column alignment="center" valignment="middle" width="40text%">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename imgs/009-block-edge.png
+	width 38text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A block only needs to be touching another's edge to be supported by it
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Credits, Acknowledgments and stuff
+\end_layout
+
+\begin_layout Itemize
+Made with Unity, Blender, LMMS, BFXR, GIMP, VIM and Python
+\end_layout
+
+\begin_layout Itemize
+32 color palette by DawnBringer:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\size tiny
+\bar under
+http://pixeljoint.com/forum/forum_posts.asp?TID=16247
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+Everything else
+\begin_inset Quotes erd
+\end_inset
+
+ (code, graphics, models, animations, song) by GFM
+\end_layout
+
+\begin_layout Itemize
+Project hosted on Github.
+ It's Open Source, so feel free to check it out at:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\size tiny
+\bar under
+https://github.com/SirGFM/FallingBlocks
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Game freely available on itch.io, at:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\size tiny
+\bar under
+https://gfm.itch.io/mystery-tower
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Back in January of 2016, I started making my next 
+\begin_inset Quotes eld
+\end_inset
+
+non-game jam
+\begin_inset Quotes erd
+\end_inset
+
+ game, after JJAT.
+ After almost four years of working on and off on that project, in July
+ of 2019 I ended up pausing that project to start Mystery Tower.
+\end_layout
+
+\begin_layout Standard
+What I initially envisioned as being a three months long project ended up
+ taking almost a full year.
+ I learned a lot of things, had to rewrite the project once, used an effin'
+ third-party engine, complained a lot...
+ But had tons of fun!
+\end_layout
+
+\begin_layout Standard
+If you've read this far, thank you! I must also thank friends and family
+ for always supporting my doing these silly projects, even though I'm not
+ even that vocal about it (I think?).
+\end_layout
+
+\begin_layout Standard
+Also, special thanks to Pirata/pool_shark, who pretty much tested every
+ version of the game, and helped a lot in defining its current form.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{picture}(0,0)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+put(-57,-253){
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+includegraphics[width=10.5cm,keepaspectratio]{imgs/back-cover.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{picture}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

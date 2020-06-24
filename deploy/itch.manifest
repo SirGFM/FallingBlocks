@@ -8,3 +8,15 @@ platform = "linux"
 name = "play"
 path = "MysteryTower.exe"
 platform = "windows"
+
+[[actions]]
+name = "manual"
+path = "open-manual.sh"
+args = ["mystery-tower.pdf"]
+platform = "linux"
+
+[[actions]]
+name = "manual"
+path = "open-manual.bat"
+args = ["mystery-tower.pdf"]
+platform = "windows"
