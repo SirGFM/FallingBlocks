@@ -1,0 +1,11 @@
+
+[[actions]]
+name = "play"
+path = "MysteryTower"
+platform = "linux"
+
+[[actions]]
+name = "manual"
+path = "open-manual.sh"
+args = ["mystery-tower.pdf"]
+platform = "linux"

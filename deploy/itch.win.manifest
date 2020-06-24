@@ -1,0 +1,11 @@
+
+[[actions]]
+name = "play"
+path = "MysteryTower.exe"
+platform = "windows"
+
+[[actions]]
+name = "manual"
+path = "open-manual.bat"
+args = ["mystery-tower.pdf"]
+platform = "windows"
