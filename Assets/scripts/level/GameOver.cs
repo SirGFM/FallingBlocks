@@ -1,6 +1,7 @@
 using AsyncOp = UnityEngine.AsyncOperation;
 using Color = UnityEngine.Color;
 using GO = UnityEngine.GameObject;
+using UiImage = UnityEngine.UI.Image;
 using Res = UnityEngine.Resources;
 using Scene = UnityEngine.SceneManagement.Scene;
 using SceneMng = UnityEngine.SceneManagement.SceneManager;
@@ -13,8 +14,14 @@ public class GameOver : UnityEngine.MonoBehaviour {
     public string MainMenuSceneName = "MainMenu";
     public string GameOverSceneName = "GameOver";
     public float delta = 0.5f;
-    UiText[] blink;
 
+    public UiText[] blink;
+    public UiText[] flavor;
+    public string[] description;
+    public UiImage fadein;
+
+    /* Make sure this scene is unique, since the loader will actually load it
+     * when in-game */
     private System.Collections.IEnumerator makeSceneUnique() {
         Scene[] scenes;
         AsyncOp op;
@@ -38,46 +45,79 @@ public class GameOver : UnityEngine.MonoBehaviour {
         }
 
         SceneMng.SetActiveScene(scenes[mainIdx]);
-        foreach (GO go in scenes[mainIdx].GetRootGameObjects()) {
-            go.SetActive(true);
-        }
+        yield return SceneMng.LoadSceneAsync(
+                "scenes/000-game-controller/bg-scenes/GameOverBG",
+                SceneMode.Additive);
+        yield return runGameOverAnim();
+    }
 
-        /* Make sure every text is visible */
-        yield return new UnityEngine.WaitForSeconds(5);
-        foreach (UiText txt in Res.FindObjectsOfTypeAll<UiText>()) {
-            if (!txt.gameObject.activeSelf) {
-                txt.gameObject.SetActive(true);
-                System.Array.Resize(ref this.blink, this.blink.Length + 1);
-                this.blink[this.blink.Length - 1] = txt;
-            }
+    private System.Collections.IEnumerator runGameOverAnim() {
+        /* Show the screen */
+        for (float t = 1.0f; t > 0.0f; t -= UnityEngine.Time.deltaTime) {
+            Color alpha = new Color(0.0f, 0.0f, 0.0f, t);
+            fadein.color = alpha;
+            yield return null;
         }
+        fadein.gameObject.SetActive(false);
 
         this.allowReset = true;
+        yield return new UnityEngine.WaitForSeconds(5);
+        this.StartCoroutine(this.showFlavorText());
+        yield return blinkText();
+    }
+
+    private void setTextAlpha(UiText[] list, float alpha) {
+        foreach (UiText txt in list) {
+            Color src = txt.color;
+            Color color = new Color(src.r, src.g, src.b, alpha);
+            txt.color = color;
+        }
+    }
+
+    private System.Collections.IEnumerator blinkText() {
+        while (true) {
+            for (float t = 0.0f; t < 1.0f; t += UnityEngine.Time.deltaTime) {
+                this.setTextAlpha(this.blink, t);
+                yield return null;
+            }
+            for (float t = 1.0f; t > 0.0f; t -= UnityEngine.Time.deltaTime) {
+                this.setTextAlpha(this.blink, t);
+                yield return null;
+            }
+        }
+    }
+
+    private void setFlavor(int idx, int len) {
+        foreach (UiText txt in this.flavor) {
+            txt.text = this.description[idx].Substring(0, len);
+        }
+    }
+
+    private System.Collections.IEnumerator showFlavorText() {
+        yield return new UnityEngine.WaitForSeconds(2);
+
+        for (int i = 0; i < this.description.Length; i++) {
+            for (int len = 0; len <= this.description[i].Length; len++) {
+                this.setFlavor(i, len);
+                yield return null;
+            }
+
+            float time = 6.0f;
+            for (float t = time; t > 0.0f; t -= UnityEngine.Time.deltaTime) {
+                this.setTextAlpha(this.flavor, t / time);
+                yield return null;
+            }
+            this.setFlavor(0, 0);
+            this.setTextAlpha(this.flavor, 1.0f);
+        }
     }
 
     void Start() {
         this.allowReset = false;
-        this.blink = new UiText[0];
         this.StartCoroutine(this.makeSceneUnique());
     }
 
     void Update() {
-        bool swap = false;
-        float dv = this.delta * UnityEngine.Time.deltaTime;
-        Color deltaColor = new Color(0.0f, 0.0f, 0.0f, dv);
-
-        foreach (UiText txt in this.blink) {
-            if (txt.color.a + dv > 1.0f)
-                swap = true;
-            else if (txt.color.a + dv < 0.0f)
-                swap = true;
-            else 
-                txt.color = txt.color + deltaColor;
-        }
-
-        if (swap)
-            this.delta *= -1.0f;
-
         if (this.allowReset && Input.CheckAnyKeyDown()) {
             SceneMng.LoadSceneAsync(this.MainMenuSceneName, SceneMode.Single);
             this.allowReset = false;

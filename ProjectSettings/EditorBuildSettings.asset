@@ -107,4 +107,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/000-game-controller/bg-scenes/MainMenu.unity
     guid: c3119fd90ad84ad9eb981b76cae21e0d
+  - enabled: 1
+    path: Assets/scenes/000-game-controller/bg-scenes/GameOverBG.unity
+    guid: 0a851ca15c48014c88c50ac518be71cc
   m_configObjects: {}
