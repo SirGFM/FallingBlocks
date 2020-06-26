@@ -55,7 +55,9 @@ public class LevelSelectMenu : Menu, ScreenshotLevelController {
 
         for (int i = SceneMng.sceneCountInBuildSettings; i > 0; i--) {
             string name = SceneUtil.GetScenePathByBuildIndex(i - 1);
-            if (name.IndexOf(this.StopLoadingAt) != -1) {
+            if (name.EndsWith(".unity"))
+                name = name.Remove(name.Length - 6);
+            if (name.EndsWith(this.StopLoadingAt)) {
                 this.lastIdx = i - 1;
                 break;
             }
