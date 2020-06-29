@@ -15,22 +15,23 @@ public class MainMenu : VerticalTextMenu {
     private void updateSpriteSelector(int old, int _new) {
         this.spriteSelector[old].color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
         this.spriteSelector[_new].color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        Config.setPlayerModel(_new);
     }
 
     override protected void onLeft() {
-        int old = PlayerModel.active;
-        PlayerModel.active--;
-        if (PlayerModel.active < 0)
-            PlayerModel.active = this.spriteSelector.Length - 1;
-        this.updateSpriteSelector(old, PlayerModel.active);
+        int old = Config.getPlayerModel();
+        int _new = old - 1;
+        if (_new < 0)
+            _new = this.spriteSelector.Length - 1;
+        this.updateSpriteSelector(old, _new);
     }
 
     override protected void onRight() {
-        int old = PlayerModel.active;
-        PlayerModel.active++;
-        if (PlayerModel.active >= this.spriteSelector.Length)
-            PlayerModel.active = 0;
-        this.updateSpriteSelector(old, PlayerModel.active);
+        int old = Config.getPlayerModel();
+        int _new = old + 1;
+        if (_new >= this.spriteSelector.Length)
+            _new = 0;
+        this.updateSpriteSelector(old, _new);
     }
 
     override protected void onSelect() {

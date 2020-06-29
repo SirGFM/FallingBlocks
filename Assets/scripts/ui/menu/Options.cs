@@ -279,8 +279,11 @@ public class Options : VerticalTextMenu {
             this.back();
         else if (cur == "Reset") {
             Input.RevertMap(0);
+            Config.saveInputA();
             Input.RevertMap(1);
+            Config.saveInputB();
             Input.RevertMap(2);
+            Config.saveInputC();
         }
         else if (cur.StartsWith("Input")) {
             switch (cur[cur.Length - 1]) {
@@ -325,29 +328,30 @@ public class Options : VerticalTextMenu {
             Option.SectionHeader("-- Audio --"),
             new Option("Global",
                        "Adjusted game-audio globally (both music and sound effects).",
-                       (new Values(idx => AudioListener.volume = (idx / audioRatio),
-                                   audioModes).setAt((int)(AudioListener.volume * audioRatio)))),
+                       (new Values(idx => Config.setGlobalVolume(idx / audioRatio),
+                                   audioModes).setAt((int)(Config.getGlobalVolume() * audioRatio)))),
             new Option("Music",
                        "Music volume.",
-                       (new Values(idx => Global.Sfx.setMusicVolume(idx / audioRatio),
-                                   audioModes).setAt((int)(Global.Sfx.getMusicVolume() * audioRatio)))),
+                       (new Values(idx => Config.setMusicVolume(idx / audioRatio),
+                                   audioModes).setAt((int)(Config.getMusicVolume() * audioRatio)))),
             new Option("Sounds",
                        "Sound effects volume.",
-                       (new Values(idx => Global.Sfx.sfxVolume = (idx / audioRatio),
-                                   audioModes).setAt((int)(Global.Sfx.sfxVolume * audioRatio)))),
+                       (new Values(idx => Config.setSfxVolume(idx / audioRatio),
+                                   audioModes).setAt((int)(Config.getSfxVolume() * audioRatio)))),
+
             Option.SectionHeader("-- General --"),
             new Option("Camera X",
                        "Configure horizontal camera movement.\n"+
                        "Try it out!",
-                       (new Values(idx => Global.camX = 1.0f - 2.0f * idx,
+                       (new Values(idx => Config.setHorCamInverted(idx == 1),
                                    "Normal",
-                                   "Inverted")).setAt((Global.camX == 1.0f) ? 0 : 1)),
+                                   "Inverted")).setAt((Config.getHorCamInverted()) ? 1 : 0)),
             new Option("Camera Y",
                        "Configure vertical camera movement.\n"+
                        "Try it out!",
-                       (new Values(idx => Global.camY = 1.0f - 2.0f * idx,
+                       (new Values(idx => Config.setVerCamInverted(idx == 1),
                                    "Normal",
-                                   "Inverted")).setAt((Global.camY == 1.0f) ? 0 : 1)),
+                                   "Inverted")).setAt((Config.getVerCamInverted()) ? 1 : 0)),
 
             Option.SectionHeader("-- Graphics --"),
             new Option("Resolution",
@@ -371,9 +375,9 @@ public class Options : VerticalTextMenu {
                        (new Values(idx => {
                                        Global.ParticleQuality gpq;
                                        gpq = (Global.ParticleQuality) idx;
-                                       Global.particleQuality = gpq;
+                                       Config.setParticlesQual(gpq);
                                    },
-                                   "Off", "Low", "Mid", "High")).setAt((int)Global.particleQuality)),
+                                   "Off", "Low", "Mid", "High")).setAt((int)Config.getParticlesQual())),
 
             Option.SectionHeader("-- Rebind --"),
             new Option("Reset",

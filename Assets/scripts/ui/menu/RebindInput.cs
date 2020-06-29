@@ -266,7 +266,25 @@ public class RebindInput : VerticalTextMenu {
         this._ignoreInputs--;
     }
 
+    private void saveInputs() {
+        switch (RebindInput.inputMap) {
+        case 0:
+            Config.saveInputA();
+            break;
+        case 1:
+            Config.saveInputB();
+            break;
+        case 2:
+            Config.saveInputC();
+            break;
+        default:
+            /* Do nothing */
+            break;
+        }
+    }
+
     private void back() {
+        this.saveInputs();
         this.LoadScene("scenes/000-game-controller/Options");
     }
 
@@ -330,6 +348,7 @@ public class RebindInput : VerticalTextMenu {
             new Command("Revert",
                         () => {
                             Input.RevertMap(RebindInput.inputMap);
+                            this.saveInputs();
                             this.updateSelected();
                         },
                         "Reverts this scheme to its default configuration"),
