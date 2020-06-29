@@ -50,7 +50,7 @@ echo "Updating the game's version..." &&
     cp deploy/open-manual.bat ${WS}/win64 &&
     cp deploy/mystery-tower.pdf ${WS}/win64 &&
     cp deploy/itch.win.manifest ${WS}/win64/.itch.toml &&
-    butler push --userversion-file=VERSION.new ${WS}/win64 "GFM/mystery-tower:win64"
+    butler push --userversion-file=VERSION.new ${WS}/win64 "GFM/mystery-tower:win64" &&
     rm -f VERSION.new &&
     echo 'Tagging the version...' &&
     git tag -a -m "${MESSAGE}" ${VERSION} &&
