@@ -3,6 +3,11 @@ using DefInput = UnityEngine.Input;
 using KeyCode = UnityEngine.KeyCode;
 using GO = UnityEngine.GameObject;
 
+using Int32 = System.Int32;
+using GroupCollection = System.Text.RegularExpressions.GroupCollection;
+using MatchCollection = System.Text.RegularExpressions.MatchCollection;
+using Regex = System.Text.RegularExpressions.Regex;
+
 public static class ActionsMethods {
     public static int idx(this Input.Actions a) {
         return (int)a;
@@ -42,6 +47,51 @@ static public class Input {
         axisType type;
         bool isKey;
         string name;
+
+        private axis() {
+            /* Empty constructor */
+        }
+
+        static private Regex jsonParser = null;
+        static public axis fromJson(string json) {
+            if (jsonParser == null)
+                jsonParser = new Regex("\"input\": \"(.*)\",.*" +
+                                       "\"key\": \"(.*)\",.*" +
+                                       "\"type\": \"(.*)\",.*" +
+                                       "\"isKey\": \"(.*)\",.*" +
+                                       "\"name\": \"(.*)\"");
+            MatchCollection matches = jsonParser.Matches(json);
+            GroupCollection groups = matches[0].Groups;
+
+            string input = groups[1].Value;
+            int ikey = Int32.Parse(groups[2].Value);
+            KeyCode key = (KeyCode)ikey;
+            int itype = Int32.Parse(groups[3].Value);
+            axisType type = (axisType)itype;
+            int iIsKey = Int32.Parse(groups[4].Value);
+            bool isKey = (iIsKey != 0);
+            string name = groups[5].Value;
+
+            axis a = new axis();
+            a.input = input;
+            a.key = key;
+            a.type = type;
+            a.isKey = isKey;
+            a.name = name;
+            return a;
+        }
+
+        public string toJson() {
+            int ikey = (int)this.key;
+            int itype = (int)this.type;
+            int iIsKey = this.isKey ? 1 : 0;
+
+            return $"\"input\": \"{this.input}\"," +
+                   $"\"key\": \"{ikey}\"," +
+                   $"\"type\": \"{itype}\"," +
+                   $"\"isKey\": \"{iIsKey}\"," +
+                   $"\"name\": \"{this.name}\"";
+        }
 
         public axis(string input, axisType type) {
             this.type = type;
@@ -392,6 +442,64 @@ static public class Input {
                 null /* CameraDown */,
             };
             axis2 = _axis2;
+            break;
+        default:
+            throw new System.Exception("Invalid input map");
+        }
+    }
+
+    static private string _axisToJson(axis[] _axis) {
+        string json = "[";
+        for (int i = 0; i < _axis.Length; i++) {
+            json += "{";
+            if (_axis[i] != null)
+                json += _axis[i].toJson();
+            json += "},";
+        }
+        json += "]";
+
+        return json;
+    }
+
+    static public string axisToJson(int column) {
+        switch (column) {
+        case 0:
+            return _axisToJson(axis0);
+        case 1:
+            return _axisToJson(axis1);
+        case 2:
+            return _axisToJson(axis2);
+        default:
+            throw new System.Exception("Invalid input map");
+        }
+    }
+
+    static private Regex jsonParser = null;
+    static public void axisFromJson(int column, string json) {
+        if (jsonParser == null)
+            jsonParser = new Regex("{([^}]*)},+");
+        MatchCollection matches = jsonParser.Matches(json);
+
+        axis[] _axis = new axis[matches.Count];
+        for (int i = 0; i < matches.Count; i++) {
+            int len = matches[i].Value.Length - 3;
+            string subJson = matches[i].Value.Substring(1, len);
+
+            if (subJson.Length > 0)
+                _axis[i] = axis.fromJson(subJson);
+            else
+                _axis[i] = null;
+        }
+
+        switch (column) {
+        case 0:
+            axis0 = _axis;
+            break;
+        case 1:
+            axis1 = _axis;
+            break;
+        case 2:
+            axis2 = _axis;
             break;
         default:
             throw new System.Exception("Invalid input map");
