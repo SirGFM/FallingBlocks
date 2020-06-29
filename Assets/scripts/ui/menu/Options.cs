@@ -266,6 +266,7 @@ public class Options : VerticalTextMenu {
     }
 
     private void back() {
+        Config.forceSave();
         this.LoadScene("scenes/MainMenu");
     }
 

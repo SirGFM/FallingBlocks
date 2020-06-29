@@ -1,8 +1,49 @@
 using AudioListener = UnityEngine.AudioListener;
+using PlayerPrefs = UnityEngine.PlayerPrefs;
 
 static public class Config {
+    static private bool getBool(string key, bool def) {
+        if (!PlayerPrefs.HasKey(key))
+            return def;
+        return PlayerPrefs.GetInt(key) == 1;
+    }
+
+    static private void setBool(string key, bool v) {
+        PlayerPrefs.SetInt(key, (v ? 1 : 0));
+    }
+
+    static public void load() {
+        float globalVolume, musicVolume, sfxVolume;
+        bool invertCamX, invertCamY;
+        int particleQuality, playerModel;
+
+        globalVolume = PlayerPrefs.GetFloat("GlobalVolume", 1.0f);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.6f);
+        sfxVolume = PlayerPrefs.GetFloat("SfxVolume", 0.4f);
+        invertCamX = getBool("InvertCamX", false);
+        invertCamY = getBool("InvertCamY", false);
+        particleQuality = PlayerPrefs.GetInt("ParticleQuality",
+                                             (int)Global.ParticleQuality.High);
+        playerModel = PlayerPrefs.GetInt("PlayerModel", 0);
+
+        // TODO: Input
+
+        setGlobalVolume(globalVolume);
+        setMusicVolume(musicVolume);
+        setSfxVolume(sfxVolume);
+        setHorCamInverted(invertCamX);
+        setVerCamInverted(invertCamY);
+        setParticlesQual((Global.ParticleQuality)particleQuality);
+        setPlayerModel(playerModel);
+    }
+
+    static public void forceSave() {
+        PlayerPrefs.Save();
+    }
+
     static public void setGlobalVolume(float v) {
         AudioListener.volume = v;
+        PlayerPrefs.SetFloat("GlobalVolume", v);
     }
 
     static public float getGlobalVolume() {
@@ -11,6 +52,7 @@ static public class Config {
 
     static public void setMusicVolume(float v) {
         Global.Sfx.setMusicVolume(v);
+        PlayerPrefs.SetFloat("MusicVolume", v);
     }
 
     static public float getMusicVolume() {
@@ -19,6 +61,7 @@ static public class Config {
 
     static public void setSfxVolume(float v) {
         Global.Sfx.sfxVolume = v;
+        PlayerPrefs.SetFloat("SfxVolume", v);
     }
 
     static public float getSfxVolume() {
@@ -30,6 +73,7 @@ static public class Config {
             Global.camX = -1.0f;
         else
             Global.camX = 1.0f;
+        setBool("InvertCamX", v);
     }
 
     static public bool getHorCamInverted() {
@@ -41,6 +85,7 @@ static public class Config {
             Global.camY = -1.0f;
         else
             Global.camY = 1.0f;
+        setBool("InvertCamY", v);
     }
 
     static public bool getVerCamInverted() {
@@ -49,6 +94,7 @@ static public class Config {
 
     static public void setParticlesQual(Global.ParticleQuality gpq) {
        Global.particleQuality = gpq;
+       PlayerPrefs.SetInt("ParticleQuality", (int)gpq);
     }
 
     static public Global.ParticleQuality getParticlesQual() {
@@ -87,6 +133,7 @@ static public class Config {
 
     static public void setPlayerModel(int v) {
         PlayerModel.active = v;
+        PlayerPrefs.SetInt("PlayerModel", v);
     }
 
     static public int getPlayerModel() {
