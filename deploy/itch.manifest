@@ -20,3 +20,15 @@ name = "manual"
 path = "open-manual.bat"
 args = ["mystery-tower.pdf"]
 platform = "windows"
+
+[[actions]]
+name = "Reset Config and Play"
+path = "MysteryTower"
+args = ["--reset-config"]
+platform = "linux"
+
+[[actions]]
+name = "Reset Config and Play"
+path = "MysteryTower.exe"
+args = ["--reset-config"]
+platform = "windows"

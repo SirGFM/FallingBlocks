@@ -42,6 +42,10 @@ static public class Config {
         PlayerPrefs.Save();
     }
 
+    static public void reset() {
+        PlayerPrefs.DeleteAll();
+    }
+
     static public void setGlobalVolume(float v) {
         AudioListener.volume = v;
         PlayerPrefs.SetFloat("GlobalVolume", v);

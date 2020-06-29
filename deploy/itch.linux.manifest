@@ -9,3 +9,9 @@ name = "manual"
 path = "open-manual.sh"
 args = ["mystery-tower.pdf"]
 platform = "linux"
+
+[[actions]]
+name = "Reset Config and Play"
+path = "MysteryTower"
+args = ["--reset-config"]
+platform = "linux"
