@@ -26,8 +26,6 @@ static public class Config {
                                              (int)Global.ParticleQuality.High);
         playerModel = PlayerPrefs.GetInt("PlayerModel", 0);
 
-        // TODO: Input
-
         setGlobalVolume(globalVolume);
         setMusicVolume(musicVolume);
         setSfxVolume(sfxVolume);
@@ -35,6 +33,9 @@ static public class Config {
         setVerCamInverted(invertCamY);
         setParticlesQual((Global.ParticleQuality)particleQuality);
         setPlayerModel(playerModel);
+
+        for (int i = 0; i < 3; i++)
+            loadInput(i);
     }
 
     static public void forceSave() {
@@ -102,33 +103,39 @@ static public class Config {
     }
 
     static private void saveInput(int column) {
+        string key = $"Input-{column}";
+
+        try {
+            string json = Input.axisToJson(column);
+            PlayerPrefs.SetString(key, json);
+        } catch (System.Exception) {
+        }
     }
 
     static private void loadInput(int column) {
+        string key = $"Input-{column}";
+
+        if (!PlayerPrefs.HasKey(key))
+            return;
+        string json = PlayerPrefs.GetString(key, "");
+
+        try {
+            Input.axisFromJson(column, json);
+        } catch (System.Exception) {
+            Input.RevertMap(column);
+        }
     }
 
     static public void saveInputA() {
         saveInput(0);
     }
 
-    static public void loadInputA() {
-        loadInput(0);
-    }
-
     static public void saveInputB() {
         saveInput(1);
     }
 
-    static public void loadInputB() {
-        loadInput(1);
-    }
-
     static public void saveInputC() {
         saveInput(2);
-    }
-
-    static public void loadInputC() {
-        loadInput(2);
     }
 
     static public void setPlayerModel(int v) {
