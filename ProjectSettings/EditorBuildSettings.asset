@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/scenes/MainMenu.unity
-    guid: 8ec173ae73cc12985af05c0af6e8bdaf
+    path: Assets/scenes/000-game-controller/MainLoadConfig.unity
+    guid: e53698891facaeeaa95db4f4ba93ebdb
   - enabled: 1
     path: Assets/scenes/001-basic-tutorial/005-First Steps.unity
     guid: d47b1a8f52bc936668139b498ef9f5c5
@@ -110,4 +110,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/scenes/000-game-controller/bg-scenes/GameOverBG.unity
     guid: 0a851ca15c48014c88c50ac518be71cc
+  - enabled: 1
+    path: Assets/scenes/MainMenu.unity
+    guid: 8ec173ae73cc12985af05c0af6e8bdaf
   m_configObjects: {}

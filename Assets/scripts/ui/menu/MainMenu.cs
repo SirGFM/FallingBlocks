@@ -51,13 +51,7 @@ public class MainMenu : VerticalTextMenu {
         }
     }
 
-    static private bool first = true;
     override protected void start() {
-        if (first) {
-            Config.load();
-            first = false;
-        }
-
         this.options = this._opts;
         this.CombinedLoadScene("scenes/000-game-controller/bg-scenes/MainMenu");
         base.start();
