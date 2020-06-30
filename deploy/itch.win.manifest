@@ -12,6 +12,5 @@ platform = "windows"
 
 [[actions]]
 name = "Reset Config and Play"
-path = "MysteryTower.exe"
-args = ["--reset-config"]
+path = "reset-config.bat"
 platform = "windows"

@@ -43,11 +43,13 @@ echo "Updating the game's version..." &&
     butler push --userversion-file=VERSION.new ${WS}/linux64 "GFM/mystery-tower:linux64" &&
     echo 'Deploying Windows 32 version...' &&
     cp deploy/open-manual.bat ${WS}/win32 &&
+    cp deploy/reset-config.bat ${WS}/win32 &&
     cp deploy/mystery-tower.pdf ${WS}/win32 &&
     cp deploy/itch.win.manifest ${WS}/win32/.itch.toml &&
     butler push --userversion-file=VERSION.new ${WS}/win32 "GFM/mystery-tower:win32" &&
     echo 'Deploying Windows 64 version...' &&
     cp deploy/open-manual.bat ${WS}/win64 &&
+    cp deploy/reset-config.bat ${WS}/win64 &&
     cp deploy/mystery-tower.pdf ${WS}/win64 &&
     cp deploy/itch.win.manifest ${WS}/win64/.itch.toml &&
     butler push --userversion-file=VERSION.new ${WS}/win64 "GFM/mystery-tower:win64" &&

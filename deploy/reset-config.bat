@@ -1,0 +1,1 @@
+MysteryTower.exe --reset-config
