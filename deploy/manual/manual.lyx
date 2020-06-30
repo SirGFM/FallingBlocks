@@ -773,6 +773,52 @@ A block only needs to be touching another's edge to be supported by it
 \end_layout
 
 \begin_layout Section*
+Troubleshooting
+\end_layout
+
+\begin_layout Itemize
+If the input binding becomes terribly broken, reset the configuration:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Use the option 
+\begin_inset Quotes eld
+\end_inset
+
+Reset Config and Play
+\begin_inset Quotes erd
+\end_inset
+
+ on the itch app
+\end_layout
+
+\begin_layout Itemize
+Launch the game from a command-line with the option 
+\begin_inset Quotes eld
+\end_inset
+
+–reset-config
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+On Windows, you may also use the script reset-config.bat to launch the game
+ and reset the configurations
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
 Credits, Acknowledgments and stuff
 \end_layout
 
