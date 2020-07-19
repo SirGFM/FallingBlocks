@@ -486,6 +486,8 @@ static public class Input {
         if (jsonParser == null)
             jsonParser = new Regex("{([^}]*)},+");
         MatchCollection matches = jsonParser.Matches(json);
+        if (matches.Count != (int)Actions.NumActions)
+            throw new System.Exception("Invalid number of actions in the configuration file");
 
         axis[] _axis = new axis[matches.Count];
         for (int i = 0; i < matches.Count; i++) {
