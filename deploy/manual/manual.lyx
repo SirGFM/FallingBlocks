@@ -239,7 +239,7 @@ These are the default game controls, which can be remaped from the Options
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="6" columns="4">
+<lyxtabular version="3" rows="7" columns="4">
 <features booktabs="true" tabularvalignment="middle" tabularwidth="75page%">
 <column alignment="center" valignment="middle" width="17.5text%">
 <column alignment="center" valignment="middle" width="17.5text%">
@@ -309,10 +309,6 @@ WASD
 Left analog
 \end_layout
 
-\begin_layout Plain Layout
-stick
-\end_layout
-
 \end_inset
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
@@ -337,10 +333,6 @@ D-Pad
 Push/Pull
 \end_layout
 
-\begin_layout Plain Layout
-block
-\end_layout
-
 \end_inset
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
@@ -352,16 +344,54 @@ Spacebar
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-Action button
+Button0
 \end_layout
 
 \end_inset
 </cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Ledge drop
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Left shift
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Button1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -394,7 +424,7 @@ UHJK
 \begin_inset Text
 
 \begin_layout Plain Layout
-Right analog stick
+Right analog
 \end_layout
 
 \end_inset
@@ -403,7 +433,7 @@ Right analog stick
 \begin_inset Text
 
 \begin_layout Plain Layout
-Right mouse button
+Right mouse
 \end_layout
 
 \end_inset

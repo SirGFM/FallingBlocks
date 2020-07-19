@@ -32,6 +32,7 @@ static public class Input {
         CameraRight,
         CameraUp,
         CameraDown,
+        DropLedge,
         NumActions,
     };
 
@@ -178,6 +179,7 @@ static public class Input {
         new axis(KeyCode.K) /* CameraRight */,
         new axis(KeyCode.U) /* CameraUp */,
         new axis(KeyCode.J) /* CameraDown */,
+        new axis(KeyCode.LeftShift) /* DropLedge */,
     };
 
     static private axis[] axis1 = {
@@ -193,6 +195,7 @@ static public class Input {
         new axis("joystick 0 axis 3", axisType.positiveAxis) /* CameraRight */,
         new axis("joystick 0 axis 4", axisType.negativeAxis) /* CameraUp */,
         new axis("joystick 0 axis 4", axisType.positiveAxis) /* CameraDown */,
+        new axis("joystick 0 button 1", axisType.none) /* DropLedge */,
     };
 
     static private axis[] axis2 = {
@@ -208,6 +211,7 @@ static public class Input {
         null /* CameraRight */,
         null /* CameraUp */,
         null /* CameraDown */,
+        null /* DropLedge */,
     };
 
     /* =======================================================================
@@ -406,6 +410,7 @@ static public class Input {
                 new axis(KeyCode.K) /* CameraRight */,
                 new axis(KeyCode.U) /* CameraUp */,
                 new axis(KeyCode.J) /* CameraDown */,
+                new axis(KeyCode.LeftShift) /* DropLedge */,
             };
             axis0 = _axis0;
             break;
@@ -423,6 +428,7 @@ static public class Input {
                 new axis("joystick 0 axis 3", axisType.positiveAxis) /* CameraRight */,
                 new axis("joystick 0 axis 4", axisType.negativeAxis) /* CameraUp */,
                 new axis("joystick 0 axis 4", axisType.positiveAxis) /* CameraDown */,
+                new axis("joystick 0 button 1", axisType.none) /* DropLedge */,
             };
             axis1 = _axis1;
             break;
@@ -440,6 +446,7 @@ static public class Input {
                 null /* CameraRight */,
                 null /* CameraUp */,
                 null /* CameraDown */,
+                null /* DropLedge */,
             };
             axis2 = _axis2;
             break;
@@ -548,6 +555,10 @@ static public class Input {
 
     static public UnityEngine.Vector3 GetMousePosition() {
         return UnityEngine.Input.mousePosition;
+    }
+
+    static public bool GetDropLedgeButton() {
+        return combineButtonJustPressed(Actions.DropLedge);
     }
 
     /* =======================================================================

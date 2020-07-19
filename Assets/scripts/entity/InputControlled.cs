@@ -68,7 +68,10 @@ public class InputControlled : BaseAnimatedEntity {
         tmp = Input.GetVerticalAxis();
         if (tmp > 0.5)
             return Dir.Front;
-        else if (tmp < -0.5)
+        else if (tmp < -0.5 && !this.isOnLedge())
+            return Dir.Back;
+        /* If on the ledge, filter "Down" presses and use a dedicated button */
+        if (this.isOnLedge() && Input.GetDropLedgeButton())
             return Dir.Back;
         return Dir.None;
     }
