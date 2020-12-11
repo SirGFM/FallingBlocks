@@ -86,8 +86,13 @@ public class RebindInput : VerticalTextMenu {
     }
 
     private CoroutineRet WaitNoInput() {
-        while (Input.CheckAnyKeyDown())
+        uint trainNum = 3;
+        while (!Input.TrainAxisStable() || Input.CheckAnyKeyDown() || trainNum > 0) {
             yield return null;
+            if (trainNum > 0) {
+                trainNum--;
+            }
+        }
         yield return null;
     }
 

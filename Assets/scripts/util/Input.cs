@@ -2,11 +2,13 @@ using CoroutineRet = System.Collections.IEnumerator;
 using DefInput = UnityEngine.Input;
 using KeyCode = UnityEngine.KeyCode;
 using GO = UnityEngine.GameObject;
+using Math = UnityEngine.Mathf;
 
 using Int32 = System.Int32;
 using GroupCollection = System.Text.RegularExpressions.GroupCollection;
 using MatchCollection = System.Text.RegularExpressions.MatchCollection;
 using Regex = System.Text.RegularExpressions.Regex;
+using CultureInfo = System.Globalization.CultureInfo;
 
 public static class ActionsMethods {
     public static int idx(this Input.Actions a) {
@@ -48,6 +50,7 @@ static public class Input {
         axisType type;
         bool isKey;
         string name;
+        float rest;
 
         private axis() {
             /* Empty constructor */
@@ -60,7 +63,8 @@ static public class Input {
                                        "\"key\": \"(.*)\",.*" +
                                        "\"type\": \"(.*)\",.*" +
                                        "\"isKey\": \"(.*)\",.*" +
-                                       "\"name\": \"(.*)\"");
+                                       "\"name\": \"(.*)\",.*" +
+                                       "\"rest\": \"(.*)\"");
             MatchCollection matches = jsonParser.Matches(json);
             GroupCollection groups = matches[0].Groups;
 
@@ -72,6 +76,7 @@ static public class Input {
             int iIsKey = Int32.Parse(groups[4].Value);
             bool isKey = (iIsKey != 0);
             string name = groups[5].Value;
+            float rest = float.Parse(groups[6].Value, CultureInfo.InvariantCulture);
 
             axis a = new axis();
             a.input = input;
@@ -79,6 +84,7 @@ static public class Input {
             a.type = type;
             a.isKey = isKey;
             a.name = name;
+            a.rest = rest;
             return a;
         }
 
@@ -91,13 +97,15 @@ static public class Input {
                    $"\"key\": \"{ikey}\"," +
                    $"\"type\": \"{itype}\"," +
                    $"\"isKey\": \"{iIsKey}\"," +
-                   $"\"name\": \"{this.name}\"";
+                   $"\"name\": \"{this.name}\","+
+                   $"\"rest\": \"{this.rest:0.###}\"";
         }
 
-        public axis(string input, axisType type) {
+        private void initGamepad(string input, axisType type, float rest) {
             this.type = type;
             this.input = input;
             this.isKey = false;
+            this.rest = rest;
 
             this.key = KeyCode.None;
 
@@ -107,6 +115,14 @@ static public class Input {
                 this.name = $"{this.input} -";
             else
                 this.name = this.input;
+        }
+
+        public axis(string input, axisType type, float rest) {
+            this.initGamepad(input, type, rest);
+        }
+
+        public axis(string input, axisType type) {
+            this.initGamepad(input, type, 0.0f);
         }
 
         public axis(KeyCode key) {
@@ -130,14 +146,25 @@ static public class Input {
                 return 0.0f;
         }
 
-        private float axisVal2axis(float val) {
-            if (val < -0.5f && this.type == axisType.negativeAxis)
-                return -1.0f * val;
-            else if (val > 0.5f && this.type != axisType.negativeAxis)
-                /* Used for positive and none */
-                return val;
+        private float getAxisPerc(float val) {
+            float diff = val - this.rest;
+
+            if (val < this.rest)
+                return Math.Abs(diff / (1.0f + rest));
+            else if (val > this.rest)
+                return diff / (1.0f - rest);
             else
                 return 0.0f;
+        }
+
+        private float axisVal2axis(float val) {
+            float perc = this.getAxisPerc(val);
+
+            if ((val < this.rest && this.type != axisType.negativeAxis) ||
+                    (val > this.rest && this.type == axisType.negativeAxis) ||
+                    perc < 0.5f)
+                return 0.0f;
+            return perc;
         }
 
         public float GetAxis() {
@@ -293,6 +320,40 @@ static public class Input {
         }
     }
 
+    static private float[] axisRest = null;
+
+    /**
+     * Check every axis on every gamepad to ensure that everything is
+     * as stable as possible.
+     *
+     * @return true if the axis are stable, false otherwise
+     */
+    static public bool TrainAxisStable() {
+        bool stable = true;
+
+        if (Input.axisRest == null) {
+            Input.axisRest = new float[gamepadNum * gamepadAxisNum];
+            for (int i = 1; i < gamepadNum * gamepadAxisNum; i++) {
+                Input.axisRest[i] = 0.0f;
+            }
+        }
+
+        for (int gpIdx = 1; gpIdx < gamepadNum; gpIdx++) {
+            for (int gpAxis = 0; gpAxis < gamepadAxisNum; gpAxis++) {
+                int i = gpIdx * gamepadAxisNum + gpAxis;
+                string name = $"joystick {gpIdx} axis {gpAxis}";
+                float cur = DefInput.GetAxisRaw(name);
+                float rest = Input.axisRest[i];
+                float diff = Math.Abs(rest - cur);
+
+                Input.axisRest[i] = 0.99f * (cur * 0.75f + rest * 0.25f);
+                stable = (stable && diff < 0.05f);
+            }
+        }
+
+        return stable;
+    }
+
     static public bool CheckAnyKeyDown() {
         return UnityEngine.Input.anyKey;
     }
@@ -322,13 +383,22 @@ static public class Input {
                 for (int gpIdx = 1; !done && gpIdx < gamepadNum; gpIdx++) {
                     for (int gpAxis = 0; gpAxis < gamepadAxisNum; gpAxis++) {
                         string name = $"joystick {gpIdx} axis {gpAxis}";
-                        if (DefInput.GetAxisRaw(name) > 0.8f) {
-                            arr[idx] = new axis(name, axisType.positiveAxis);
+                        int i = gpIdx * gamepadAxisNum + gpAxis;
+                        float rest = Input.axisRest[i];
+                        float val = DefInput.GetAxisRaw(name);
+                        float diff = val - rest;
+
+                        /* Check that the axis is 80% of the way pressed
+                         * in the given direction */
+                        if (val > rest && diff > 0.25f &&
+                                diff / (1.0f - rest) >= 0.8f) {
+                            arr[idx] = new axis(name, axisType.positiveAxis, rest);
                             done = true;
                             break;
                         }
-                        else if (DefInput.GetAxisRaw(name) < -0.8f) {
-                            arr[idx] = new axis(name, axisType.negativeAxis);
+                        else if (val < rest && diff < -0.25f &&
+                                Math.Abs(diff / (1.0f + rest)) >= 0.8f) {
+                            arr[idx] = new axis(name, axisType.negativeAxis, rest);
                             done = true;
                             break;
                         }
