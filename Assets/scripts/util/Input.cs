@@ -228,8 +228,8 @@ static public class Input {
     static private axis[] axis2 = {
         new axis("joystick 0 axis 6", axisType.negativeAxis) /* Left */,
         new axis("joystick 0 axis 6", axisType.positiveAxis) /* Right */,
-        new axis("joystick 0 axis 7", axisType.negativeAxis) /* Up */,
-        new axis("joystick 0 axis 7", axisType.positiveAxis) /* Down */,
+        new axis("joystick 0 axis 7", axisType.positiveAxis) /* Up */,
+        new axis("joystick 0 axis 7", axisType.negativeAxis) /* Down */,
         null /* Action */,
         null /* Reset */,
         null /* Pause */,
@@ -639,28 +639,24 @@ static public class Input {
 
     static public bool MenuLeft() {
         return DefInput.GetAxisRaw("joystick 0 axis 0") < -0.7f ||
-                DefInput.GetAxisRaw("joystick 0 axis 6") < -0.7f ||
                 DefInput.GetKey("left") ||
                 Input.GetHorizontalAxis() < -0.7f;
     }
 
     static public bool MenuRight() {
         return DefInput.GetAxisRaw("joystick 0 axis 0") > 0.7f ||
-                DefInput.GetAxisRaw("joystick 0 axis 6") > 0.7f ||
                 DefInput.GetKey("right") ||
                 Input.GetHorizontalAxis() > 0.7f;
     }
 
     static public bool MenuUp() {
         return DefInput.GetAxisRaw("joystick 0 axis 1") < -0.7f ||
-                DefInput.GetAxisRaw("joystick 0 axis 7") < -0.7f ||
                 DefInput.GetKey("up") ||
                 Input.GetVerticalAxis() > 0.7f;
     }
 
     static public bool MenuDown() {
         return DefInput.GetAxisRaw("joystick 0 axis 1") > 0.7f ||
-                DefInput.GetAxisRaw("joystick 0 axis 7") > 0.7f ||
                 DefInput.GetKey("down") ||
                 Input.GetVerticalAxis() < -0.7f;
     }
