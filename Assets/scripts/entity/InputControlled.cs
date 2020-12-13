@@ -73,6 +73,13 @@ public class InputControlled : BaseAnimatedEntity {
         /* If on the ledge, filter "Down" presses and use a dedicated button */
         if (this.isOnLedge() && Input.GetDropLedgeButton())
             return Dir.Back;
+        /* Alternatively, allow movement if on the ledge and pulling a
+         * block back */
+        if (tmp < -0.5 && this.isOnLedge() && this.checkActionButton() &&
+                this.getBlockAt(RelPos.Front) != null &&
+                this.getBlockAt(RelPos.Bottom) != null &&
+                this.getBlockAt(RelPos.Back) == null)
+            return Dir.Back;
         return Dir.None;
     }
 
