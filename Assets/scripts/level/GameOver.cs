@@ -11,7 +11,7 @@ using UiText = UnityEngine.UI.Text;
 public class GameOver : UnityEngine.MonoBehaviour {
     private bool allowReset;
 
-    public string MainMenuSceneName = "MainMenu";
+    public int MainMenuScene = 0;
     public string GameOverSceneName = "GameOver";
     public float delta = 0.5f;
 
@@ -119,7 +119,7 @@ public class GameOver : UnityEngine.MonoBehaviour {
 
     void Update() {
         if (this.allowReset && Input.CheckAnyKeyDown()) {
-            SceneMng.LoadSceneAsync(this.MainMenuSceneName, SceneMode.Single);
+            SceneMng.LoadSceneAsync(this.MainMenuScene, SceneMode.Single);
             this.allowReset = false;
         }
     }
