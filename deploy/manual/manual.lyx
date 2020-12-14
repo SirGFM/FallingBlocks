@@ -848,6 +848,29 @@ On Windows, you may also use the script reset-config.bat to launch the game
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+null
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section*
 Credits, Acknowledgments and stuff
 \end_layout
@@ -945,6 +968,57 @@ If you've read this far, thank you! I must also thank friends and family
 \begin_layout Standard
 Also, special thanks to Pirata/pool_shark, who pretty much tested every
  version of the game, and helped a lot in defining its current form.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Also extra special thanks to everyone in SRL Mystery Game Tournament (MT),
+ the Mystery Fun House crew, and the blind race/mystery community in general!
+\end_layout
+
+\begin_layout Standard
+Having submitted a game for a previous MT and really enjoying taking part
+ on these events, I made this game specifically so it were viable for blind
+ racing, and so I could submit it to another MT.
+\end_layout
+
+\begin_layout Standard
+All the feedback I got after submitting, specially from BlasphemousRoar
+ and Exuno, were invaluable! And then, seeing it being raced in MT15's finals
+ was a blast!
+\end_layout
+
+\begin_layout Standard
+So thanks everyone!
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+null
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
