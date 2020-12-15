@@ -1263,7 +1263,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Current Version: v0.0'
+  m_Text: 'Version: v0.0'
 --- !u!222 &1623195773
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1446,7 +1446,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\x13Current Version: v0.0"
+  m_Text: "\x13Version: v0.0"
 --- !u!222 &1672759361
 CanvasRenderer:
   m_ObjectHideFlags: 0
