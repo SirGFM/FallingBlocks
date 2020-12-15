@@ -284,7 +284,7 @@ public class Loader : BaseRemoteAction, LoaderEvents, GetPlayer {
         }
 
         if (this.done && !this.loadingPause && !this.pauseUi.isLoaded &&
-                Input.GetPauseJustPressed()) {
+                Input.GetPauseJustPressed() && !this.resetting) {
             SceneMng.sceneLoaded += onLoadPause;
             this.loadingPause = true;
             SceneMng.LoadSceneAsync(Loader.pauseUiScene,
