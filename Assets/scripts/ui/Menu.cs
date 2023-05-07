@@ -37,6 +37,12 @@ public class Menu : BaseRemoteAction {
     private CoroutineRet handleInputs() {
         float delay = this.waitRepeat;
 
+#if UNITY_WEBGL
+        while (Input.MenuSelect())
+            yield return null;
+        yield return null;
+#endif
+
         while (true) {
             if (this.ignoreInputs()) {
                 yield return null;

@@ -355,11 +355,13 @@ public class Options : VerticalTextMenu {
                                    "Inverted")).setAt((Config.getVerCamInverted()) ? 1 : 0)),
 
             Option.SectionHeader("-- Graphics --"),
+#if !UNITY_WEBGL
             new Option("Resolution",
                        "Set the game's resolution.\n"+
                        "Only takes effect on \"Apply\"!",
                        (new Values(idx => this.resMode = idx,
                                    resList)).setAt(this.resMode)),
+#endif
             new Option("Fullscreen",
                        "Choose windowed or fullscreen mode.\n"+
                        "Only takes effect on \"Apply\"!",
